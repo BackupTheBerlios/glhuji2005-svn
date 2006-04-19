@@ -1,0 +1,21 @@
+# Cloth Data File - all values are MKS
+
+#part one: Mesh Dimensions
+MeshWidth = 2
+MeshHeight = 2
+
+#part two: Universal Constants
+Gravity = 9.81
+
+#part three: particles
+# (u,v)=x,y,z,m,p
+# 
+# u,v   - place in matrix (zero based)
+# x,y,z - particle coordinates in 3d.
+# m     - particle mass
+# p     - particle isPinned (1/0)
+
+(0,0)=0,0,0,0.2,1
+(0,1)=1,0,0,0.3,0
+(1,0)=0,-1.2,0,0.1,0
+(1,1)=-1.1,-1.2,0,0.4,0
