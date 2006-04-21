@@ -7,7 +7,7 @@ class Vector3d;
 class Force
 {
 public:
-    virtual float getForceAt( Vector3d &pos ) = 0;
+    virtual double getForceAt( Vector3d &pos ) = 0;
 };
 
 #endif //__BASE_FORCE_H__

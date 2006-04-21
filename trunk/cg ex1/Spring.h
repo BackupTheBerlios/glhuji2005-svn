@@ -11,20 +11,23 @@ class Spring
 public:
     Spring();
     Spring( idx_t inParticleA, idx_t inParticleB,
-            float inK, float inB );
+            double inLength, double inK, double inB );
     virtual ~Spring();
 
     idx_t getParticleA();
     idx_t getParticleB();
 
-    float    getK();
-    float    getB();
+    double    getK();
+    double    getB();
+
+    double    getRestLength();
 
 protected:
     idx_t    mParticleA;    //Particle 1
     idx_t    mParticleB;    //Particle 2
-    float    mK;            //Spring Constant
-    float    mB;            //Damping constant
+    double    mK;            //Spring Constant
+    double    mB;            //Damping constant
+    double    mRestLength;   //rest length of spring
     
 };
 

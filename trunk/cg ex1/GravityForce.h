@@ -12,12 +12,12 @@ class GravityForce : public Force
 
 public:
     //default to earth's gravitational field
-    GravityForce( float inG = C_EARTH_GRAVITY );
+    GravityForce( double inG = C_EARTH_GRAVITY );
 
-    float getForceAt( Vector3d &pos );
+    double getForceAt( Vector3d &pos );
 
 protected:
-    float mG;
+    double mG;
 };
 
 #endif //__GRAVITY_FORCE_H__

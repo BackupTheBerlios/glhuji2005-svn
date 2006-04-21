@@ -6,6 +6,7 @@
 #include "Particle.h"
 #include "CLoadIni.h"
 
+#include <stdlib.h>
 #include <string>
 
 bool 
@@ -55,7 +56,7 @@ ClothLoader::Load( ParticleSystem &inSystem, string &inFileName )
             cout << "ERROR: gravity field is missing " << endl;
             break;
         }
-        float gravity = (float)atof( val.c_str() );
+        double gravity = atof( val.c_str() );
         inSystem.addForce( new GravityForce( gravity ) );
 
         //load particles
@@ -103,8 +104,7 @@ ClothLoader::Load( ParticleSystem &inSystem, string &inFileName )
             cout << "SUCCESS: particle @ " << j << "," << i << "=" <<
                 arr[0] << "," << arr[1] << "," << arr[2] << "," << arr[3]<< "," << arr[4] << endl;
 
-            Particle p( (float)arr[0], (float)arr[1], (float)arr[2], 
-                (float)arr[3], (arr[4]==1) );
+            Particle p( arr[0], arr[1], arr[2], arr[3], (arr[4]==1) );
 
             inSystem.addParticleAt( j, i, p );
 
@@ -115,6 +115,26 @@ ClothLoader::Load( ParticleSystem &inSystem, string &inFileName )
         //missing particle
         if( !noerr )
             break;
+
+        //------------- Setup Springs ------------------
+        double k, b;
+        if( loader.GetField( C_SPRING_CONST_TAG , val ) != 0 )
+        {
+            cout << "ERROR: spring constant undefined " << C_SPRING_CONST_TAG << endl;
+            break;
+        }
+        k = atof( val.c_str() );
+
+        if( loader.GetField( C_SPRING_DRAG_TAG , val ) != 0 )
+        {
+            cout << "ERROR: spring drag constant undefined " << C_SPRING_DRAG_TAG << endl;
+            break;
+        }
+        b = atof( val.c_str() );
+
+        // add springs to system
+        inSystem.constructSprings( k, b );
+
 
         //if we got here everything is ok
         //debug

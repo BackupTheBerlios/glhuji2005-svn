@@ -8,20 +8,22 @@ class Particle
 {
 public:
     Particle();
-    Particle(float inX, float inY, float inZ, float inMass, bool inIsPinned );
+    Particle(double inX, double inY, double inZ, double inMass, bool inIsPinned );
     Particle& operator= (Particle& rhs); 
     virtual ~Particle();
 
     Vector3d &getPos();
     Vector3d &getVelocity();
-    float    getMass();
+    double    getMass();
+    Vector3d &getForce(){ return mForce; }
 
 
 protected:
     bool     mIsPinned;  //is particle pinned to spot
-    float    mMass;     //mass
+    double    mMass;     //mass
     Vector3d mPos;      //position
     Vector3d mVelocity; //velocity
+    Vector3d mForce; //velocity
 };
 
 #endif //__PARTICLE_H__

@@ -8,6 +8,8 @@ public:
     Vector3d( double inX, double inY, double inZ );
     virtual ~Vector3d();
 
+	void set(double inX, double inY, double inZ);
+
     //perform cross operation
     Vector3d cross( Vector3d &rhs );
 
@@ -20,7 +22,14 @@ public:
     //normalize this vector.
     void normalize();
 
+    //returns vector length
+    double length();
+
     void operator*=( Vector3d &rhs );
+    void operator=( Vector3d &rhs );
+
+    //todo: cleanup
+    //Vector3d &operator-( const Vector3d &lhs, const Vector3d &rhs );
 
     //for readability, make these publicly accessible
 public:

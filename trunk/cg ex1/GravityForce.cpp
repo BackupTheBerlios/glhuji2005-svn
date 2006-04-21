@@ -1,12 +1,12 @@
 #include "StdAfx.h"
 #include "Gravityforce.h"
 
-GravityForce::GravityForce( float inG )
+GravityForce::GravityForce( double inG )
 {
     mG = inG;
 }
 
-float 
+double 
 GravityForce::getForceAt( Vector3d &pos )
 {
     return mG;

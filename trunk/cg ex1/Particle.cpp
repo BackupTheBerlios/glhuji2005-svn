@@ -11,7 +11,7 @@ Particle::~Particle(void)
 {
 }
 
-Particle::Particle( float inX, float inY, float inZ, float inMass,
+Particle::Particle( double inX, double inY, double inZ, double inMass,
                     bool inIsPinned)
 {
     mVelocity = Vector3d(0,0,0);
@@ -43,7 +43,7 @@ Particle::getVelocity()
     return mVelocity;
 }
 
-float    
+double    
 Particle::getMass()
 {
     return mMass;

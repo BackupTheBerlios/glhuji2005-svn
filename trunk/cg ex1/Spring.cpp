@@ -5,16 +5,17 @@
 
 Spring::Spring()
 {
-    Spring( -1, -1, 0, 0 );
+    Spring( -1, -1, 0,  0, 0 );
 }
 
 Spring::Spring( idx_t inParticleA, idx_t inParticleB,
-       float inK, float inB )
+       double inLength, double inK, double inB )
 {
-    mParticleA = inParticleA;
-    mParticleB = inParticleB;
-    mK         = inK;
-    mB         = inB;
+    mParticleA  = inParticleA;
+    mParticleB  = inParticleB;
+    mK          = inK;
+    mB          = inB;
+    mRestLength = inLength;
 }
 
 Spring::~Spring()
@@ -33,14 +34,20 @@ Spring::getParticleB()
     return mParticleB;
 }
 
-float    
+double    
 Spring::getK()
 {
     return mK;
 }
 
-float    
+double    
 Spring::getB()
 {
     return mB;
+}
+
+double
+Spring::getRestLength()
+{
+    return mRestLength;
 }
