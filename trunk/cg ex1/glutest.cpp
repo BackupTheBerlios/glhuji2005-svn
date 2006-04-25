@@ -12,7 +12,9 @@
 #include "constants.h"
 #include "ForwardEulerSolver.h"
 
-#define MOVEMENT_STEP 0.1
+#define MOVEMENT_STEP 0.018
+#define ROTATION_STEP 0.3
+
 
 GLfloat g_xRotated, g_yRotated, g_zRotated;
 ForwardEulerSolver* gFESolver = NULL;
@@ -217,8 +219,8 @@ void processMotion (int x, int y)
 	{
 		int dx = (x-gLastX);
 		int dy = (y-gLastY);
-		g_xRotated += dy;
-		g_yRotated += dx;
+		g_xRotated += ((float)dy)*ROTATION_STEP;
+		g_yRotated += ((float)dx)*ROTATION_STEP;
 	}
 	if (gRBDown)
 	{
