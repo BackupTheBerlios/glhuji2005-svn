@@ -142,7 +142,7 @@ ClothLoader::Load( ParticleSystem &inSystem, string &inFileName )
             break;
 
         //------------- Setup Springs ------------------
-        double k, b;
+        double k, b, shearK, shearB, flexK, flexB;
         if( loader.GetField( C_SPRING_CONST_TAG , val ) != 0 )
         {
             cout << "ERROR: spring constant undefined " << C_SPRING_CONST_TAG << endl;
@@ -157,8 +157,35 @@ ClothLoader::Load( ParticleSystem &inSystem, string &inFileName )
         }
         b = atof( val.c_str() );
 
+        if( loader.GetField( C_SHEAR_SPRING_CONST_TAG , val ) != 0 )
+        {
+            cout << "ERROR: shear spring constant undefined " << C_SPRING_CONST_TAG << endl;
+            break;
+        }
+        shearK = atof( val.c_str() );
+
+        if( loader.GetField( C_SHEAR_SPRING_DRAG_TAG , val ) != 0 )
+        {
+            cout << "ERROR: shear spring drag constant undefined " << C_SPRING_CONST_TAG << endl;
+            break;
+        }
+        shearB= atof( val.c_str() );
+
+        if( loader.GetField( C_FLEX_SPRING_CONST_TAG , val ) != 0 )
+        {
+            cout << "ERROR: Flexion spring constant undefined " << C_SPRING_CONST_TAG << endl;
+            break;
+        }
+        flexK = atof( val.c_str() );
+        if( loader.GetField( C_FLEX_SPRING_DRAG_TAG , val ) != 0 )
+        {
+            cout << "ERROR: Flexion spring drag constant undefined " << C_SPRING_CONST_TAG << endl;
+            break;
+        }
+        flexB = atof( val.c_str() );
+
         // add springs to system
-        inSystem.constructSprings( k, b );
+        inSystem.constructSprings( k, b, shearK, shearB, flexK, flexB );
 
 
         //if we got here everything is ok

@@ -59,7 +59,7 @@ ParticleSystem::setDimensions( idx_t inMeshWidth, idx_t inMeshHeight )
 }
 
 void 
-ParticleSystem::constructSprings( double inK, double inB )
+ParticleSystem::constructSprings( double inK, double inB, double shearK, double shearB, double flexK, double flexB )
 {
     //useful macro for calculating indexes
     #define IDX(u,v) ( (u)+((v)*mWidth) )
@@ -82,7 +82,7 @@ ParticleSystem::constructSprings( double inK, double inB )
             }
 
             //connect springs down for all except bottom row
-            if( y != mHeight-1)
+            if( y != mHeight-1 )
             {
                 idx_t a = IDX(x,y);
                 idx_t b = IDX(x,y+1);
@@ -92,6 +92,57 @@ ParticleSystem::constructSprings( double inK, double inB )
                 double dist = 0.5;
 
                 mSprings.push_back( Spring( a, b, dist, inK, inB ) );
+            }
+
+			//Add backslashed Shear springs for all but rightmost particles and bottom row
+            if( x!= mWidth-1 && y != mHeight-1 )
+            {
+                idx_t a = IDX(x,y);
+                idx_t b = IDX(x+1,y+1);
+                Vector3d p1V = mParticles[a].getPos();
+                Vector3d p2V = mParticles[b].getPos();
+                //double dist = abs((p2V-p1V).length());
+                double dist = (p1V - p2V).length();	//Set rest distance as current distance
+
+                mSprings.push_back( Spring( a, b, dist, shearK, shearB ) );
+            }
+			//Add slashed Shear springs for all but leftmost particles and bottom row
+            if( x != 0 && y != mHeight-1 )
+            {
+                idx_t a = IDX(x,y);
+                idx_t b = IDX(x-1,y+1);
+                Vector3d p1V = mParticles[a].getPos();
+                Vector3d p2V = mParticles[b].getPos();
+                //double dist = abs((p2V-p1V).length());
+                double dist = (p1V - p2V).length();	//Set rest distance as current distance
+
+                mSprings.push_back( Spring( a, b, dist, shearK, shearB ) );
+            }
+
+
+			//Add flexion springs for all but 2 rightmost particles
+            if( x < mWidth-2 )
+            {
+                idx_t a = IDX(x,y);
+                idx_t b = IDX(x+2,y);
+                Vector3d p1V = mParticles[a].getPos();
+                Vector3d p2V = mParticles[b].getPos();
+                //double dist = abs((p2V-p1V).length());
+                double dist = (p1V - p2V).length();	//Set rest distance as current distance
+
+                mSprings.push_back( Spring( a, b, dist, flexK, flexB ) );
+            }
+			//Add flexion springs for all but 2 bottommost rows
+            if( y < mHeight-2 )
+            {
+                idx_t a = IDX(x,y);
+                idx_t b = IDX(x,y+2);
+                Vector3d p1V = mParticles[a].getPos();
+                Vector3d p2V = mParticles[b].getPos();
+                //double dist = abs((p2V-p1V).length());
+                double dist = (p1V - p2V).length();	//Set rest distance as current distance
+
+                mSprings.push_back( Spring( a, b, dist, flexK, flexB ) );
             }
         }
 

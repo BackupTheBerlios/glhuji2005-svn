@@ -34,7 +34,7 @@ public:
 
     void addParticleAt( idx_t inX, idx_t inY, Particle &inParticle );
 
-    void constructSprings( double inK, double inB );
+    void constructSprings( double inK, double inB, double shearK, double shearB, double flexK, double flexB );
     
     //setters
 

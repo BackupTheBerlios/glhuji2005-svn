@@ -9,6 +9,10 @@ Gravity = 9.81
 
 K       = 60 #spring constant
 B       = 10 #damping
+ShearK       = 5 #Shear spring constant
+ShearB       = 1 #Shear damping
+FlexK       = 2.5 #Flexion spring constant
+FlexB       = 1 #Flexion damping
 
 # 1 - Forward Euler; 2 - Reverse Euler
 Solver = 2

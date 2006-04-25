@@ -8,6 +8,10 @@
 #define C_GRAVITY_TAG     ("Gravity")
 #define C_SPRING_CONST_TAG ("K")
 #define C_SPRING_DRAG_TAG ("B")
+#define C_SHEAR_SPRING_CONST_TAG ("ShearK")
+#define C_SHEAR_SPRING_DRAG_TAG ("ShearB")
+#define C_FLEX_SPRING_CONST_TAG ("FlexK")
+#define C_FLEX_SPRING_DRAG_TAG ("FlexB")
 #define C_SOLVER_TYPE_TAG ("Solver")
 #define C_MIDPOINT_TYPE_TAG ("Midpoint")
 
