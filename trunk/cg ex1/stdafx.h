@@ -12,3 +12,6 @@
 // TODO: reference additional headers your program requires here
 #include "MyTypes.h"
 #include <assert.h>
+#include <vector>
+
+using namespace std;

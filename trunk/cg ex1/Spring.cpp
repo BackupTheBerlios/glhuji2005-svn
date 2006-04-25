@@ -5,7 +5,7 @@
 
 Spring::Spring()
 {
-    Spring( -1, -1, 0,  0, 0 );
+    Spring( -1, -1, 0.5,  0, 0 );
 }
 
 Spring::Spring( idx_t inParticleA, idx_t inParticleB,

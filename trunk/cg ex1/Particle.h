@@ -13,17 +13,21 @@ public:
     virtual ~Particle();
 
     Vector3d &getPos();
+    Vector3d &getMidPos();
+    Vector3d getNextPos( double h = 0.01);
     Vector3d &getVelocity();
     double    getMass();
     Vector3d &getForce(){ return mForce; }
+	bool isPinned(){return mIsPinned;}
 
 
 protected:
     bool     mIsPinned;  //is particle pinned to spot
     double    mMass;     //mass
     Vector3d mPos;      //position
+    Vector3d mMidPos;      //position
     Vector3d mVelocity; //velocity
-    Vector3d mForce; //velocity
+    Vector3d mForce; //Total force on string
 };
 
 #endif //__PARTICLE_H__

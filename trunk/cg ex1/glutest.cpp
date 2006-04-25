@@ -9,13 +9,17 @@
 #include "ParticleSystem.h"
 #include "ClothLoader.h"
 #include "vector3d.h"
+#include "constants.h"
+#include "ForwardEulerSolver.h"
 
 GLfloat g_xRotated, g_yRotated, g_zRotated;
+ForwardEulerSolver* gFESolver = NULL;
 
 ParticleSystem pSystem;
-GLfloat g_deltaX = 0.3;
-GLfloat g_deltaY = 0.1;
-GLfloat g_deltaZ = -0.4;
+GLfloat g_deltaX = 0;//0.3;
+GLfloat g_deltaY = 0;//0.1;
+GLfloat g_deltaZ = 0;//-0.4;
+GLfloat gZoom = -12.0f;//-0.4;
 
 int DrawGLSimulation(ParticleSystem& pSystem)		// Here's Where We Do All The Drawing
 {
@@ -23,6 +27,7 @@ int DrawGLSimulation(ParticleSystem& pSystem)		// Here's Where We Do All The Dra
 	// and we can have a reference for our model
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	// Clear Screen And Depth Buffer
 	glLoadIdentity();									// Reset The Current Modelview Matrix
+	/*
 	glTranslatef(-1.5f,0.0f,-6.0f);						// Move Left 1.5 Units And Into The Screen 6.0
 	glRotatef(g_yRotated,0.0f,1.0f,0.0f);						// Rotate The Triangle On The Y axis ( NEW )
 	glBegin(GL_TRIANGLES);								// Start Drawing A Triangle
@@ -51,7 +56,7 @@ int DrawGLSimulation(ParticleSystem& pSystem)		// Here's Where We Do All The Dra
 		glColor3f(0.0f,1.0f,0.0f);						// Green
 		glVertex3f(-1.0f,-1.0f, 1.0f);					// Right Of Triangle (Left)
 	glEnd();											// Done Drawing The Pyramid
-
+*/
 
 	// Here we draw our mesh
 	// ---------------------
@@ -59,24 +64,26 @@ int DrawGLSimulation(ParticleSystem& pSystem)		// Here's Where We Do All The Dra
 	idx_t h = pSystem.getHeight();
 
 	glLoadIdentity();									// Reset The Current Modelview Matrix
-	glTranslatef(1.5f,0.0f,-7.0f);						// Move Right 1.5 Units And Into The Screen 7.0
-	glRotatef(g_xRotated,1.0f,1.0f,1.0f);					// Rotate The Quad On The X axis ( NEW )
-	glBegin(GL_QUADS);									// Draw A Quad
+	glTranslatef(2.0f,1.0f,gZoom);						// Move Right 1.5 Units, down 1 Unit And Away from The Screen 8.0
+	glRotatef(g_xRotated,1.0f,0.0f,0.0f);					// Rotate The Quad On The X axis ( NEW )
+	glRotatef(g_yRotated,0.0f,1.0f,0.0f);					// Rotate The Quad On The Y axis ( NEW )
+	glRotatef(g_zRotated,0.0f,0.0f,1.0f);					// Rotate The Quad On The Z axis ( NEW )
 		glColor3f(0.0f,1.0f,0.0f);						// Set The Color To Green
-		for (int i=0; i<w-1; i++){
-			for (int j=0; j<h-1; j++){
-				Particle& p1 = pSystem.getParticleAt(i, j);
-				Particle& p2 = pSystem.getParticleAt(i, j+1);
-				Particle& p3 = pSystem.getParticleAt(i+1, j+1);
-				Particle& p4 = pSystem.getParticleAt(i+1, j);
+		for (int y=0; y<h-1; y++){
+	glBegin(GL_QUAD_STRIP);									// Draw A Quad strip for every row
+			for (int x=0; x<w; x++){
+				Particle& p1 = pSystem.getParticleAt(x, y+1);
+				Particle& p2 = pSystem.getParticleAt(x, y);
+//				Particle& p3 = pSystem.getParticleAt(x+1, y);
+//				Particle& p4 = pSystem.getParticleAt(x+1, y+1);
 
 				glVertex3f( (p1.getPos()).pX, (p1.getPos()).pY, (p1.getPos()).pZ);
-				glVertex3f( (p2.getPos()).pX, (p3.getPos()).pY, (p2.getPos()).pZ);
-				glVertex3f( (p3.getPos()).pX, (p3.getPos()).pY, (p3.getPos()).pZ);
-				glVertex3f( (p4.getPos()).pX, (p4.getPos()).pY, (p4.getPos()).pZ);
+				glVertex3f( (p2.getPos()).pX, (p2.getPos()).pY, (p2.getPos()).pZ);
+//				glVertex3f( (p3.getPos()).pX, (p3.getPos()).pY, (p3.getPos()).pZ);
+//				glVertex3f( (p4.getPos()).pX, (p4.getPos()).pY, (p4.getPos()).pZ);
 			}
-		}
 	glEnd();											// Done Drawing The Quad
+		}
 
 	return 1;										// Keep Going
 }
@@ -160,6 +167,12 @@ void processSpecialKeys(int key, int x, int y)
 			g_deltaX /= 2;
 			g_deltaY /= 2;
 			break;
+		case GLUT_KEY_F5 : 
+			gZoom += 0.5;
+			break;
+		case GLUT_KEY_F6 : 
+			gZoom -= 0.5;
+			break;
 	}
 }
 //handle "normal " keyboard events
@@ -178,16 +191,28 @@ void processMouse(int button, int state, int x, int y)
 	if (state == GLUT_DOWN) {
 		// set the color to pure red for the left button
 		if (button == GLUT_LEFT_BUTTON) {
-			g_deltaX = 0;
+			if (g_deltaX != 0)
+				g_deltaX = 0;
+			else
+				g_deltaX = -0.5;
 		}
 		// set the color to pure green for the middle button
 		else if (button == GLUT_MIDDLE_BUTTON) {
-			g_deltaY = 0;
+			if (g_deltaY != 0)
+				g_deltaY = 0;
+			else
+				g_deltaY = -0.5;
+		}
+		else if (button == GLUT_RIGHT_BUTTON) {
+			if (g_deltaZ != 0)
+				g_deltaZ = 0;
+			else
+				g_deltaZ = -0.5;
 		}
 		// set the color to pure blue for the right button
 		else {
-			g_deltaX = 0.5;
-			g_deltaY = -0.3;
+			g_deltaX = g_deltaY = g_deltaZ = 0;
+//			g_deltaY = -0.3;
 		}
 	}
 }
@@ -195,16 +220,27 @@ void processMouse(int button, int state, int x, int y)
 int main (int argc, char **argv)
 {
 	//Load simulation stuff
-    ClothLoader::Load( pSystem, std::string("4.psim") );
+    ClothLoader::Load( pSystem, std::string("finecloth.psim") );
+
+	switch (pSystem.mSolverType)
+	{
+	case C_FORWARD_EULER_SOLVER:
+	default:
+			gFESolver = new ForwardEulerSolver(&pSystem);
+			pSystem.setSolver(gFESolver);
+		break;
+	}
 
 	//Initialize GLUT
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);  //For animations you should use double buffering
-	glutInitWindowSize(300,300);
+	glutInitWindowSize(500,400);
 	//Create a window with rendering context and everything else we need
 	glutCreateWindow("Cloth Simulation");
 	glPolygonMode(GL_FRONT_AND_BACK,GL_LINE); //GL_FILL or GL_LINE
-	g_xRotated = g_yRotated = g_zRotated = 0.0;
+	g_xRotated = 40.0;
+	g_yRotated = 20.0;
+	g_zRotated = 0.0;
 	glClearColor(0.0,0.0,0.0,0.0);
 	//Assign the two used Msg-routines
 	glutDisplayFunc(Display);
@@ -218,5 +254,6 @@ int main (int argc, char **argv)
 
 	//Let GLUT get the msgs
 	glutMainLoop();
+	delete gFESolver;
 	return 0;
 }

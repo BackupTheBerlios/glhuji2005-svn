@@ -33,6 +33,7 @@
 				Name="VCLinkerTool"
 				OutputFile="$(OutDir)/DataLoader.exe"
 				LinkIncremental="2"
+				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/DataLoader.pdb"
 				SubSystem="1"
@@ -125,6 +126,12 @@
 				RelativePath=".\DataLoader.cpp">
 			</File>
 			<File
+				RelativePath=".\ForwardEulerSolver.cpp">
+			</File>
+			<File
+				RelativePath=".\glutest.cpp">
+			</File>
+			<File
 				RelativePath=".\GravityForce.cpp">
 			</File>
 			<File
@@ -182,6 +189,9 @@
 			</File>
 			<File
 				RelativePath=".\Force.h">
+			</File>
+			<File
+				RelativePath=".\ForwardEulerSolver.h">
 			</File>
 			<File
 				RelativePath=".\GravityForce.h">

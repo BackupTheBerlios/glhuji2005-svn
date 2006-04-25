@@ -17,10 +17,26 @@ ClothLoader::Load( ParticleSystem &inSystem, string &inFileName )
     string val;
     idx_t meshWidth = 0;
     idx_t meshHeight = 0;
-
+	int solverType;
+	int rc;
     do{
 
         if( loader.ReadIni(inFileName.c_str()) != 0) break;
+
+        //load solver type - if unknown or no solver type - uses forward euler
+        rc = loader.GetField( C_SOLVER_TYPE_TAG, val );
+		solverType = C_FORWARD_EULER_SOLVER;
+		if ( rc != 0 )
+            cout << "WARNING: solver type field is missing - using forward euler" << endl;
+		else
+	        solverType = atoi( val.c_str() );
+        if( solverType != C_FORWARD_EULER_SOLVER )	//When adding a solver type, allow it here!
+		{
+			cout << "ERROR: unknown solver type: " << val.c_str() << " - using forward euler" << endl;
+			inSystem.mSolverType = C_FORWARD_EULER_SOLVER;
+		}
+		else
+			inSystem.mSolverType = solverType;
 
         //load cloth width
         if( loader.GetField( C_MESH_WIDTH_TAG, val ) != 0 )

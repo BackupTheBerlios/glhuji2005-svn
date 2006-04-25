@@ -12,6 +12,7 @@ public:
 
     //perform cross operation
     Vector3d cross( Vector3d &rhs );
+    Vector3d proj( Vector3d &rhs );
 
     //dot product
     double dot( Vector3d &rhs );
@@ -21,11 +22,18 @@ public:
 
     //normalize this vector.
     void normalize();
+	Vector3d normalized();
 
     //returns vector length
     double length();
 
+	Vector3d operator-( Vector3d &rhs );
+	Vector3d operator+( Vector3d &rhs );
+	Vector3d operator*( double rhs );
+    void operator+=( Vector3d &rhs );
+    void operator-=( Vector3d &rhs );
     void operator*=( Vector3d &rhs );
+    void operator*=( double rhs );
     void operator=( Vector3d &rhs );
 
     //todo: cleanup

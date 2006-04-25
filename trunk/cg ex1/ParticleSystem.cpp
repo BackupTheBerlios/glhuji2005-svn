@@ -4,6 +4,7 @@
 #include "Particle.h"
 #include "Spring.h"
 #include "Force.h"
+#include "constants.h"
 #include "NumericalSolver.h"
 
 #include "Particlesystem.h"
@@ -13,11 +14,13 @@ ParticleSystem::ParticleSystem(  )
     mWidth  = 0;
     mHeight = 0;
     mParticles = 0;
+	mSolverType = C_FORWARD_EULER_SOLVER;
 }
 
 void 
 ParticleSystem::step( double h )
 {
+	mSolver->step(h);/*
     Vector3d gravity( 0, 0, -9.81 );
 
     //clear force vector for particles and add gravity
@@ -33,7 +36,7 @@ ParticleSystem::step( double h )
     //add other forces (gravity)
 
     //run solver on all particles
-
+*/
 }
 
 void 
@@ -73,7 +76,7 @@ ParticleSystem::constructSprings( double inK, double inB )
                 Vector3d p1V = mParticles[a].getPos();
                 Vector3d p2V = mParticles[b].getPos();
                 //double dist = abs((p2V-p1V).length());
-                double dist = 0;
+                double dist = 0.5;
 
                 mSprings.push_back( Spring( a, b, dist, inK, inB ) );
             }
@@ -86,7 +89,7 @@ ParticleSystem::constructSprings( double inK, double inB )
                 Vector3d p1V = mParticles[a].getPos();
                 Vector3d p2V = mParticles[b].getPos();
                 //double dist = abs((p2V-p1V).length());
-                double dist = 0;
+                double dist = 0.5;
 
                 mSprings.push_back( Spring( a, b, dist, inK, inB ) );
             }
@@ -126,6 +129,15 @@ ParticleSystem::addForce( Force *inForce )
 }
 
 Particle &
+ParticleSystem::getParticleAt( idx_t index )
+{
+    //sanity, check we're inside mesh bounds...
+    assert( (index < mWidth*mHeight) && (index >= 0) );
+
+    return mParticles[ index ];
+}
+
+Particle &
 ParticleSystem::getParticleAt( idx_t inX, idx_t inY )
 {
     //sanity, check we're inside mesh bounds...
@@ -135,7 +147,7 @@ ParticleSystem::getParticleAt( idx_t inX, idx_t inY )
 }
 
 void 
-ParticleSystem::setSolver( NumericalSolver &inSolver )
+ParticleSystem::setSolver( NumericalSolver *inSolver )
 {
     mSolver = inSolver;
 }

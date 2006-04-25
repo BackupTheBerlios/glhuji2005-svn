@@ -5,14 +5,27 @@
 
 //base class for numerical solvers
 //todo: fill in later...
+#include "Spring.h"
+
+class ParticleSystem;
 class NumericalSolver
 {
+
+//-------------- internal types --------------
+protected:
+	typedef vector<Spring>       SpringList;
+    typedef SpringList::iterator SpringListIt;
+
 public:
-    NumericalSolver();
+    NumericalSolver(ParticleSystem *pParticleSystem, bool bMidPoint = false);
     virtual ~NumericalSolver();
 
+	ParticleSystem *mParticleSystem;
+    virtual void step( double h );
+
 protected:
-    int mStam;
+    int mType;
+	bool mMidpoint;
 };
 
 //#endif //__NUMERICAL_SOLVER_H__

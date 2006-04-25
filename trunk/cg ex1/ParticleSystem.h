@@ -40,21 +40,26 @@ public:
 
     //ParticleSystem takes ownership of pointer (will delete).
     void addForce( Force *inForce );
-    void setSolver( NumericalSolver &inSolver );
+    void setSolver( NumericalSolver *inSolver );
 
     //getters
     Particle &getParticleAt( idx_t inX, idx_t inY );
+    Particle &getParticleAt( idx_t index );
 	idx_t getWidth(){ return mWidth; };
 	idx_t getHeight(){ return mHeight; };
 
 //----------------- storage --------------
+public:
+	int				mSolverType;
+	SpringList& getSprings(){return mSprings;}
 protected:
     idx_t           mWidth;
     idx_t           mHeight;
     Particle        *mParticles;
     SpringList      mSprings;
     ForceList       mForces;
-    NumericalSolver mSolver;
+    NumericalSolver *mSolver;
+	friend class NumericalSolver;
 };
 
 #endif //__PARTICLE_SYSTEM_H__

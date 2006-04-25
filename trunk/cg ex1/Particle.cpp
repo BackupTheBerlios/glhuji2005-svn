@@ -16,6 +16,7 @@ Particle::Particle( double inX, double inY, double inZ, double inMass,
 {
     mVelocity = Vector3d(0,0,0);
     mPos      = Vector3d(inX, inY, inZ);
+    mMidPos      = Vector3d(inX, inY, inZ);
     mMass     = inMass;
     mIsPinned = inIsPinned;
 }
@@ -25,6 +26,7 @@ Particle::operator= (Particle& rhs)
 {
     mVelocity = rhs.mVelocity;
     mPos      = rhs.mPos;
+    mMidPos      = rhs.mMidPos;
     mMass     = rhs.mMass;
     mIsPinned = rhs.mIsPinned;
 
@@ -35,6 +37,17 @@ Vector3d &
 Particle::getPos()
 {
     return mPos;
+}
+
+Vector3d &
+Particle::getMidPos()
+{
+    return mMidPos;
+}
+Vector3d
+Particle::getNextPos( double h )
+{
+    return Vector3d(mPos + mVelocity*h);
 }
 
 Vector3d &
