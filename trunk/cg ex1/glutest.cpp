@@ -12,6 +12,8 @@
 #include "constants.h"
 #include "ForwardEulerSolver.h"
 
+#define MOVEMENT_STEP 0.1
+
 GLfloat g_xRotated, g_yRotated, g_zRotated;
 ForwardEulerSolver* gFESolver = NULL;
 
@@ -19,7 +21,9 @@ ParticleSystem pSystem;
 GLfloat g_deltaX = 0;//0.3;
 GLfloat g_deltaY = 0;//0.1;
 GLfloat g_deltaZ = 0;//-0.4;
-GLfloat gZoom = -12.0f;//-0.4;
+GLfloat gOriginX = -2.0f;//-0.4;
+GLfloat gOriginY = 2.0f;//-0.4;
+GLfloat gOriginZ = -12.0f;//-0.4;
 
 int DrawGLSimulation(ParticleSystem& pSystem)		// Here's Where We Do All The Drawing
 {
@@ -64,7 +68,7 @@ int DrawGLSimulation(ParticleSystem& pSystem)		// Here's Where We Do All The Dra
 	idx_t h = pSystem.getHeight();
 
 	glLoadIdentity();									// Reset The Current Modelview Matrix
-	glTranslatef(2.0f,1.0f,gZoom);						// Move Right 1.5 Units, down 1 Unit And Away from The Screen 8.0
+	glTranslatef(gOriginX,gOriginY,gOriginZ);						// Move Right 1.5 Units, down 1 Unit And Away from The Screen 8.0
 	glRotatef(g_xRotated,1.0f,0.0f,0.0f);					// Rotate The Quad On The X axis ( NEW )
 	glRotatef(g_yRotated,0.0f,1.0f,0.0f);					// Rotate The Quad On The Y axis ( NEW )
 	glRotatef(g_zRotated,0.0f,0.0f,1.0f);					// Rotate The Quad On The Z axis ( NEW )
@@ -168,10 +172,10 @@ void processSpecialKeys(int key, int x, int y)
 			g_deltaY /= 2;
 			break;
 		case GLUT_KEY_F5 : 
-			gZoom += 0.5;
+			gOriginZ += 0.5;
 			break;
 		case GLUT_KEY_F6 : 
-			gZoom -= 0.5;
+			gOriginZ -= 0.5;
 			break;
 	}
 }
@@ -181,42 +185,49 @@ void processNormalKeys(unsigned char key, int x, int y) {
 	if (key == 27) 
 		exit(0);
 }
-
+bool gLBDown = false;
+bool gRBDown = false;
+int gLastX;
+int gLastY;
 void processMouse(int button, int state, int x, int y) 
 {
 	// if we want both mouse and ALT (for example) use this instead of next line
 	//specialKey = glutGetModifiers();
 	//if ((state == GLUT_DOWN) && (specialKey == GLUT_ACTIVE_ALT)) {
-	
-	if (state == GLUT_DOWN) {
-		// set the color to pure red for the left button
-		if (button == GLUT_LEFT_BUTTON) {
-			if (g_deltaX != 0)
-				g_deltaX = 0;
-			else
-				g_deltaX = -0.5;
-		}
-		// set the color to pure green for the middle button
-		else if (button == GLUT_MIDDLE_BUTTON) {
-			if (g_deltaY != 0)
-				g_deltaY = 0;
-			else
-				g_deltaY = -0.5;
-		}
-		else if (button == GLUT_RIGHT_BUTTON) {
-			if (g_deltaZ != 0)
-				g_deltaZ = 0;
-			else
-				g_deltaZ = -0.5;
-		}
-		// set the color to pure blue for the right button
-		else {
-			g_deltaX = g_deltaY = g_deltaZ = 0;
-//			g_deltaY = -0.3;
-		}
+	gLastX = x;
+	gLastY = y;
+	if (state == GLUT_DOWN && button == GLUT_LEFT_BUTTON) {
+		gLBDown = true;
+	}
+	else if (state == GLUT_UP && button == GLUT_LEFT_BUTTON) {
+		gLBDown = false;
+	}
+	if (state == GLUT_DOWN && button == GLUT_RIGHT_BUTTON) {
+		gRBDown = true;
+	}
+	else if (state == GLUT_UP && button == GLUT_RIGHT_BUTTON) {
+		gRBDown = false;
 	}
 }
-
+void processMotion (int x, int y)
+{
+	int dx = (x-gLastX);
+	int dy = (y-gLastY);
+	if (gLBDown)
+	{
+		int dx = (x-gLastX);
+		int dy = (y-gLastY);
+		g_xRotated += dy;
+		g_yRotated += dx;
+	}
+	if (gRBDown)
+	{
+		gOriginX += ((float)dx)*MOVEMENT_STEP;
+		gOriginY -= ((float)dy)*MOVEMENT_STEP;
+	}
+	gLastX = x;
+	gLastY = y;
+}
 int main (int argc, char **argv)
 {
 	//Load simulation stuff
@@ -238,7 +249,7 @@ int main (int argc, char **argv)
 	//Create a window with rendering context and everything else we need
 	glutCreateWindow("Cloth Simulation");
 	glPolygonMode(GL_FRONT_AND_BACK,GL_LINE); //GL_FILL or GL_LINE
-	g_xRotated = 40.0;
+	g_xRotated = 60.0;
 	g_yRotated = 20.0;
 	g_zRotated = 0.0;
 	glClearColor(0.0,0.0,0.0,0.0);
@@ -251,7 +262,7 @@ int main (int argc, char **argv)
 	glutKeyboardFunc(processNormalKeys);
 	glutSpecialFunc(processSpecialKeys);	
 	glutMouseFunc(processMouse);
-
+	glutMotionFunc(processMotion);
 	//Let GLUT get the msgs
 	glutMainLoop();
 	delete gFESolver;
