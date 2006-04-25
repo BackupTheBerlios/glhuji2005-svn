@@ -10,6 +10,12 @@ Gravity = 9.81
 K       = 60 #spring constant
 B       = 10 #damping
 
+# 1 - Forward Euler; 2 - Reverse Euler
+Solver = 2
+
+#Using Midpoint 0 - No; 1 - Yes
+Midpoint = 0
+
 #part three: particles
 # (u,v)=x,y,z,m,p
 #
@@ -46,7 +52,7 @@ B       = 10 #damping
 (3,0)=0,0,-1.5,0.3,0
 (3,1)=0,0,-1,0.3,0
 (3,2)=0,0,-0.5,0.3,0
-(3,3)=0,0,0,0.3,0
+(3,3)=0,0,0,0.3,1
 (3,4)=0,0,0.5,0.3,0
 (3,5)=0,0,1,0.3,0
 (3,6)=0,0,1.5,0.3,0
