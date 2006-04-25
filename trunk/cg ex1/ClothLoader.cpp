@@ -23,14 +23,23 @@ ClothLoader::Load( ParticleSystem &inSystem, string &inFileName )
 
         if( loader.ReadIni(inFileName.c_str()) != 0) break;
 
-        //load solver type - if unknown or no solver type - uses forward euler
-        rc = loader.GetField( C_SOLVER_TYPE_TAG, val );
-		solverType = C_FORWARD_EULER_SOLVER;
+        //Load Midpoint - false by default
+        rc = loader.GetField( C_MIDPOINT_TYPE_TAG, val );
 		if ( rc != 0 )
+			inSystem.setIsMidPoint(false);
+		else
+			inSystem.setIsMidPoint(atoi(val.c_str())==0?false:true);
+        //load solver type - if unknown or no solver type - uses forward euler
+
+		rc = loader.GetField( C_SOLVER_TYPE_TAG, val );
+		if ( rc != 0 )
+		{
             cout << "WARNING: solver type field is missing - using forward euler" << endl;
+			solverType = C_FORWARD_EULER_SOLVER;
+		}
 		else
 	        solverType = atoi( val.c_str() );
-        if( solverType != C_FORWARD_EULER_SOLVER )	//When adding a solver type, allow it here!
+        if( solverType != C_FORWARD_EULER_SOLVER && solverType != C_REVERSE_EULER_SOLVER )	//When adding a solver type, allow it here!
 		{
 			cout << "ERROR: unknown solver type: " << val.c_str() << " - using forward euler" << endl;
 			inSystem.mSolverType = C_FORWARD_EULER_SOLVER;

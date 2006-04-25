@@ -150,6 +150,12 @@
 				RelativePath=".\Quaternion.cpp">
 			</File>
 			<File
+				RelativePath=".\ReverseEulerSolver.cpp">
+			</File>
+			<File
+				RelativePath=".\ReverseEulerSolver.h">
+			</File>
+			<File
 				RelativePath=".\Spring.cpp">
 			</File>
 			<File

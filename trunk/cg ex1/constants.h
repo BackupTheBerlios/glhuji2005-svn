@@ -9,9 +9,11 @@
 #define C_SPRING_CONST_TAG ("K")
 #define C_SPRING_DRAG_TAG ("B")
 #define C_SOLVER_TYPE_TAG ("Solver")
+#define C_MIDPOINT_TYPE_TAG ("Midpoint")
 
 const int C_NUM_FIELDS_IN_PARTICLE = 5;
 
 #define C_FORWARD_EULER_SOLVER 1
+#define C_REVERSE_EULER_SOLVER 2
 
 #endif //_CONSTANTS_H__

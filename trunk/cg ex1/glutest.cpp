@@ -11,6 +11,7 @@
 #include "vector3d.h"
 #include "constants.h"
 #include "ForwardEulerSolver.h"
+#include "ReverseEulerSolver.h"
 
 #define MOVEMENT_STEP 0.018
 #define ROTATION_STEP 0.3
@@ -18,6 +19,8 @@
 
 GLfloat g_xRotated, g_yRotated, g_zRotated;
 ForwardEulerSolver* gFESolver = NULL;
+ReverseEulerSolver* gRESolver= NULL;
+
 
 ParticleSystem pSystem;
 GLfloat g_deltaX = 0;//0.3;
@@ -237,9 +240,14 @@ int main (int argc, char **argv)
 
 	switch (pSystem.mSolverType)
 	{
+		
+	case C_REVERSE_EULER_SOLVER:
+			gRESolver = new ReverseEulerSolver(&pSystem, pSystem.IsMidPoint());
+			pSystem.setSolver(gRESolver);
+			break;
 	case C_FORWARD_EULER_SOLVER:
 	default:
-			gFESolver = new ForwardEulerSolver(&pSystem);
+			gFESolver = new ForwardEulerSolver(&pSystem, pSystem.IsMidPoint());
 			pSystem.setSolver(gFESolver);
 		break;
 	}
@@ -267,6 +275,9 @@ int main (int argc, char **argv)
 	glutMotionFunc(processMotion);
 	//Let GLUT get the msgs
 	glutMainLoop();
-	delete gFESolver;
+	if (gFESolver != NULL)
+		delete gFESolver;
+	if (gRESolver != NULL)
+		delete gRESolver;
 	return 0;
 }

@@ -52,6 +52,8 @@ public:
 public:
 	int				mSolverType;
 	SpringList& getSprings(){return mSprings;}
+	bool IsMidPoint(){return mIsMidPoint;}
+	void setIsMidPoint(bool bMidPoint){mIsMidPoint = bMidPoint;}
 protected:
     idx_t           mWidth;
     idx_t           mHeight;
@@ -59,6 +61,7 @@ protected:
     SpringList      mSprings;
     ForceList       mForces;
     NumericalSolver *mSolver;
+	bool			mIsMidPoint;
 	friend class NumericalSolver;
 };
 
