@@ -11,4 +11,4 @@ public:
     static bool Load( ParticleSystem &inSystem, std::string &inFileName );
 };
 
-#endif  __CLOTH_LOADER_H__
+#endif  //__CLOTH_LOADER_H__

@@ -18,8 +18,6 @@
 
 
 GLfloat g_xRotated, g_yRotated, g_zRotated;
-ForwardEulerSolver* gFESolver = NULL;
-ReverseEulerSolver* gRESolver= NULL;
 
 
 ParticleSystem pSystem;
@@ -135,7 +133,7 @@ void Idle(void)
 	g_yRotated += g_deltaY;
 	g_zRotated += g_deltaZ;
 
-	pSystem.step(0.01);
+	pSystem.step();
 	Display();
 }
 
@@ -238,20 +236,6 @@ int main (int argc, char **argv)
 	//Load simulation stuff
     ClothLoader::Load( pSystem, std::string("finecloth.psim") );
 
-	switch (pSystem.mSolverType)
-	{
-		
-	case C_REVERSE_EULER_SOLVER:
-			gRESolver = new ReverseEulerSolver(&pSystem, pSystem.IsMidPoint());
-			pSystem.setSolver(gRESolver);
-			break;
-	case C_FORWARD_EULER_SOLVER:
-	default:
-			gFESolver = new ForwardEulerSolver(&pSystem, pSystem.IsMidPoint());
-			pSystem.setSolver(gFESolver);
-		break;
-	}
-
 	//Initialize GLUT
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);  //For animations you should use double buffering
@@ -275,9 +259,5 @@ int main (int argc, char **argv)
 	glutMotionFunc(processMotion);
 	//Let GLUT get the msgs
 	glutMainLoop();
-	if (gFESolver != NULL)
-		delete gFESolver;
-	if (gRESolver != NULL)
-		delete gRESolver;
 	return 0;
 }

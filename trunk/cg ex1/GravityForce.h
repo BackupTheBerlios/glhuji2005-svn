@@ -1,6 +1,7 @@
 #ifndef __GRAVITY_FORCE_H__
 #define __GRAVITY_FORCE_H__
 
+#include "Vector3d.h"
 #include "Force.h"
 
 //useful constants in MKS
@@ -14,10 +15,10 @@ public:
     //default to earth's gravitational field
     GravityForce( double inG = C_EARTH_GRAVITY );
 
-    double getForceAt( Vector3d &pos );
+    Vector3d getForceAt( Vector3d &pos ){ return mForceVec; }
 
 protected:
-    double mG;
+    Vector3d mForceVec;
 };
 
 #endif //__GRAVITY_FORCE_H__

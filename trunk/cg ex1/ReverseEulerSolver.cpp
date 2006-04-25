@@ -8,14 +8,6 @@
 #include "NumericalSolver.h"
 #include "ReverseEulerSolver.h"
 
-ReverseEulerSolver::ReverseEulerSolver(ParticleSystem *pParticleSystem, bool bMidPoint) :NumericalSolver(pParticleSystem, bMidPoint)
-{
-}
-
-ReverseEulerSolver::~ReverseEulerSolver()
-{
-}
-
 void 
 ReverseEulerSolver::step( double h )
 {

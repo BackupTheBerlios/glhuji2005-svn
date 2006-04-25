@@ -3,11 +3,6 @@
 
 GravityForce::GravityForce( double inG )
 {
-    mG = inG;
-}
-
-double 
-GravityForce::getForceAt( Vector3d &pos )
-{
-    return mG;
+    //gravity points down negative z axis
+    mForceVec.set(0, 0, -inG );
 }

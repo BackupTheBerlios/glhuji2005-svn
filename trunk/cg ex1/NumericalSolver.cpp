@@ -8,15 +8,19 @@
 #include "NumericalSolver.h"
 
 
-NumericalSolver::NumericalSolver(ParticleSystem *pParticleSystem, bool bMidPoint)
+NumericalSolver::NumericalSolver()
 {
-	mType = 0;
-	mParticleSystem = pParticleSystem;
-	mMidpoint = bMidPoint;
 }
 
 NumericalSolver::~NumericalSolver()
 {
+}
+
+void 
+NumericalSolver::attachToParticleSystem( ParticleSystem *inParticleSystem, bool inMidPoint = false )
+{
+    mParticleSystem = inParticleSystem;
+    mMidpoint       = inMidPoint;
 }
 
 void 
@@ -30,8 +34,10 @@ NumericalSolver::step( double h )
     for( int i = 0; i < (width * height); i++ )
         mParticleSystem->getParticleAt(i).getForce() = gravity;
 
+    SpringList &springsList = mParticleSystem->getSprings();
+
     //iterate over all springs and sum force on each particle
-    for( SpringListIt it = mParticleSystem->mSprings.begin(); it != mParticleSystem->mSprings.end(); it++ )
+    for( SpringListIt it = springsList.begin(); it != springsList.end(); it++ )
     {
         Spring &theSpring = *it;
     }

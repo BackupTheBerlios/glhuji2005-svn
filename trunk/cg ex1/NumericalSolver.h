@@ -1,10 +1,6 @@
-//#ifndef __NUMERICAL_SOLVER_H__
-//#define __NUMERICAL_SOLVER_H__
+#ifndef __NUMERICAL_SOLVER_H__
+#define __NUMERICAL_SOLVER_H__
 
-#pragma once
-
-//base class for numerical solvers
-//todo: fill in later...
 #include "Spring.h"
 
 class ParticleSystem;
@@ -17,15 +13,17 @@ protected:
     typedef SpringList::iterator SpringListIt;
 
 public:
-    NumericalSolver(ParticleSystem *pParticleSystem, bool bMidPoint = false);
+    NumericalSolver();
     virtual ~NumericalSolver();
 
-	ParticleSystem *mParticleSystem;
+    //called by particle system when this solver is attached to one
+    void attachToParticleSystem( ParticleSystem *inParticleSystem, bool inMidPoint );
+
     virtual void step( double h );
 
 protected:
-    int mType;
-	bool mMidpoint;
+    bool           mMidpoint;
+    ParticleSystem *mParticleSystem;
 };
 
-//#endif //__NUMERICAL_SOLVER_H__
+#endif //__NUMERICAL_SOLVER_H__

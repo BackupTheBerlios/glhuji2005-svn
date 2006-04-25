@@ -16,9 +16,10 @@ public:
     Vector3d &getMidPos();
     Vector3d getNextPos( double h = 0.01);
     Vector3d &getVelocity();
-    double    getMass();
+    double   getMass();
     Vector3d &getForce(){ return mForce; }
-	bool isPinned(){return mIsPinned;}
+    void     pin(){ mIsPinned = true; }
+	bool     isPinned(){return mIsPinned;}
 
 
 protected:

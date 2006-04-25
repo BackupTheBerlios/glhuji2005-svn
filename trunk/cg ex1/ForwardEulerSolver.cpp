@@ -8,14 +8,6 @@
 #include "NumericalSolver.h"
 #include "ForwardEulerSolver.h"
 
-ForwardEulerSolver::ForwardEulerSolver(ParticleSystem *pParticleSystem, bool bMidPoint) :NumericalSolver(pParticleSystem, bMidPoint)
-{
-}
-
-ForwardEulerSolver::~ForwardEulerSolver()
-{
-}
-
 void 
 ForwardEulerSolver::step( double h )
 {

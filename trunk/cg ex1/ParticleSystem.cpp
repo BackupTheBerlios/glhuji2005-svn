@@ -11,32 +11,24 @@
 
 ParticleSystem::ParticleSystem(  )
 {
-    mWidth  = 0;
-    mHeight = 0;
-    mParticles = 0;
-	mSolverType = C_FORWARD_EULER_SOLVER;
+    mWidth      = 0;
+    mHeight     = 0;
+    mParticles  = 0;
+    mIsMidPoint = false;
+    mSolver     = NULL;
+    mStepSize   = 0;
 }
 
 void 
-ParticleSystem::step( double h )
+ParticleSystem::step()
 {
-	mSolver->step(h);/*
-    Vector3d gravity( 0, 0, -9.81 );
+	mSolver->step( mStepSize );
+}
 
-    //clear force vector for particles and add gravity
-    for( int i = 0; i < (mWidth * mHeight); i++ )
-        mParticles[i].getForce() = gravity;
-
-    //iterate over all springs and sum force on each particle
-    for( SpringListIt it = mSprings.begin(); it != mSprings.end(); it++ )
-    {
-        Spring &theSpring = *it;
-    }
-
-    //add other forces (gravity)
-
-    //run solver on all particles
-*/
+void
+ParticleSystem::setStepSize( double inStepSize )
+{
+    mStepSize = inStepSize;
 }
 
 void 
@@ -56,6 +48,27 @@ ParticleSystem::setDimensions( idx_t inMeshWidth, idx_t inMeshHeight )
     mWidth = inMeshWidth;
     mHeight = inMeshHeight;
     mParticles = new Particle[ mWidth * mHeight ];
+}
+
+void 
+ParticleSystem::autoCreateMesh( double inOriginX, double inOriginY, double inOriginZ,
+                    double inMass, double inXOfs, double inZofs )
+{
+    double xC = inOriginX;
+    double yC = inOriginY;
+    double zC = inOriginZ;
+
+    for( idx_t yOfs = 0; yOfs < mHeight; yOfs++ ) {
+        for( idx_t xOfs = 0; xOfs < mWidth; xOfs++ ) {
+
+            Particle p( xC, yC, zC, inMass, false );
+            addParticleAt( xOfs, yOfs, p );
+            
+            xC += inXOfs;
+        }
+        xC = inOriginX;
+        zC += inZofs;
+    }
 }
 
 void 
@@ -161,6 +174,9 @@ ParticleSystem::~ParticleSystem()
     }
 
     mForces.clear();
+
+    if( mSolver != NULL )
+        delete mSolver;
 }
 
 void 
@@ -171,6 +187,15 @@ ParticleSystem::addParticleAt( idx_t inX, idx_t inY, Particle &inParticle )
 
     //assign
     mParticles[ inX + (inY*mWidth) ] = inParticle;
+}
+
+void 
+ParticleSystem::pinParticle( idx_t inX, idx_t inY )
+{
+    //sanity, check we're inside mesh bounds...
+    assert( (inX < mWidth) && (inY < mHeight) );
+
+    mParticles[ inX + (inY*mWidth) ].pin();
 }
 
 void 
@@ -200,5 +225,9 @@ ParticleSystem::getParticleAt( idx_t inX, idx_t inY )
 void 
 ParticleSystem::setSolver( NumericalSolver *inSolver )
 {
+    if( mSolver != NULL )
+        delete mSolver;
+
     mSolver = inSolver;
+    mSolver->attachToParticleSystem( this, mIsMidPoint );
 }

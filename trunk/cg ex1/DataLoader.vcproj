@@ -123,9 +123,6 @@
 				RelativePath=".\ClothLoader.cpp">
 			</File>
 			<File
-				RelativePath=".\DataLoader.cpp">
-			</File>
-			<File
 				RelativePath=".\ForwardEulerSolver.cpp">
 			</File>
 			<File
