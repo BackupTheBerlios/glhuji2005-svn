@@ -1,6 +1,17 @@
 #ifndef _CONSTANTS_H__
 #define _CONSTANTS_H__
 
+#define C_DEFAULT_SIMULATION_FILE ("finecloth.psim")
+
+const int C_WINDOW_WIDTH     = 500;
+const int C_WINDOW_HEIGHT    = 400;
+
+//delay in milliseconds for calling timer function.
+const uint16 C_TIMER_DELAY   = 15;
+
+//code fore escape key
+const char C_ESCAPE_KEY_CODE = 27;
+
 //constants for use throughout program
 #define C_MESH_WIDTH_TAG         ("MeshWidth")
 #define C_MESH_HEIGHT_TAG        ("MeshHeight")

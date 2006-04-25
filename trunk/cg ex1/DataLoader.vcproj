@@ -123,10 +123,13 @@
 				RelativePath=".\ClothLoader.cpp">
 			</File>
 			<File
-				RelativePath=".\ForwardEulerSolver.cpp">
+				RelativePath=".\ClothSimulation.cpp">
 			</File>
 			<File
-				RelativePath=".\glutest.cpp">
+				RelativePath=".\ClothView.cpp">
+			</File>
+			<File
+				RelativePath=".\ForwardEulerSolver.cpp">
 			</File>
 			<File
 				RelativePath=".\GravityForce.cpp">
@@ -186,6 +189,9 @@
 			</File>
 			<File
 				RelativePath=".\ClothLoader.h">
+			</File>
+			<File
+				RelativePath=".\ClothView.h">
 			</File>
 			<File
 				RelativePath=".\constants.h">
