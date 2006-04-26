@@ -15,10 +15,11 @@ class Spring;
 class ParticleSystem
 {
 //-------------- internal types --------------
-protected:
+public:
     typedef vector<Spring>       SpringList;
     typedef SpringList::iterator SpringListIt;
     typedef vector<Force *>      ForceList;
+    typedef ForceList::iterator  ForceListIt;
 
 //------------ public interface --------------
 public:
@@ -52,12 +53,14 @@ public:
     Particle &getParticleAt( idx_t index );
 	idx_t getWidth(){ return mWidth; };
 	idx_t getHeight(){ return mHeight; };
+    SpringList& getSprings(){ return mSprings; }
+    ForceList&  getForces(){ return mForces; }
 
 //----------------- storage --------------
 public:
-	SpringList& getSprings(){return mSprings;}
-	bool IsMidPoint(){return mIsMidPoint;}
-	void setIsMidPoint(bool bMidPoint){mIsMidPoint = bMidPoint;}
+    bool IsMidPoint(){return mIsMidPoint;}
+    void setIsMidPoint(bool bMidPoint){mIsMidPoint = bMidPoint;}
+
 protected:
     idx_t            mWidth;
     idx_t            mHeight;

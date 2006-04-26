@@ -32,6 +32,7 @@ public:
 	Vector3d operator-( Vector3d &rhs );
 	Vector3d operator+( Vector3d &rhs );
 	Vector3d operator*( double rhs );
+    Vector3d operator/( double rhs );
     void operator+=( Vector3d &rhs );
     void operator-=( Vector3d &rhs );
     void operator*=( Vector3d &rhs );

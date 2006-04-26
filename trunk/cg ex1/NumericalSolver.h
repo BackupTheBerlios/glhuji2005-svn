@@ -1,17 +1,10 @@
 #ifndef __NUMERICAL_SOLVER_H__
 #define __NUMERICAL_SOLVER_H__
 
-#include "Spring.h"
-
 class ParticleSystem;
+
 class NumericalSolver
 {
-
-//-------------- internal types --------------
-protected:
-	typedef vector<Spring>       SpringList;
-    typedef SpringList::iterator SpringListIt;
-
 public:
     NumericalSolver();
     virtual ~NumericalSolver();

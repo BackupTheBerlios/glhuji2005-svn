@@ -8,11 +8,15 @@
 #include "NumericalSolver.h"
 #include "ReverseEulerSolver.h"
 
+typedef ParticleSystem::SpringList       SpringList;
+typedef ParticleSystem::SpringListIt     SpringListIt;
+typedef ParticleSystem::ForceList        ForceList;
+typedef ParticleSystem::ForceListIt      ForceListIt;
+
 void 
 ReverseEulerSolver::step( double h )
 {
-	Vector3d gravity( 0, -9.81, 0 );
-    Vector3d zero( 0, 0, 0 );
+	Vector3d zero( 0, 0, 0 );
 	int width = mParticleSystem->getWidth();
 	int height = mParticleSystem->getHeight();
     //clear force vector for particles and add gravity
@@ -42,12 +46,14 @@ ReverseEulerSolver::step( double h )
 		}
 		else
 			dx = (A->getNextPos())-(B->getNextPos());
-		ABaxis = dx;
-		ABaxis.normalize();
+
+        ABaxis = dx.normalized();
 		dv = A->velocity()-B->velocity();
 		dv = dv.proj(ABaxis);
 		
-		F = ABaxis*((dx.length()-theSpring.getRestLength())*theSpring.getK()) + dv.proj(ABaxis)*theSpring.getB();
+		F = ABaxis*((dx.length()-theSpring.getRestLength())*theSpring.getK()) + dv*theSpring.getB();
+
+        //force works in separate directions on both particles
 		A->force() -= F;
 		B->force() += F;
     }
@@ -55,25 +61,39 @@ ReverseEulerSolver::step( double h )
     //add other forces (wind...)
 
     //run solver on all particles
-	double a;
 	Vector3d vA;
 	Vector3d dPos;
 	
     for( int i = 0; i < (width * height); i++ )
 	{
         Particle &P = mParticleSystem->getParticleAt(i);
+
 		if (!P.isPinned())
 		{
+            //start with spring forces
 			vA = P.force();
-			vA.normalize();
-			a = P.force().length()/P.getMass();
-			vA *= a*h;
-			vA += gravity*h;
-			P.velocity() += vA;
-			dPos = P.velocity();
-			dPos *= h;
+
+            // a += other forces
+            for( ForceListIt it = mParticleSystem->getForces().begin(); 
+                    it != mParticleSystem->getForces().end(); it++)
+            {
+                Force *tmp = *it;
+			    vA += tmp->getForceAt( P.pos() )*h;
+            }
+
+            // a = F/m
+            vA = vA / P.getMass();
+
+            // newV = oldV + a * h
+			P.velocity() += vA*h;
+
+            //dx = newV*h
+			dPos = P.velocity() * h;
+
+            //todo: midpoint?
 			if (mMidpoint)
 				P.midPos() = P.pos() + (dPos*0.5);	//Calculate mid pos for midpoint calculation
+
 			P.pos() += dPos;
 		}
 	}

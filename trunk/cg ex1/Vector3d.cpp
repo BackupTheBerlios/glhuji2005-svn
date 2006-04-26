@@ -36,10 +36,7 @@ Vector3d::cross( Vector3d &rhs )
 Vector3d 
 Vector3d::proj( Vector3d &rhs )
 {
-
-	Vector3d ret = rhs.normalized();
-	ret *= dot(rhs);
-	return ret;
+    return rhs.normalized() * dot(rhs);
 }
 
 double 
@@ -101,22 +98,26 @@ Vector3d Vector3d::operator-( Vector3d &rhs )
 	return ret;
 }
 
-Vector3d Vector3d::operator+( Vector3d &rhs )
+Vector3d 
+Vector3d::operator+( Vector3d &rhs )
 {
-	Vector3d ret;
-	ret.pX = pX + rhs.pX;
-	ret.pY = pY + rhs.pY;
-	ret.pZ = pZ + rhs.pZ;
-	return ret;
+	return Vector3d( pX + rhs.pX, pY + rhs.pY, pZ + rhs.pZ );
 }
 
-Vector3d Vector3d::operator*( double rhs )
+Vector3d 
+Vector3d::operator*( double rhs )
 {
 	Vector3d ret;
 	ret.pX = pX * rhs;
 	ret.pY = pY * rhs;
 	ret.pZ = pZ * rhs;
 	return ret;
+}
+
+Vector3d 
+Vector3d::operator/( double rhs )
+{
+    return Vector3d( pX / rhs, pY / rhs, pZ / rhs );
 }
 
 
