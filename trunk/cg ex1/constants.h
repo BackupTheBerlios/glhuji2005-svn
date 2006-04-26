@@ -9,8 +9,12 @@ const int C_WINDOW_HEIGHT    = 400;
 //delay in milliseconds for calling timer function.
 const uint16 C_TIMER_DELAY   = 15;
 
-//code fore escape key
+//code for keyboard keys
 const char C_ESCAPE_KEY_CODE = 27;
+const char C_ENTER_KEY_CODE  = 13;
+
+//pause at start of execution
+#define C_PAUSE_STRING            ("pause")
 
 //constants for use throughout program
 #define C_MESH_WIDTH_TAG         ("MeshWidth")

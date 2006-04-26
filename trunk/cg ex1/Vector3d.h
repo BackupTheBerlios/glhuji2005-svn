@@ -12,6 +12,8 @@ public:
 
     //perform cross operation
     Vector3d cross( Vector3d &rhs );
+
+    //project this vector onto vector passed in
     Vector3d proj( Vector3d &rhs );
 
     //dot product

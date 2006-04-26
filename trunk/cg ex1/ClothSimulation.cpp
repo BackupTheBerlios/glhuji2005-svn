@@ -17,6 +17,7 @@ void timerCallback( int inVal );
 int main (int argc, char **argv)
 {
     string simFile = string(C_DEFAULT_SIMULATION_FILE);
+    bool   pauseAtStart = false;
 
     //---- Load Simulation File ----
     if( argc < 2 )
@@ -24,7 +25,17 @@ int main (int argc, char **argv)
     else
         simFile = string( argv[1] );
 
+    //---- check for pause parameter ----
+    if( argc >= 3 && (strcmp( argv[2], C_PAUSE_STRING ) == 0) )
+    {
+        pauseAtStart = true;
+        cout << "pausing at start of execution" << endl;
+    }
+
     ClothView::getInstance()->loadSimulation( simFile );
+
+    if( pauseAtStart )
+        ClothView::getInstance()->stop();
 
 
     //Initialize GLUT

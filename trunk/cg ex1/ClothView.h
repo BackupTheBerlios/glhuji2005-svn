@@ -13,6 +13,9 @@ public:
     static ClothView *getInstance();
 
     void loadSimulation( string &inFileName );
+
+    //stop simulation
+    void stop();
     
     //Functions called by opengl
     void display();
@@ -37,6 +40,7 @@ protected:
     ArcBallController m3dController;
     int               mWindowWidth;
     int               mWindowHeight;
+    bool              mIsRunning; //true = running false = paused
 
 //Singleton storage
 protected:

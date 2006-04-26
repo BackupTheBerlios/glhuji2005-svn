@@ -12,23 +12,29 @@ public:
     Particle& operator= (Particle& rhs); 
     virtual ~Particle();
 
-    Vector3d &getPos();
-    Vector3d &getMidPos();
-    Vector3d getNextPos( double h = 0.01);
-    Vector3d &getVelocity();
-    double   getMass();
-    Vector3d &getForce(){ return mForce; }
+    //Pin this particle
     void     pin(){ mIsPinned = true; }
+
+    //return references to internal storage
+    Vector3d &pos();
+    Vector3d &midPos();
+    Vector3d &velocity();
+    Vector3d &force(){ return mForce; }
+
+    //getters
+    Vector3d getPos();
+    Vector3d getNextPos( double h = 0.01 );
+    double   getMass();
 	bool     isPinned(){return mIsPinned;}
 
 
 protected:
-    bool     mIsPinned;  //is particle pinned to spot
-    double    mMass;     //mass
+    bool     mIsPinned; //is particle pinned to spot
+    double   mMass;     //mass
     Vector3d mPos;      //position
-    Vector3d mMidPos;      //position
+    Vector3d mMidPos;   //position
     Vector3d mVelocity; //velocity
-    Vector3d mForce; //Total force on string
+    Vector3d mForce;    //Total force on string
 };
 
 #endif //__PARTICLE_H__

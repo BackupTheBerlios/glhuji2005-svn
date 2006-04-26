@@ -59,9 +59,33 @@ ClothView::mouseMoved( int inX, int inY )
 void 
 ClothView::keyPressed( unsigned char inKey, int inX, int inY )
 {
-    //exit on escape or q.
-    if( inKey == C_ESCAPE_KEY_CODE || inKey == 'q' )
-        exit(0);
+    switch( inKey )
+    {
+        //exit on esc or q
+        case C_ESCAPE_KEY_CODE:
+        case 'q':
+            exit( 0 );
+        break;
+        
+        //stop or advance one step on space
+        case ' ':
+            if( mIsRunning == false )
+            {
+                mParticleSystem.step();
+                redraw();
+            }
+            else
+                stop();
+            break;
+
+        //continue running on enter
+        case C_ENTER_KEY_CODE:
+            mIsRunning = true;
+            break;
+
+        default:
+            break;
+    }
 }
 
 void 
@@ -70,9 +94,11 @@ ClothView::timerCalled( int inVal )
     //keep timer running
     glutTimerFunc( C_TIMER_DELAY, timerCallback, 0 );
 
-    mParticleSystem.step();
-
-    redraw();
+    if( mIsRunning )
+    {
+        mParticleSystem.step();
+        redraw();
+    }
 }
 
 void
@@ -116,12 +142,19 @@ ClothView::ClothView( )
 {
     mWindowWidth  = C_WINDOW_WIDTH;
     mWindowHeight = C_WINDOW_HEIGHT;
+    mIsRunning    = true;
 }
 
 void 
 ClothView::loadSimulation( string &inFileName )
 {
     ClothLoader::Load( mParticleSystem, inFileName );
+}
+
+void 
+ClothView::stop()
+{
+    mIsRunning = false;
 }
 
 ClothView::~ClothView(void)

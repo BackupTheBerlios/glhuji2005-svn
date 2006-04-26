@@ -17,7 +17,7 @@ ForwardEulerSolver::step( double h )
 	int height = mParticleSystem->getHeight();
     //clear force vector for particles and add gravity
     for( int i = 0; i < (width * height); i++ )
-        mParticleSystem->getParticleAt(i).getForce() = zero;
+        mParticleSystem->getParticleAt(i).force() = zero;
 
 	Vector3d F;
 	Particle* A;
@@ -36,17 +36,18 @@ ForwardEulerSolver::step( double h )
 		B = &mParticleSystem->getParticleAt(theSpring.getParticleB());
 //		dx = (A->getNextPos())-(B->getNextPos());
 		if (mMidpoint)
-			dx = (A->getMidPos())-(B->getMidPos());
+			dx = (A->midPos())-(B->midPos());
 		else
-			dx = (A->getPos())-(B->getPos());
+			dx = (A->pos())-(B->pos());
 		ABaxis = dx;
 		ABaxis.normalize();
-		dv = A->getVelocity()-B->getVelocity();
+		dv = A->velocity()-B->velocity();
 		dv = dv.proj(ABaxis);
 		
-		F = ABaxis*((dx.length()-theSpring.getRestLength())*theSpring.getK()) + dv.proj(ABaxis)*theSpring.getB();
-		A->getForce() -= F;
-		B->getForce() += F;
+		F = ABaxis*((dx.length()-theSpring.getRestLength())*theSpring.getK()) + 
+                                                dv.proj(ABaxis)*theSpring.getB();
+		A->force() -= F;
+		B->force() += F;
     }
 
     //add other forces (wind...)
@@ -61,17 +62,17 @@ ForwardEulerSolver::step( double h )
         Particle &P = mParticleSystem->getParticleAt(i);
 		if (!P.isPinned())
 		{
-			vA = P.getForce();
+			vA = P.force();
 			vA.normalize();
-			a = P.getForce().length()/P.getMass();
+			a = P.force().length()/P.getMass();
 			vA *= a*h;
 			vA += gravity*h;
-			P.getVelocity() += vA;
-			dPos = P.getVelocity();
+			P.velocity() += vA;
+			dPos = P.velocity();
 			dPos *= h;
 			if (mMidpoint)
-				P.getMidPos() = P.getPos() + (dPos*0.5);	//Calculate mid pos for midpoint calculation
-			P.getPos() += dPos;
+				P.midPos() = P.pos() + (dPos*0.5);	//Calculate mid pos for midpoint calculation
+			P.pos() += dPos;
 		}
 	}
 
