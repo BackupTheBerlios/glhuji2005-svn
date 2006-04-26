@@ -1,6 +1,9 @@
 #include "StdAfx.h"
 #include "Vector3d.h"
 #include <math.h>
+#include <iostream> //debug
+
+using namespace std;
 
 Vector3d::Vector3d()
 {
@@ -34,8 +37,8 @@ Vector3d
 Vector3d::proj( Vector3d &rhs )
 {
 
-	Vector3d ret(pX, pY, pZ);
-	ret *= rhs.normalized();
+	Vector3d ret = rhs.normalized();
+	ret *= dot(rhs);
 	return ret;
 }
 
@@ -48,9 +51,9 @@ Vector3d::dot( Vector3d &rhs )
 void 
 Vector3d::normalize()
 {
-    double fac = sqrt( (pX*pX)+(pY*pY)+(pZ*pZ) );
+    double fac = length();
 
-	if (fac != 0)
+	if( fac != 0 )
 	{
 		pX /= fac;
 		pY /= fac;
@@ -61,7 +64,7 @@ Vector3d::normalize()
 Vector3d
 Vector3d::normalized()
 {
-    double fac = sqrt( (pX*pX)+(pY*pY)+(pZ*pZ) );
+    double fac = length();
 
 	Vector3d ret;
 	if (fac == 0)
@@ -72,7 +75,7 @@ Vector3d::normalized()
 	{
 		ret.pX = pX / fac;
 		ret.pY = pY / fac;
-		ret.pZ = pX / fac;
+		ret.pZ = pZ / fac;
 	}
 	return ret;
 }
@@ -157,9 +160,8 @@ Vector3d::operator=( Vector3d &rhs )
     pZ = rhs.pZ;
 }
 
-//todo: cleanup
-/*Vector3d &
-Vector3d::operator-( const Vector3d &lhs, const Vector3d &rhs )
+void
+Vector3d::print()
 {
-    return Vector3d( lhs.pX - rhs.pX, lhs.pY - rhs.pY, lhs.pZ - rhs.pZ );
-}*/
+    cout << "(" << pX << ", " << pY << ", " << pZ << ")" << endl;
+}

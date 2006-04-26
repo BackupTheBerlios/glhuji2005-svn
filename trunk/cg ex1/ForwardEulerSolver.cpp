@@ -42,10 +42,11 @@ ForwardEulerSolver::step( double h )
 		ABaxis = dx;
 		ABaxis.normalize();
 		dv = A->velocity()-B->velocity();
-		dv = dv.proj(ABaxis);
+
+        dv = dv.proj(ABaxis);
 		
 		F = ABaxis*((dx.length()-theSpring.getRestLength())*theSpring.getK()) + 
-                                                dv.proj(ABaxis)*theSpring.getB();
+                                                dv*theSpring.getB();
 		A->force() -= F;
 		B->force() += F;
     }

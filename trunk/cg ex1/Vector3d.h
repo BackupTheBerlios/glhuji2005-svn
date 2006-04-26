@@ -27,7 +27,7 @@ public:
 	Vector3d normalized();
 
     //returns vector length
-    double length();
+    inline double length();
 
 	Vector3d operator-( Vector3d &rhs );
 	Vector3d operator+( Vector3d &rhs );
@@ -38,8 +38,8 @@ public:
     void operator*=( double rhs );
     void operator=( Vector3d &rhs );
 
-    //todo: cleanup
-    //Vector3d &operator-( const Vector3d &lhs, const Vector3d &rhs );
+    //debug
+    void print();
 
     //for readability, make these publicly accessible
 public:
