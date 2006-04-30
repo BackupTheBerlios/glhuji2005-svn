@@ -34,13 +34,11 @@ MidPointSolver::step( double h )
 
     //allocate tmp store if it hasn't been allocated already
     if( mAccel == NULL )
+    {
         mAccel = new Vector3d[ numParticles ];
-
-    if( mTmpPos == NULL )
         mTmpPos = new Vector3d[ numParticles ];
-
-    if( mTmpV == NULL )
         mTmpV = new Vector3d[ numParticles ];
+    }
 
 
     //Copy out original position and velocity

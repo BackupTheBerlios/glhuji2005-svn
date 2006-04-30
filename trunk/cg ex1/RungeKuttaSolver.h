@@ -12,7 +12,6 @@ public:
     void step( double h );
 
 protected:
-    Vector3d *mAccel;
     Vector3d *mTmpPos;
     Vector3d *mTmpV;
     Vector3d *mK1;

@@ -9,7 +9,6 @@
 
 RungeKuttaSolver::RungeKuttaSolver()
 {
-    mAccel  = NULL;
     mTmpPos = NULL;
     mTmpV   = NULL;
     mK1     = NULL;
@@ -22,7 +21,6 @@ RungeKuttaSolver::~RungeKuttaSolver()
 {
     #define CLEAN( x ) if( (x) != NULL ) delete [] (x)
 
-    CLEAN( mAccel );
     CLEAN( mTmpPos );
     CLEAN( mTmpV );
     CLEAN( mK1 );
@@ -40,9 +38,8 @@ RungeKuttaSolver::step( double h )
     double halfH         = h / 2.0;
 
     //Allocate temp. storage on first call
-    if( mAccel == NULL )
+    if( mTmpPos == NULL )
     {
-        mAccel  = new Vector3d[numParticles];
         mTmpPos = new Vector3d[numParticles];
         mTmpV   = new Vector3d[numParticles];
         mK1     = new Vector3d[numParticles];
@@ -98,7 +95,7 @@ RungeKuttaSolver::step( double h )
         if( pInfo[i].pIsPinned )
             continue;
 
-        origV[i] += (mK1[i] + mK2[i]*2.0 + mK3[i]*2.0 + mK4[i]) * h/6.0;
+        origV[i]   += (mK1[i] + mK2[i]*2.0 + mK3[i]*2.0 + mK4[i]) * h/6.0;
         origPos[i] += origV[i] * h;
     }
 
