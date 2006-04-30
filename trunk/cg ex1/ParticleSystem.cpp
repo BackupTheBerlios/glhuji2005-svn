@@ -189,6 +189,12 @@ ParticleSystem::addParticleAt( idx_t inX, idx_t inY, Particle &inParticle )
     mParticles[ inX + (inY*mWidth) ] = inParticle;
 }
 
+idx_t    
+ParticleSystem::getNumParticles()
+{
+    return mWidth*mHeight;
+}
+
 void 
 ParticleSystem::pinParticle( idx_t inX, idx_t inY )
 {

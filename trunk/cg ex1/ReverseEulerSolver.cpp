@@ -77,8 +77,8 @@ ReverseEulerSolver::step( double h )
             for( ForceListIt it = mParticleSystem->getForces().begin(); 
                     it != mParticleSystem->getForces().end(); it++)
             {
-                Force *tmp = *it;
-			    vA += tmp->getForceAt( P.pos() )*h;
+                Vector3d &force = (*it)->getForceAt( P.getPos(), P );
+                vA += force;
             }
 
             // a = F/m

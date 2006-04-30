@@ -7,6 +7,8 @@
 #include "CLoadIni.h"
 #include "ForwardEulerSolver.h"
 #include "ReverseEulerSolver.h"
+#include "RungeKuttaSolver.h"
+#include "MidPointSolver.h"
 
 #include <stdlib.h>
 #include <string>
@@ -35,12 +37,6 @@ ClothLoader::Load( ParticleSystem &inSystem, string &inFileName )
             break;
         }
 
-        //1. Midpoint - false by default
-        if( loader.GetField( C_MIDPOINT_TYPE_TAG, val ) == 0 )
-		    inSystem.setIsMidPoint( atoi(val.c_str())==0?false:true );
-        else
-            cout << "Warning: Midpoint not specified, default: FALSE" << endl;
-
         //2. Load Solver - forward Euler by default
 		rc = loader.GetField( C_SOLVER_TYPE_TAG, val );
 		if ( rc != 0 )
@@ -61,6 +57,16 @@ ClothLoader::Load( ParticleSystem &inSystem, string &inFileName )
         case C_REVERSE_EULER_SOLVER:
             cout << "using reverse euler" << endl;
             solver = new ReverseEulerSolver();
+            break;
+
+        case C_MIDPOINT_SOLVER:
+            cout << "using midpoint solver" << endl;
+            solver = new MidPointSolver();
+            break;
+
+        case C_RUNGE_KUTTA_SOLVER:
+            cout << "using Runge Kutta Solver" << endl;
+            solver = new RungeKuttaSolver();
             break;
 
         default:

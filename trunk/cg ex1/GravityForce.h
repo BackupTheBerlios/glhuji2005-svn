@@ -15,7 +15,7 @@ public:
     //default to earth's gravitational field
     GravityForce( double inG = C_EARTH_GRAVITY );
 
-    Vector3d getForceAt( Vector3d &pos ){ return mForceVec; }
+    inline Vector3d getForceAt( Vector3d &pos, Particle &inParticle );
 
 protected:
     Vector3d mForceVec;

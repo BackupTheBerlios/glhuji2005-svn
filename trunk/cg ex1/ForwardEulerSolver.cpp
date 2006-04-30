@@ -73,7 +73,7 @@ ForwardEulerSolver::step( double h )
             for( ForceListIt it = mParticleSystem->getForces().begin(); 
                 it != mParticleSystem->getForces().end(); it++)
             {
-                Vector3d &force = (*it)->getForceAt( P.pos() );
+                Vector3d &force = (*it)->getForceAt( P.getPos(), P );
                 vA += force;
             }
 

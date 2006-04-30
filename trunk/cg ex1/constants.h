@@ -7,7 +7,7 @@ const int C_WINDOW_WIDTH     = 500;
 const int C_WINDOW_HEIGHT    = 400;
 
 //delay in milliseconds for calling timer function.
-const uint16 C_TIMER_DELAY   = 15;
+const uint16 C_TIMER_DELAY   = 2;
 
 //code for keyboard keys
 const char C_ESCAPE_KEY_CODE = 27;
@@ -28,15 +28,16 @@ const char C_ENTER_KEY_CODE  = 13;
 #define C_FLEX_SPRING_CONST_TAG  ("FlexK")
 #define C_FLEX_SPRING_DRAG_TAG   ("FlexB")
 #define C_SOLVER_TYPE_TAG        ("Solver")
-#define C_MIDPOINT_TYPE_TAG      ("Midpoint")
 #define C_AUTOCREATE_MESH_TAG    ("AutoCreateMesh")
 
 const int C_NUM_FIELDS_IN_PARTICLE   = 5;
 const int C_NUM_FIELDS_IN_AUTOCREATE = 6;
 
 typedef enum {
-    C_FORWARD_EULER_SOLVER = 1,
-    C_REVERSE_EULER_SOLVER = 2
+    C_FORWARD_EULER_SOLVER    = 1,
+    C_REVERSE_EULER_SOLVER    = 2, //todo: remove?
+    C_MIDPOINT_SOLVER         = 3,
+    C_RUNGE_KUTTA_SOLVER      = 4
 } SolverType;
 
 #endif //_CONSTANTS_H__

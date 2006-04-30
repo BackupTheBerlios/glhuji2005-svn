@@ -51,6 +51,7 @@ public:
     //getters
     Particle &getParticleAt( idx_t inX, idx_t inY );
     Particle &getParticleAt( idx_t index );
+    idx_t    getNumParticles();
 	idx_t getWidth(){ return mWidth; };
 	idx_t getHeight(){ return mHeight; };
     SpringList& getSprings(){ return mSprings; }

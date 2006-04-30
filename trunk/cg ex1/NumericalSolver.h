@@ -2,6 +2,7 @@
 #define __NUMERICAL_SOLVER_H__
 
 class ParticleSystem;
+class Vector3d;
 
 class NumericalSolver
 {
@@ -13,6 +14,12 @@ public:
     void attachToParticleSystem( ParticleSystem *inParticleSystem, bool inMidPoint );
 
     virtual void step( double h );
+
+protected:
+    //calculate dA given position, velocity and masses.
+    void calcAccel( idx_t inNumParticles, 
+        Vector3d *inPositions, Vector3d *inVelocities, 
+        double *inMasses, Vector3d *outAccel );
 
 protected:
     bool           mMidpoint;
