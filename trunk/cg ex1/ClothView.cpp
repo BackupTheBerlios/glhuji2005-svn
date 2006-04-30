@@ -24,7 +24,7 @@ ClothView::reshape( int inWidth, int inHeight )
     //Angle of view:40 degrees
     //Near clipping plane distance: 0.5
     //Far clipping plane distance: 20.0
-    gluPerspective(40.0,(GLdouble)inWidth/(GLdouble)inHeight,0.5,20.0);
+    gluPerspective(40.0,(GLdouble)inWidth/(GLdouble)inHeight,0.5,200.0);
     glMatrixMode(GL_MODELVIEW);
     glViewport(0,0,inWidth,inHeight);
 
@@ -45,15 +45,64 @@ ClothView::reshape( int inWidth, int inHeight )
     glViewport(0, 0, (GLsizei)inWidth, (GLsizei)inHeight);*/
 }
 
+#define MOVEMENT_STEP 0.018
+#define ROTATION_STEP 0.3
+bool gLBDown = false;
+bool gRBDown = false;
+int gLastX;
+int gLastY;
+GLfloat gOriginX = -2.0f;
+GLfloat gOriginY = 2.0f;
+GLfloat gOriginZ = -12.0f;
+GLfloat g_xRotated = 60.0f;
+GLfloat g_yRotated = 20.0f;
+GLfloat g_zRotated = 0.0f;
+
 void 
 ClothView::mousePressed( int inButton, int inState, int inX, int inY )
 {
-
+	// if we want both mouse and ALT (for example) use this instead of next line
+	//specialKey = glutGetModifiers();
+	//if ((inState == GLUT_DOWN) && (specialKey == GLUT_ACTIVE_ALT)) {
+	gLastX = inX;
+	gLastY = inY;
+	if (inState == GLUT_DOWN && inButton == GLUT_LEFT_BUTTON) {
+		gLBDown = true;
+	}
+	else if (inState == GLUT_UP && inButton == GLUT_LEFT_BUTTON) {
+		gLBDown = false;
+	}
+	if (inState == GLUT_DOWN && inButton == GLUT_RIGHT_BUTTON) {
+		gRBDown = true;
+	}
+	else if (inState == GLUT_UP && inButton == GLUT_RIGHT_BUTTON) {
+		gRBDown = false;
+	}
 }
 
 void 
 ClothView::mouseMoved( int inX, int inY )
 {
+	int dx = (inX-gLastX);
+	int dy = (inY-gLastY);
+	if (gLBDown && gRBDown)
+	{
+		gOriginZ -= ((float)dy)*MOVEMENT_STEP;
+	}
+	else if (gLBDown)
+	{
+		int dx = (inX-gLastX);
+		int dy = (inY-gLastY);
+		g_xRotated += ((float)dy)*ROTATION_STEP;
+		g_yRotated += ((float)dx)*ROTATION_STEP;
+	}
+	else if (gRBDown)
+	{
+		gOriginX += ((float)dx)*MOVEMENT_STEP;
+		gOriginY -= ((float)dy)*MOVEMENT_STEP;
+	}
+	gLastX = inX;
+	gLastY = inY;
 }
 
 void 
@@ -111,9 +160,6 @@ ClothView::redraw()
 void
 ClothView::drawParticleSystem()
 {
-    GLfloat gOriginX = -2.0f;
-    GLfloat gOriginY = 2.0f;
-    GLfloat gOriginZ = -12.0f;
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	// Clear Screen And Depth Buffer
     glLoadIdentity();									// Reset The Current Modelview Matrix
@@ -124,6 +170,9 @@ ClothView::drawParticleSystem()
 
     glLoadIdentity();									// Reset The Current Modelview Matrix
     glTranslatef(gOriginX,gOriginY,gOriginZ);		
+	glRotatef(g_xRotated,1.0f,0.0f,0.0f);					// Rotate The Quad On The X axis ( NEW )
+	glRotatef(g_yRotated,0.0f,1.0f,0.0f);					// Rotate The Quad On The Y axis ( NEW )
+	glRotatef(g_zRotated,0.0f,0.0f,1.0f);					// Rotate The Quad On The Z axis ( NEW )
     glColor3f(0.0f,1.0f,0.0f);						// Set The Color To Green
     for (int y=0; y<h-1; y++){
         glBegin(GL_QUAD_STRIP);									// Draw A Quad strip for every row
