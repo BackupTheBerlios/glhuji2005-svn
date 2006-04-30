@@ -6,7 +6,6 @@
 #include "Particle.h"
 #include "CLoadIni.h"
 #include "ForwardEulerSolver.h"
-#include "ReverseEulerSolver.h"
 #include "RungeKuttaSolver.h"
 #include "MidPointSolver.h"
 
@@ -54,10 +53,11 @@ ClothLoader::Load( ParticleSystem &inSystem, string &inFileName )
             solver = new ForwardEulerSolver();
             break;
 
-        case C_REVERSE_EULER_SOLVER:
-            cout << "using reverse euler" << endl;
-            solver = new ReverseEulerSolver();
-            break;
+        //todo: reinstate?
+        //case C_REVERSE_EULER_SOLVER:
+        //    cout << "using reverse euler" << endl;
+        //    solver = new ReverseEulerSolver();
+        //    break;
 
         case C_MIDPOINT_SOLVER:
             cout << "using midpoint solver" << endl;
@@ -112,7 +112,7 @@ ClothLoader::Load( ParticleSystem &inSystem, string &inFileName )
             break;
         }
         double gravity = atof( val.c_str() );
-        inSystem.addForce( new GravityForce( gravity ) );
+        inSystem.setGravity( gravity );
 
         //------------------------ AutoCreate Mesh ---------------------------
         if( loader.GetField(C_AUTOCREATE_MESH_TAG, val ) == 0 )
