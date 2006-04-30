@@ -13,13 +13,12 @@ public:
     //called by particle system when this solver is attached to one
     void attachToParticleSystem( ParticleSystem *inParticleSystem, bool inMidPoint );
 
-    virtual void step( double h );
+    virtual void step( double h ) = 0;
 
 protected:
-    //calculate dA given position, velocity and masses.
-    void calcAccel( idx_t inNumParticles, 
-        Vector3d *inPositions, Vector3d *inVelocities, 
-        double *inMasses, Vector3d *outAccel );
+    //calculate dA given position, velocity and inverted masses.
+    void calcAccel( Vector3d *inPositions, Vector3d *inVelocities, 
+        double *inInvMasses, Vector3d *outAccel );
 
 protected:
     bool           mMidpoint;

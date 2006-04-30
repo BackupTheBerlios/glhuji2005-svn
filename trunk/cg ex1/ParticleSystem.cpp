@@ -3,7 +3,6 @@
 #include "Vector3d.h"
 #include "Particle.h"
 #include "Spring.h"
-#include "Force.h"
 #include "constants.h"
 #include "NumericalSolver.h"
 
@@ -13,10 +12,16 @@ ParticleSystem::ParticleSystem(  )
 {
     mWidth      = 0;
     mHeight     = 0;
-    mParticles  = 0;
     mIsMidPoint = false;
     mSolver     = NULL;
     mStepSize   = 0;
+
+    mGravity    = 0;
+
+    mParticlePos         = NULL;
+    mParticleVelocity    = NULL;
+    mParticleInvMass     = NULL;
+    mParticleInfo        = NULL;
 }
 
 void 
@@ -37,17 +42,18 @@ ParticleSystem::setDimensions( idx_t inMeshWidth, idx_t inMeshHeight )
     //sanity
     assert( inMeshWidth > 0 && inMeshHeight > 0 );
 
-    //free allocated memory
-    if( mParticles != 0 )
-    {
-        delete [] mParticles;
-        mParticles = 0;
-    }
+    freeParticleStorage();
 
-    //set
-    mWidth = inMeshWidth;
-    mHeight = inMeshHeight;
-    mParticles = new Particle[ mWidth * mHeight ];
+    //set dimensions
+    mWidth        = inMeshWidth;
+    mHeight       = inMeshHeight;
+    
+    //allocate storage
+    idx_t numParticles = mWidth * mHeight;
+    mParticleInfo      = new ParticleInfo[numParticles];
+    mParticlePos       = new Vector3d[numParticles];
+    mParticleInvMass   = new double[numParticles];
+    mParticleVelocity  = new Vector3d[numParticles];
 }
 
 void 
@@ -86,8 +92,8 @@ ParticleSystem::constructSprings( double inK, double inB, double shearK, double 
             {
                 idx_t a = IDX(x,y);
                 idx_t b = IDX(x+1,y);
-                Vector3d p1V = mParticles[a].getPos();
-                Vector3d p2V = mParticles[b].getPos();
+                Vector3d &p1V = mParticlePos[a];
+                Vector3d &p2V = mParticlePos[b];
                 //double dist = abs((p2V-p1V).length());
                 double dist = 0.5;
 
@@ -99,8 +105,8 @@ ParticleSystem::constructSprings( double inK, double inB, double shearK, double 
             {
                 idx_t a = IDX(x,y);
                 idx_t b = IDX(x,y+1);
-                Vector3d p1V = mParticles[a].getPos();
-                Vector3d p2V = mParticles[b].getPos();
+                Vector3d p1V = mParticlePos[a];
+                Vector3d p2V = mParticlePos[b];
                 //double dist = abs((p2V-p1V).length());
                 double dist = 0.5;
 
@@ -112,8 +118,8 @@ ParticleSystem::constructSprings( double inK, double inB, double shearK, double 
             {
                 idx_t a = IDX(x,y);
                 idx_t b = IDX(x+1,y+1);
-                Vector3d p1V = mParticles[a].getPos();
-                Vector3d p2V = mParticles[b].getPos();
+                Vector3d &p1V = mParticlePos[a];
+                Vector3d &p2V = mParticlePos[b];
                 //double dist = abs((p2V-p1V).length());
                 double dist = (p1V - p2V).length();	//Set rest distance as current distance
 
@@ -124,8 +130,8 @@ ParticleSystem::constructSprings( double inK, double inB, double shearK, double 
             {
                 idx_t a = IDX(x,y);
                 idx_t b = IDX(x-1,y+1);
-                Vector3d p1V = mParticles[a].getPos();
-                Vector3d p2V = mParticles[b].getPos();
+                Vector3d &p1V = mParticlePos[a];
+                Vector3d &p2V = mParticlePos[b];
                 //double dist = abs((p2V-p1V).length());
                 double dist = (p1V - p2V).length();	//Set rest distance as current distance
 
@@ -138,8 +144,8 @@ ParticleSystem::constructSprings( double inK, double inB, double shearK, double 
             {
                 idx_t a = IDX(x,y);
                 idx_t b = IDX(x+2,y);
-                Vector3d p1V = mParticles[a].getPos();
-                Vector3d p2V = mParticles[b].getPos();
+                Vector3d &p1V = mParticlePos[a];
+                Vector3d &p2V = mParticlePos[b];
                 //double dist = abs((p2V-p1V).length());
                 double dist = (p1V - p2V).length();	//Set rest distance as current distance
 
@@ -150,8 +156,8 @@ ParticleSystem::constructSprings( double inK, double inB, double shearK, double 
             {
                 idx_t a = IDX(x,y);
                 idx_t b = IDX(x,y+2);
-                Vector3d p1V = mParticles[a].getPos();
-                Vector3d p2V = mParticles[b].getPos();
+                Vector3d &p1V = mParticlePos[a];
+                Vector3d &p2V = mParticlePos[b];
                 //double dist = abs((p2V-p1V).length());
                 double dist = (p1V - p2V).length();	//Set rest distance as current distance
 
@@ -164,19 +170,38 @@ ParticleSystem::constructSprings( double inK, double inB, double shearK, double 
 
 ParticleSystem::~ParticleSystem()
 {
-    delete[] mParticles;
-    mParticles = 0;
-
-    for( ForceList::iterator it = mForces.begin(); it != mForces.end(); it++ )
-    {
-        //delete force pointer
-        delete (*it);
-    }
-
-    mForces.clear();
+    freeParticleStorage();
 
     if( mSolver != NULL )
         delete mSolver;
+}
+
+void
+ParticleSystem::freeParticleStorage()
+{
+    if( mParticlePos != NULL )
+    {
+        delete [] mParticlePos;
+        mParticlePos = NULL;
+    }
+
+    if( mParticleVelocity != NULL )
+    {
+        delete [] mParticleVelocity;
+        mParticleVelocity = NULL;
+    }
+
+    if( mParticleInvMass != NULL )
+    {
+        delete [] mParticleInvMass;
+        mParticleInvMass = NULL;
+    }
+
+    if( mParticleInfo != NULL )
+    {
+        delete [] mParticleInfo;
+        mParticleInfo    = NULL;
+    }
 }
 
 void 
@@ -185,8 +210,23 @@ ParticleSystem::addParticleAt( idx_t inX, idx_t inY, Particle &inParticle )
     //sanity, check we're inside mesh bounds...
     assert( (inX < mWidth) && (inY < mHeight) );
 
+    idx_t i = inX + (inY*mWidth);
+
     //assign
-    mParticles[ inX + (inY*mWidth) ] = inParticle;
+    mParticlePos[ i ]         = inParticle.getPos();
+    mParticleInvMass[ i ]     = 1.0 / inParticle.getMass();
+    mParticleInfo[i]          = ParticleInfo();
+    mParticleVelocity[i]      = inParticle.getVelocity();
+
+}
+
+Vector3d    &
+ParticleSystem::getParticlePos( idx_t inX, idx_t inY )
+{
+    //sanity, check we're inside mesh bounds...
+    assert( (inX < mWidth) && (inY < mHeight) );
+
+    return mParticlePos[ inX + (inY*mWidth) ];
 }
 
 idx_t    
@@ -201,31 +241,19 @@ ParticleSystem::pinParticle( idx_t inX, idx_t inY )
     //sanity, check we're inside mesh bounds...
     assert( (inX < mWidth) && (inY < mHeight) );
 
-    mParticles[ inX + (inY*mWidth) ].pin();
+    mParticleInfo[ inX + (inY*mWidth) ].pin();
 }
 
 void 
-ParticleSystem::addForce( Force *inForce )
+ParticleSystem::setGravity( double inGravity )
 {
-    mForces.push_back( inForce );
+    mGravity = inGravity;
 }
 
-Particle &
-ParticleSystem::getParticleAt( idx_t index )
+double
+ParticleSystem::getGravity()
 {
-    //sanity, check we're inside mesh bounds...
-    assert( (index < mWidth*mHeight) && (index >= 0) );
-
-    return mParticles[ index ];
-}
-
-Particle &
-ParticleSystem::getParticleAt( idx_t inX, idx_t inY )
-{
-    //sanity, check we're inside mesh bounds...
-    assert( (inX < mWidth) && (inY < mHeight) );
-
-    return mParticles[ inX + (inY*mWidth) ];
+    return mGravity;
 }
 
 void 

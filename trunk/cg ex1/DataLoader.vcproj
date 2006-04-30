@@ -132,9 +132,6 @@
 				RelativePath=".\ForwardEulerSolver.cpp">
 			</File>
 			<File
-				RelativePath=".\GravityForce.cpp">
-			</File>
-			<File
 				RelativePath=".\MidPointSolver.cpp">
 			</File>
 			<File
@@ -151,12 +148,6 @@
 			</File>
 			<File
 				RelativePath=".\Quaternion.cpp">
-			</File>
-			<File
-				RelativePath=".\ReverseEulerSolver.cpp">
-			</File>
-			<File
-				RelativePath=".\ReverseEulerSolver.h">
 			</File>
 			<File
 				RelativePath=".\RungeKuttaSolver.cpp">
@@ -203,13 +194,7 @@
 				RelativePath=".\constants.h">
 			</File>
 			<File
-				RelativePath=".\Force.h">
-			</File>
-			<File
 				RelativePath=".\ForwardEulerSolver.h">
-			</File>
-			<File
-				RelativePath=".\GravityForce.h">
 			</File>
 			<File
 				RelativePath=".\MidPointSolver.h">

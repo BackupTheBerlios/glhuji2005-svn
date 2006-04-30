@@ -6,7 +6,19 @@
 class RungeKuttaSolver : public NumericalSolver
 {
 public:
+    RungeKuttaSolver();
+    ~RungeKuttaSolver();
+
     void step( double h );
+
+protected:
+    Vector3d *mAccel;
+    Vector3d *mTmpPos;
+    Vector3d *mTmpV;
+    Vector3d *mK1;
+    Vector3d *mK2;
+    Vector3d *mK3;
+    Vector3d *mK4;
 
 };
 

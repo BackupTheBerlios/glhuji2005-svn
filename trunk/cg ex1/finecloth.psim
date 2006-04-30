@@ -1,8 +1,8 @@
 # Cloth Data File - all values are MKS
 
 #part one: Mesh Dimensions
-MeshWidth     = 30
-MeshHeight    = 30
+MeshWidth     = 7
+MeshHeight    = 7
 
 #part two: Global Constants
 Gravity      = 9.81
@@ -10,15 +10,15 @@ h            = 0.03
 
 #constants for various springs
 K            = 100 #spring constant
-B            = 5   #damping
+B            = 50   #damping
 ShearK       = 100 #Shear spring constant
-ShearB       = 5   #Shear damping
+ShearB       = 50   #Shear damping
 FlexK        = 100 #Flexion spring constant
-FlexB        = 5   #Flexion damping
+FlexB        = 50   #Flexion damping
 
 #Solver to use
 # 1 - Forward Euler; 2 - Reverse Euler; 3 - midpoint; 4 - Runge Kutta
-Solver = 4
+Solver = 1
 
 #part three: Defining the mesh
 ################################################################################

@@ -29,6 +29,10 @@ public:
     //returns vector length
     inline double length();
 
+    //check if this vector is "close to" another vector (not exactly equal
+    //but equal within a threshodl value
+    bool sameAs( Vector3d &rhs );
+
 	Vector3d operator-( Vector3d &rhs );
 	Vector3d operator+( Vector3d &rhs );
 	Vector3d operator*( double rhs );

@@ -10,8 +10,6 @@
 
 typedef ParticleSystem::SpringList       SpringList;
 typedef ParticleSystem::SpringListIt     SpringListIt;
-typedef ParticleSystem::ForceList        ForceList;
-typedef ParticleSystem::ForceListIt      ForceListIt;
 
 NumericalSolver::NumericalSolver()
 {
@@ -29,19 +27,16 @@ NumericalSolver::attachToParticleSystem( ParticleSystem *inParticleSystem, bool 
 }
 
 void 
-NumericalSolver::step( double h )
+NumericalSolver::calcAccel( Vector3d *inPositions, Vector3d *inVelocities, 
+                             double *inInvMasses, Vector3d *outAccel )
 {
-}
+    Vector3d gravity(0,0,0);
+    idx_t    numParticles = mParticleSystem->getNumParticles();
 
-void 
-NumericalSolver::calcAccel( idx_t inNumParticles, 
-                             Vector3d *inPositions, Vector3d *inVelocities, 
-                             double *inMasses, Vector3d *outAccel )
-{
-    Vector3d gravity(0, -9.81, 0);
+    gravity.pY = -(mParticleSystem->getGravity());
 
     //---------- Zero Particle Forces ----------
-    for( int i = 0; i < inNumParticles; i++ )
+    for( int i = 0; i < numParticles; i++ )
         outAccel[i].set(0,0,0);
 
     //---------- Sum Forces ----------
@@ -58,9 +53,7 @@ NumericalSolver::calcAccel( idx_t inNumParticles,
         //project velocities onto spring axis
         dv.proj(dx);
 
-        //todo: handle damping
         Vector3d F = dx.normalized()*((dx.length()-theSpring.getRestLength())*theSpring.getK());
-            //dv * theSpring.getB();
 
         //force affects both springs in opposite directions
         outAccel[aIdx] -= F;
@@ -68,9 +61,9 @@ NumericalSolver::calcAccel( idx_t inNumParticles,
     }
 
     //----------------- calculate Acceleration -------------------
-    for( int i = 0; i < inNumParticles; i++ )
+    for( int i = 0; i < numParticles; i++ )
     {
         //todo: divide at end...
-        outAccel[i] = gravity + (outAccel[i]/inMasses[i]);
+        outAccel[i] = gravity + (outAccel[i] * inInvMasses[i]);
     }
 }

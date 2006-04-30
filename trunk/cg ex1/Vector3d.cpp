@@ -89,6 +89,14 @@ Vector3d::plus( Vector3d &rhs )
     return Vector3d( pX + rhs.pX, pY + rhs.pY, pZ + rhs.pZ );
 }
 
+bool 
+Vector3d::sameAs( Vector3d &rhs )
+{
+    return( abs(pX - rhs.pX) < 0.001 &&
+            abs(pY - rhs.pY) < 0.001 &&
+            abs(pZ - rhs.pZ) < 0.001 );
+}
+
 Vector3d Vector3d::operator-( Vector3d &rhs )
 {
 	Vector3d ret;

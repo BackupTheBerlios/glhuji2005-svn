@@ -7,63 +7,71 @@
 #include "ParticleSystem.h"
 #include "MidPointSolver.h"
 
-//todo: cleanup - no need to copy so many arrays around...
+MidPointSolver::MidPointSolver()
+{
+    mAccel  = NULL;
+    mTmpPos = NULL;
+    mTmpV   = NULL;
+}
+
+MidPointSolver::~MidPointSolver()
+{
+    if( mAccel != NULL )
+        delete [] mAccel;
+
+    if( mTmpPos != NULL )
+        delete [] mTmpPos;
+
+    if( mTmpV != NULL )
+        delete [] mTmpV;
+}
+
 void 
 MidPointSolver::step( double h )
 {
     int numParticles     = mParticleSystem->getNumParticles();
     double halfH         = h / 2.0;
 
-    double   *masses       = new double[ numParticles ];
-    Vector3d *forces1      = new Vector3d[ numParticles ];
-    Vector3d *origPos      = new Vector3d[ numParticles ];
-    Vector3d *origV        = new Vector3d[ numParticles ];
-    Vector3d *velocities2  = new Vector3d[ numParticles ];
-    Vector3d *pos2         = new Vector3d[ numParticles ];
+    //allocate tmp store if it hasn't been allocated already
+    if( mAccel == NULL )
+        mAccel = new Vector3d[ numParticles ];
 
-    //---------- Store Away Particle Positions ----
-    for( int i = 0; i < numParticles; i++ )
-    {
-        Particle &p    = mParticleSystem->getParticleAt( i );
-        origPos[i]     = p.getPos();
-        origV[i]       = p.velocity();
-        masses[i]      = p.getMass();
-    }
+    if( mTmpPos == NULL )
+        mTmpPos = new Vector3d[ numParticles ];
 
-    //---------- 1. calculate da at x,v ----------
-    //calculate k1
-    calcAccel( numParticles, origPos, origV, masses, forces1 );
+    if( mTmpV == NULL )
+        mTmpV = new Vector3d[ numParticles ];
+
+
+    //Copy out original position and velocity
+    Vector3d *origPos   = mParticleSystem->getParticlePositions();
+    Vector3d *origV     = mParticleSystem->getParticleVelocities();
+    double   *invMasses = mParticleSystem->getParticleInvMasses();
+
+    ParticleSystem::ParticleInfo *pInfo =
+        mParticleSystem->getParticleInfo();
+
+    //---------- 1. calculate da at original position ----------
+    calcAccel( origPos, origV, invMasses, mAccel );
 
     //---------- 2. calculate x & v at midpoint ----------
     for( int i = 0; i < numParticles; i++ )
     {
-        velocities2[i] = origV[i]   + (forces1[i] * halfH);
-        pos2[i]        = origPos[i] + (velocities2[i] * halfH);
+        mTmpV[i]   = origV[i]   + (mAccel[i] * halfH);
+        mTmpPos[i] = origPos[i] + (mTmpV[i] * halfH);
     }
 
     //---------- 3. calculate dA at Midpoint ----------
-    calcAccel( numParticles, pos2, velocities2, masses, forces1 );
+    calcAccel( mTmpPos, mTmpV, invMasses, mAccel );
 
     //---------- 4. set x & v of particles based on 3 ----------
-
-    //Set particle position
     for( int i = 0; i < numParticles; i++ )
     {
-        if( mParticleSystem->getParticleAt( i ).isPinned() )
+        if( pInfo[i].pIsPinned )
             continue;
 
-        Vector3d &newV = mParticleSystem->getParticleAt( i ).velocity();
-
-        newV += (forces1[i] * h);
-
-        mParticleSystem->getParticleAt( i ).pos() += newV * h;
+        origV[i]   += mAccel[i] * h;
+        origPos[i] += origV[i] * h;
     }
-
-    delete [] masses;
-    delete [] forces1;
-    delete [] pos2;
-    delete [] velocities2;
-    delete [] origPos;
-    delete [] origV;
 
 }
