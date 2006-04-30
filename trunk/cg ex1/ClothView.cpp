@@ -45,8 +45,9 @@ ClothView::reshape( int inWidth, int inHeight )
     glViewport(0, 0, (GLsizei)inWidth, (GLsizei)inHeight);*/
 }
 
-#define MOVEMENT_STEP 0.018
+#define MOVEMENT_STEP 0.009
 #define ROTATION_STEP 0.3
+#define ZOOM_STEP 1
 bool gLBDown = false;
 bool gRBDown = false;
 int gLastX;
@@ -87,7 +88,7 @@ ClothView::mouseMoved( int inX, int inY )
 	int dy = (inY-gLastY);
 	if (gLBDown && gRBDown)
 	{
-		gOriginZ -= ((float)dy)*MOVEMENT_STEP;
+		gOriginZ -= ((float)dy)*ZOOM_STEP;
 	}
 	else if (gLBDown)
 	{
@@ -98,8 +99,8 @@ ClothView::mouseMoved( int inX, int inY )
 	}
 	else if (gRBDown)
 	{
-		gOriginX += ((float)dx)*MOVEMENT_STEP;
-		gOriginY -= ((float)dy)*MOVEMENT_STEP;
+		gOriginX -= ((float)dx)*MOVEMENT_STEP*(gOriginZ/(ZOOM_STEP*3));
+		gOriginY += ((float)dy)*MOVEMENT_STEP*(gOriginZ/(ZOOM_STEP*3));
 	}
 	gLastX = inX;
 	gLastY = inY;
@@ -173,11 +174,15 @@ ClothView::drawParticleSystem()
 	glRotatef(g_xRotated,1.0f,0.0f,0.0f);					// Rotate The Quad On The X axis ( NEW )
 	glRotatef(g_yRotated,0.0f,1.0f,0.0f);					// Rotate The Quad On The Y axis ( NEW )
 	glRotatef(g_zRotated,0.0f,0.0f,1.0f);					// Rotate The Quad On The Z axis ( NEW )
-    glColor3f(0.0f,1.0f,0.0f);						// Set The Color To Green
     for (int y=0; y<h-1; y++){
         glBegin(GL_QUAD_STRIP);									// Draw A Quad strip for every row
         for (int x=0; x<w; x++){
-            Particle& p1 = mParticleSystem.getParticleAt(x, y+1);
+		    glColor3f(((float)x/(float)w)*0.5f+0.5f,((float)(x+y)/(float)(w+h))*0.5f+0.5f,((float)y/(float)h)*0.5f+0.5f);
+//			Vector3d &p1 = mParticleSystem.getParticlePos(x, y+1);
+//            Vector3d &p2 = mParticleSystem.getParticlePos(x, y);
+//            glVertex3f( p1.pX, p1.pY, p1.pZ);
+//            glVertex3f( p2.pX, p2.pY, p2.pZ);
+			Particle& p1 = mParticleSystem.getParticleAt(x, y+1);
             Particle& p2 = mParticleSystem.getParticleAt(x, y);
             glVertex3f( (p1.getPos()).pX, (p1.getPos()).pY, (p1.getPos()).pZ);
             glVertex3f( (p2.getPos()).pX, (p2.getPos()).pY, (p2.getPos()).pZ);
