@@ -66,6 +66,7 @@ public:
     inline ParticleInfo *getParticleInfo(){ return mParticleInfo; }
     
     //setters
+	double getStepSize() {return mStepSize;}
     void setStepSize( double inStepSize );
     void setGravity( double inGravity );
 
