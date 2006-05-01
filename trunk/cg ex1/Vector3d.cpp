@@ -36,7 +36,8 @@ Vector3d::cross( Vector3d &rhs )
 Vector3d 
 Vector3d::proj( Vector3d &rhs )
 {
-    return rhs.normalized() * dot(rhs);
+    //return rhs.normalized() * dot(rhs);
+	return rhs.normalized() * (dot(rhs)/rhs.length());
 }
 
 double 
