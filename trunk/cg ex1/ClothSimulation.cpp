@@ -5,6 +5,7 @@
 
 #include "constants.h"
 #include "ClothView.h"
+#include "Vector3d.h"
 
 //Prototypes for opengl callbacks
 void displayCallback();

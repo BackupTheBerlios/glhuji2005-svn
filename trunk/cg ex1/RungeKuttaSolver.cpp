@@ -34,7 +34,8 @@ RungeKuttaSolver::~RungeKuttaSolver()
 void 
 RungeKuttaSolver::step( double h )
 {
-    int numParticles     = mParticleSystem->getNumParticles();
+    int    numParticles  = mParticleSystem->getNumParticles();
+    double airResistance = mParticleSystem->getAirResistance();
     double halfH         = h / 2.0;
 
     //Allocate temp. storage on first call
@@ -97,6 +98,8 @@ RungeKuttaSolver::step( double h )
 
         origV[i]   += (mK1[i] + mK2[i]*2.0 + mK3[i]*2.0 + mK4[i]) * h/6.0;
         origPos[i] += origV[i] * h;
+
+        origV[i] *= airResistance;
     }
 
 }

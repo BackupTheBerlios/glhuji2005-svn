@@ -30,6 +30,7 @@ void
 MidPointSolver::step( double h )
 {
     int numParticles     = mParticleSystem->getNumParticles();
+    double airResistance = mParticleSystem->getAirResistance();
     double halfH         = h / 2.0;
 
     //allocate tmp store if it hasn't been allocated already
@@ -70,6 +71,8 @@ MidPointSolver::step( double h )
 
         origV[i]   += mAccel[i] * h;
         origPos[i] += origV[i] * h;
+
+        origV[i] *= airResistance;
     }
 
 }

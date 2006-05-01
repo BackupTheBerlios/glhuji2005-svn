@@ -31,7 +31,7 @@ NumericalSolver::calcAccel( Vector3d *inPositions, Vector3d *inVelocities,
                              double *inInvMasses, Vector3d *outAccel )
 {
     Vector3d gravity(0,0,0);
-    idx_t    numParticles = mParticleSystem->getNumParticles();
+    idx_t    numParticles   = mParticleSystem->getNumParticles();
 
     gravity.pY = -(mParticleSystem->getGravity());
 
@@ -50,30 +50,25 @@ NumericalSolver::calcAccel( Vector3d *inPositions, Vector3d *inVelocities,
         Vector3d dx = (inPositions[aIdx]-inPositions[bIdx]);
         Vector3d dv = (inVelocities[aIdx]-inVelocities[bIdx]);
 
-        //project velocities onto spring axis
-        dv = dv.proj(dx);
+        double xLen = dx.length();
+        double len  = xLen - theSpring.getRestLength();
 
-        Vector3d F = dx.normalized()*((dx.length()-theSpring.getRestLength())*theSpring.getK());
-        Vector3d FB = dv*theSpring.getB();
-		Vector3d Fn = F.normalized();
-		Vector3d FBn = FB.normalized();
-        if (!Fn.sameAs(FBn))	//Opposing force must be in the opposite direction of the original force
-		{
-			if (F.length() <= FB.length())	//Opposing force cannot be greater the original force
-				FB = Vector3d(0,0,0);
-			else
-				F += FB;
-		}
+        //don't allow springs to stretch more than twice their original length
+        if( len > (3 * theSpring.getRestLength()) )
+            continue;
+
+        Vector3d F = (dx/xLen)*(len*theSpring.getK() + (dv.dot(dx)/xLen)*theSpring.getB());
 
         //force affects both springs in opposite directions
         outAccel[aIdx] -= F;
         outAccel[bIdx] += F;
     }
 
+    //cout << "-----------------------" << endl;
+
     //----------------- calculate Acceleration -------------------
     for( int i = 0; i < numParticles; i++ )
     {
-        //todo: divide at end...
         outAccel[i] = gravity + (outAccel[i] * inInvMasses[i]);
     }
 }

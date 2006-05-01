@@ -20,11 +20,25 @@ void
 ForwardEulerSolver::step( double h )
 {
 
-    idx_t numParticles = mParticleSystem->getNumParticles();
+    idx_t numParticles   = mParticleSystem->getNumParticles();
+    double airResistance = mParticleSystem->getAirResistance();
 
     //allocate tmp store if it hasn't been allocated already
     if( mAccel == NULL )
+    {
         mAccel = new Vector3d[ numParticles ];
+
+        //print warnings
+
+        //todo: make more readable
+        double k = mParticleSystem->getStiffestSpring();
+        if( h > 2.0/k )
+            cout << "Warning: dt > 2/k Forward Euler is going to explode " << endl;
+        else if( h > 1.0/k )
+            cout << "Warning: dt > 1/k Forward Euler is going to oscillate " << endl;
+        else
+            cout << "Forward Euler should run fine with specified dt parameter " << endl;
+    }
 
     //Copy out original position and velocity
     Vector3d *pos       = mParticleSystem->getParticlePositions();
@@ -46,6 +60,8 @@ ForwardEulerSolver::step( double h )
 
         velocity[i] += mAccel[i] * h;
         pos[i] += velocity[i] * h;
+
+        velocity[i] *= airResistance;
     }
 
 }

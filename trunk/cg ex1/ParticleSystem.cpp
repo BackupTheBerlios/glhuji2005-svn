@@ -15,8 +15,10 @@ ParticleSystem::ParticleSystem(  )
     mIsMidPoint = false;
     mSolver     = NULL;
     mStepSize   = 0;
+    mStiffestSpring = 0;
 
-    mGravity    = 0;
+    mGravity       = 0;
+    mAirResistance = 0;
 
     mParticlePos         = NULL;
     mParticleVelocity    = NULL;
@@ -80,6 +82,9 @@ ParticleSystem::autoCreateMesh( double inOriginX, double inOriginY, double inOri
 void 
 ParticleSystem::constructSprings( double inK, double inB, double shearK, double shearB, double flexK, double flexB )
 {
+    //set stiffest spring constant
+    mStiffestSpring = max( inK, max(shearK, flexK) );
+
     //useful macro for calculating indexes
     #define IDX(u,v) ( (u)+((v)*mWidth) )
 
@@ -254,10 +259,23 @@ ParticleSystem::setGravity( double inGravity )
     mGravity = inGravity;
 }
 
+void   
+ParticleSystem::setAirResistance( int8 inAirResistancePercent )
+{
+    //air resistance specified in percent
+    mAirResistance = 1-(0.01*inAirResistancePercent);
+}
+
 double
 ParticleSystem::getGravity()
 {
     return mGravity;
+}
+
+double
+ParticleSystem::getStiffestSpring()
+{
+    return mStiffestSpring;
 }
 
 void 

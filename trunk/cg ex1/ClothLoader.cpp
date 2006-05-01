@@ -105,6 +105,14 @@ ClothLoader::Load( ParticleSystem &inSystem, string &inFileName )
 
         inSystem.setDimensions( meshWidth, meshHeight );
 
+        if( loader.GetField( C_AIR_RESISTANCE_TAG, val ) != 0 )
+        {
+            cout << "ERROR: air resistance field is missing " << endl;
+            break;
+        }
+        int8 airResistancePercent = atoi( val.c_str() );
+        inSystem.setAirResistance( airResistancePercent );
+
         //4. Load Forces
         if( loader.GetField( C_GRAVITY_TAG, val ) != 0 )
         {

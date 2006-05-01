@@ -27,6 +27,7 @@ const char C_ENTER_KEY_CODE  = 13;
 #define C_SHEAR_SPRING_DRAG_TAG  ("ShearB")
 #define C_FLEX_SPRING_CONST_TAG  ("FlexK")
 #define C_FLEX_SPRING_DRAG_TAG   ("FlexB")
+#define C_AIR_RESISTANCE_TAG     ("AirResistance")
 #define C_SOLVER_TYPE_TAG        ("Solver")
 #define C_AUTOCREATE_MESH_TAG    ("AutoCreateMesh")
 

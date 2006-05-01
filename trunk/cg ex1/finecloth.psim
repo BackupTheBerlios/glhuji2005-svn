@@ -1,20 +1,22 @@
 # Cloth Data File - all values are MKS
 
 #part one: Mesh Dimensions
-MeshWidth     = 32
-MeshHeight    = 32
+MeshWidth     = 7
+MeshHeight    = 7
 
 #part two: Global Constants
-Gravity      = 9.81
-h            = 0.01
+Gravity       = 9.81
+h             = 0.01
+AirResistance = 2    #air resistance (in percent)
 
 #constants for various springs
-K            = 200 #spring constant
-B            = 20   #damping
-ShearK       = 15 #Shear spring constant
-ShearB       = 5   #Shear damping
-FlexK        = 10 #Flexion spring constant
-FlexB        = 4   #Flexion damping
+K             = 40  #spring constant
+B             = 8  #damping
+ShearK        = 10   #Shear spring constant
+ShearB        = 2  #Shear damping
+FlexK         = 10   #Flexion spring constant
+FlexB         = 2  #Flexion damping
+
 
 #Solver to use
 # 1 - Forward Euler; 2 - Reverse Euler; 3 - midpoint; 4 - Runge Kutta
@@ -40,19 +42,14 @@ Solver = 1
 #                 mass  - of each particle
 #                 xOfs  - between Particles
 #                 zOfs  - between Particles
-AutoCreateMesh = -1.5, 0, -1.5, 0.3, 1.5, 1.5
+AutoCreateMesh = -1.0, 0, -2, 0.2, 1.5, 1.5
 
 #pin individual particles to make things interesting
 (0,0) = PIN
-(0,1) = PIN
-(1,0) = PIN
-(0,31) = PIN
-(0,30) = PIN
-(1,31) = PIN
-(12,12) = PIN
-(31,31) = PIN
-(0,31) = PIN
-(31,0) = PIN
+(0,6) = PIN
+#(0,6) = PIN
+#(0,6) = PIN
+#(2,4) = PIN
 
 #Literal Creation of Mesh or overriding of Mesh params
 # (u,v)=x,y,z,m,p

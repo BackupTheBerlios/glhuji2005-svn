@@ -67,19 +67,22 @@ public:
     
     //setters
 	double getStepSize() {return mStepSize;}
-    void setStepSize( double inStepSize );
-    void setGravity( double inGravity );
+    void   setStepSize( double inStepSize );
+    void   setGravity( double inGravity );
+    void   setAirResistance( int8 inAirResistancePercent );
 
     //ParticleSystem takes ownership of pointer (will delete).
     void setSolver( NumericalSolver *inSolver );
 
     //getters
     Vector3d    &getParticlePos( idx_t inX, idx_t inY );
+    double      getStiffestSpring();
     idx_t       getNumParticles();
 	idx_t       getWidth(){ return mWidth; };
 	idx_t       getHeight(){ return mHeight; };
     double      getGravity();
     SpringList& getSprings(){ return mSprings; }
+    double      getAirResistance(){ return mAirResistance; }
 
 //----------------- storage --------------
 public:
@@ -94,6 +97,8 @@ protected:
 	bool			 mIsMidPoint;
     double           mStepSize;
     double           mGravity;
+    double           mAirResistance;
+    double           mStiffestSpring;
 
     Vector3d         *mParticlePos;
     Vector3d         *mParticleVelocity;
