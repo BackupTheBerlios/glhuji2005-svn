@@ -1,20 +1,20 @@
 # Cloth Data File - all values are MKS
 
 #part one: Mesh Dimensions
-MeshWidth     = 7
-MeshHeight    = 7
+MeshWidth     = 32
+MeshHeight    = 32
 
 #part two: Global Constants
 Gravity      = 9.81
-h            = 0.03
+h            = 0.01
 
 #constants for various springs
-K            = 100 #spring constant
-B            = 50   #damping
-ShearK       = 100 #Shear spring constant
-ShearB       = 50   #Shear damping
-FlexK        = 100 #Flexion spring constant
-FlexB        = 50   #Flexion damping
+K            = 200 #spring constant
+B            = 20   #damping
+ShearK       = 15 #Shear spring constant
+ShearB       = 5   #Shear damping
+FlexK        = 10 #Flexion spring constant
+FlexB        = 4   #Flexion damping
 
 #Solver to use
 # 1 - Forward Euler; 2 - Reverse Euler; 3 - midpoint; 4 - Runge Kutta
@@ -27,27 +27,32 @@ Solver = 1
 # and all particles equally spaced.
 #    After autocreation, you can override individual particles by specifying
 # either their full parameters or using the (u,v) PIN line.
-#    In any case, data is accumulated as we read the config file, so if a 
+#    In any case, data is accumulated as we read the config file, so if a
 # particle has it's data specified multiple times, only the last occurance
 # will affect the particle
 ################################################################################
 
 # automatically initialize the mesh, this can be commented out in favor
-# of specifying the mesh point by point - the mesh is initialized in the 
+# of specifying the mesh point by point - the mesh is initialized in the
 # x,z plane.
 #
 # parameters are: x,y,z - top left hand corner.
 #                 mass  - of each particle
 #                 xOfs  - between Particles
 #                 zOfs  - between Particles
-AutoCreateMesh = -1.5, 0, -1.5, 0.6, 0.7, 0.9
+AutoCreateMesh = -1.5, 0, -1.5, 0.3, 1.5, 1.5
 
 #pin individual particles to make things interesting
 (0,0) = PIN
 (0,1) = PIN
-(0,6) = PIN
-(0,3) = PIN
-(5,3) = PIN
+(1,0) = PIN
+(0,31) = PIN
+(0,30) = PIN
+(1,31) = PIN
+(12,12) = PIN
+(31,31) = PIN
+(0,31) = PIN
+(31,0) = PIN
 
 #Literal Creation of Mesh or overriding of Mesh params
 # (u,v)=x,y,z,m,p
