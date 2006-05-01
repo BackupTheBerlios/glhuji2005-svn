@@ -178,14 +178,14 @@ ClothView::drawParticleSystem()
         glBegin(GL_QUAD_STRIP);									// Draw A Quad strip for every row
         for (int x=0; x<w; x++){
 		    glColor3f(((float)x/(float)w)*0.5f+0.5f,((float)(x+y)/(float)(w+h))*0.5f+0.5f,((float)y/(float)h)*0.5f+0.5f);
-//			Vector3d &p1 = mParticleSystem.getParticlePos(x, y+1);
-//            Vector3d &p2 = mParticleSystem.getParticlePos(x, y);
-//            glVertex3f( p1.pX, p1.pY, p1.pZ);
-//            glVertex3f( p2.pX, p2.pY, p2.pZ);
-			Particle& p1 = mParticleSystem.getParticleAt(x, y+1);
-            Particle& p2 = mParticleSystem.getParticleAt(x, y);
-            glVertex3f( (p1.getPos()).pX, (p1.getPos()).pY, (p1.getPos()).pZ);
-            glVertex3f( (p2.getPos()).pX, (p2.getPos()).pY, (p2.getPos()).pZ);
+			Vector3d &p1 = mParticleSystem.getParticlePos(x, y+1);
+            Vector3d &p2 = mParticleSystem.getParticlePos(x, y);
+            glVertex3f( p1.pX, p1.pY, p1.pZ);
+            glVertex3f( p2.pX, p2.pY, p2.pZ);
+//			Particle& p1 = mParticleSystem.getParticleAt(x, y+1);
+//            Particle& p2 = mParticleSystem.getParticleAt(x, y);
+//            glVertex3f( (p1.getPos()).pX, (p1.getPos()).pY, (p1.getPos()).pZ);
+//            glVertex3f( (p2.getPos()).pX, (p2.getPos()).pY, (p2.getPos()).pZ);
         }
         glEnd();											// Done Drawing The Quad
     }
