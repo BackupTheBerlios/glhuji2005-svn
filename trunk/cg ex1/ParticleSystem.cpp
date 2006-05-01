@@ -94,8 +94,10 @@ ParticleSystem::constructSprings( double inK, double inB, double shearK, double 
                 idx_t b = IDX(x+1,y);
                 Vector3d &p1V = mParticlePos[a];
                 Vector3d &p2V = mParticlePos[b];
-                //double dist = abs((p2V-p1V).length());
-                double dist = 0.5;
+                double dist = (p2V-p1V).length();
+				if (dist < 0)
+					dist *= -1;
+                //double dist = 0.5;
 
                 mSprings.push_back( Spring( a, b, dist, inK, inB ) );
             }
@@ -107,8 +109,10 @@ ParticleSystem::constructSprings( double inK, double inB, double shearK, double 
                 idx_t b = IDX(x,y+1);
                 Vector3d p1V = mParticlePos[a];
                 Vector3d p2V = mParticlePos[b];
-                //double dist = abs((p2V-p1V).length());
-                double dist = 0.5;
+                double dist = (p2V-p1V).length();
+				if (dist < 0)
+					dist *= -1;
+                //double dist = 0.5;
 
                 mSprings.push_back( Spring( a, b, dist, inK, inB ) );
             }
