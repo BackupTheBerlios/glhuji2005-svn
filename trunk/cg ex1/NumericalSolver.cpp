@@ -51,9 +51,19 @@ NumericalSolver::calcAccel( Vector3d *inPositions, Vector3d *inVelocities,
         Vector3d dv = (inVelocities[aIdx]-inVelocities[bIdx]);
 
         //project velocities onto spring axis
-        dv.proj(dx);
+        dv = dv.proj(dx);
 
         Vector3d F = dx.normalized()*((dx.length()-theSpring.getRestLength())*theSpring.getK());
+        Vector3d FB = dv*theSpring.getB();
+		Vector3d Fn = F.normalized();
+		Vector3d FBn = FB.normalized();
+        if (!Fn.sameAs(FBn))	//Opposing force must be in the opposite direction of the original force
+		{
+			if (F.length() <= FB.length())	//Opposing force cannot be greater the original force
+				FB = Vector3d(0,0,0);
+			else
+				F += FB;
+		}
 
         //force affects both springs in opposite directions
         outAccel[aIdx] -= F;
