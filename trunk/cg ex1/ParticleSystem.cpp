@@ -227,6 +227,9 @@ ParticleSystem::addParticleAt( idx_t inX, idx_t inY, Particle &inParticle )
     mParticleInfo[i]          = ParticleInfo();
     mParticleVelocity[i]      = inParticle.getVelocity();
 
+    if( inParticle.isPinned() )
+        mParticleInfo[i].pin();
+
 }
 
 Vector3d    &

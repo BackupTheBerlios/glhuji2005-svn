@@ -12,6 +12,20 @@
 #include <stdlib.h>
 #include <string>
 
+//Useful macros
+#define LOAD_L( field_x, err_x, store_x ) if( inLoader.GetField( (field_x), val ) != 0 )\
+                                            { cout << (err_x) << endl; break;} \
+                                            else store_x = atol(val.c_str());
+
+#define LOAD_F( field_x, err_x, store_x ) if( inLoader.GetField( (field_x), val ) != 0 )\
+                                            { cout << (err_x) << endl; break;} \
+                                            else store_x = atof(val.c_str());
+
+#define LOAD_I( field_x, err_x, store_x ) if( inLoader.GetField( (field_x), val ) != 0 )\
+                                            { cout << (err_x) << endl; break;} \
+                                            else store_x = atoi(val.c_str());
+
+
 //This function loads the cloth mesh, and initialises the particle system with it
 //it's very long but it gets the job done
 bool 
@@ -27,7 +41,6 @@ ClothLoader::Load( ParticleSystem &inSystem, string &inFileName )
     double   stepSize        = -1;
 
 	SolverType solverType = C_FORWARD_EULER_SOLVER;
-
     do{
 
         //---------------- Load Ini File --------------------
@@ -36,22 +49,47 @@ ClothLoader::Load( ParticleSystem &inSystem, string &inFileName )
             break;
         }
 
-        //2. Load Solver - forward Euler by default
-		rc = loader.GetField( C_SOLVER_TYPE_TAG, val );
-		if ( rc != 0 )
-		{
-            cout << "Warning: solver type field is missing - using forward Euler" << endl;
-		}
-		else
-	        solverType = (SolverType)atoi( val.c_str() );
+        readSolver( inSystem, loader );
 
-        NumericalSolver *solver = NULL;
-        switch( solverType )
-        {
-        case C_FORWARD_EULER_SOLVER:
-            cout << "using forward euler" << endl;
-            solver = new ForwardEulerSolver();
+        if( !readGlobalConstants( inSystem, loader, meshWidth, meshHeight ) )
             break;
+
+        if( !readMesh( inSystem, loader, meshWidth, meshHeight ))
+            break;
+        
+        if( !readSprings( inSystem, loader ) )
+            break;
+
+        //if we got here everything is ok
+        //debug
+        cout << "LOADED OK!" << endl;
+        ret = true;
+       } while(0);
+
+    return ret;
+}
+
+void
+ClothLoader::readSolver( ParticleSystem &inSystem, CLoadIni &inLoader )
+{
+    int      rc              = -1;
+    string   val;
+    SolverType solverType    = C_FORWARD_EULER_SOLVER;
+
+    //--------- Load in tag from file ---------
+    rc = inLoader.GetField( C_SOLVER_TYPE_TAG, val );
+    if ( rc != 0 )
+        cout << "Warning: solver type field is missing - using forward Euler" << endl;
+    else
+        solverType = (SolverType)atoi( val.c_str() );
+
+    NumericalSolver *solver = NULL;
+    switch( solverType )
+    {
+    case C_FORWARD_EULER_SOLVER:
+        cout << "using forward euler" << endl;
+        solver = new ForwardEulerSolver();
+        break;
 
         //todo: reinstate?
         //case C_REVERSE_EULER_SOLVER:
@@ -59,128 +97,165 @@ ClothLoader::Load( ParticleSystem &inSystem, string &inFileName )
         //    solver = new ReverseEulerSolver();
         //    break;
 
-        case C_MIDPOINT_SOLVER:
-            cout << "using midpoint solver" << endl;
-            solver = new MidPointSolver();
-            break;
+    case C_MIDPOINT_SOLVER:
+        cout << "using midpoint solver" << endl;
+        solver = new MidPointSolver();
+        break;
 
-        case C_RUNGE_KUTTA_SOLVER:
-            cout << "using Runge Kutta Solver" << endl;
-            solver = new RungeKuttaSolver();
-            break;
+    case C_RUNGE_KUTTA_SOLVER:
+        cout << "using Runge Kutta Solver" << endl;
+        solver = new RungeKuttaSolver();
+        break;
 
-        default:
-            cout << "ERROR: unknown solver type: " << val.c_str() << " - using forward Euler" << endl;
-            solver = new ForwardEulerSolver();
-            break;
-        }
+    default:
+        cout << "ERROR: unknown solver type: " << val.c_str() << " - using forward Euler" << endl;
+        solver = new ForwardEulerSolver();
+        break;
+    }
 
-        inSystem.setSolver( solver );
+    inSystem.setSolver( solver );
+}
 
+bool
+ClothLoader::readGlobalConstants( ParticleSystem &inSystem, CLoadIni &inLoader,
+                                    idx_t &outMeshWidth, idx_t &outMeshHeight )
+{
+    bool     ret                  = false;
+    string   val;
+    int8     airResistancePercent = 0;
+    double   gravity              = 0;
+    double   stepSize             = 0;
+
+    do {
         //3. Load Cloth Dimensions
-        if( loader.GetField( C_MESH_WIDTH_TAG, val ) != 0 )
+        LOAD_L( C_MESH_WIDTH_TAG, "ERROR: meshwidth field is missing ", outMeshWidth );
+
+        if( outMeshWidth <= 0 )
         {
-            cout << "ERROR: meshwidth field is missing " << endl;
-            break;
-        }
-        meshWidth = atol( val.c_str() );
-        if( meshWidth <= 0 )
-        {
-            cout << "ERROR: meshwidth must be positive (" << meshWidth << ")" << endl;
+            cout << "ERROR: meshwidth must be positive (" << outMeshWidth << ")" << endl;
             break;
         }
 
         //load cloth height
-        if( loader.GetField( C_MESH_HEIGHT_TAG, val ) != 0 )
+        LOAD_L( C_MESH_HEIGHT_TAG, "ERROR: meshheight field is missing ", outMeshHeight );
+
+        if( outMeshHeight <= 0 )
         {
-            cout << "ERROR: meshheight field is missing " << endl;
-            break;
-        }
-        meshHeight = atol( val.c_str() );
-        if( meshHeight <= 0 )
-        {
-            cout << "ERROR: meshheight must be positive (" << meshHeight << ")" << endl;
+            cout << "ERROR: meshheight must be positive (" << outMeshHeight << ")" << endl;
             break;
         }
 
-        inSystem.setDimensions( meshWidth, meshHeight );
+        inSystem.setDimensions( outMeshWidth, outMeshHeight );
 
-        if( loader.GetField( C_AIR_RESISTANCE_TAG, val ) != 0 )
+        LOAD_I( C_AIR_RESISTANCE_TAG, "ERROR: air resistance field is missing ", airResistancePercent );
+
+        if( airResistancePercent < 0 || airResistancePercent > 100 )
         {
-            cout << "ERROR: air resistance field is missing " << endl;
+            cout << "ERROR: air resistance is specified in percent (0<=a<100):" << airResistancePercent << endl;
             break;
         }
-        int8 airResistancePercent = atoi( val.c_str() );
+
         inSystem.setAirResistance( airResistancePercent );
 
         //4. Load Forces
-        if( loader.GetField( C_GRAVITY_TAG, val ) != 0 )
-        {
-            cout << "ERROR: gravity field is missing " << endl;
-            break;
-        }
-        double gravity = atof( val.c_str() );
+        LOAD_F( C_GRAVITY_TAG, "ERROR: gravity field is missing ", gravity );
         inSystem.setGravity( gravity );
 
-        //------------------------ AutoCreate Mesh ---------------------------
-        if( loader.GetField(C_AUTOCREATE_MESH_TAG, val ) == 0 )
+        //load step size
+        LOAD_F( C_STEP_SIZE_TAG, "ERROR: step size not specified", stepSize );
+
+        if( stepSize <= 0 )
         {
-            int xDim, yDim;
-            double *arr = 0;
+            cout << "ERROR: illegal stepsize, must be >= 0 " << endl;
+            break;
+        }
+        inSystem.setStepSize( stepSize );
 
-            loader.GetDblArray( val, arr, &xDim, &yDim );
+        ret = true;
+    } while( 0 );
 
-            //sanity
-            if( yDim != 1 || xDim != C_NUM_FIELDS_IN_AUTOCREATE )
-            {
-                cout << "ERROR: dimensions of autocreate parameter are wrong" << endl;
+    return ret;
+}
 
-                if( arr != NULL )
-                    delete [] arr;
+bool
+ClothLoader::readMesh( ParticleSystem &inSystem, CLoadIni &inLoader,
+                     idx_t &inMeshWidth, idx_t &inMeshHeight )
+{
+    string val;
+    bool ret             = false;
+    bool meshAutoCreated = false;
+    double *arr          = NULL;
 
-                break;
-            }
+    do {
+    //------------------------ AutoCreate Mesh ---------------------------
+    if( inLoader.GetField(C_AUTOCREATE_MESH_TAG, val ) == 0 )
+    {
+        int xDim, yDim;
 
-            //perform autocreation
-            inSystem.autoCreateMesh( arr[0], arr[1], arr[2], arr[3], 
-                                                        arr[4], arr[5] );
+        inLoader.GetDblArray( val, arr, &xDim, &yDim );
 
-            if( arr != NULL )
-                delete [] arr;
-
-            meshAutoCreated = true;
+        //sanity
+        if( yDim != 1 || xDim != C_NUM_FIELDS_IN_AUTOCREATE )
+        {
+            cout << "ERROR: dimensions of autocreate parameter are wrong" << endl;
+            break;
         }
 
-        //------------------------ Load Individual particles -----------------
-        bool noerr = true;
-        for( int i = 0; noerr && i < meshHeight; i++ )
-            for( int j = 0; noerr && j < meshWidth; j++ )
+        //perform autocreation
+        inSystem.autoCreateMesh( arr[0], arr[1], arr[2], arr[3], arr[4], arr[5] );
+
+        SAFE_DELETE_ARR( arr );
+
+        meshAutoCreated = true;
+    }
+
+    //------------------------ Load Individual particles -----------------
+    bool noerr = true;
+    for( int i = 0; noerr && i < inMeshHeight; i++ )
+        for( int j = 0; noerr && j < inMeshWidth; j++ )
         {
             char tmp[256];
-            sprintf( tmp, "(%d,%d)", j, i );
-
-            double *arr = 0;
             int xDim;
             int yDim;
-            rc = loader.GetField( tmp , val ); 
-            if( rc != 0 && !meshAutoCreated )
+            bool particleDefined = false;
+
+            sprintf( tmp, "(%d,%d)", j, i );
+
+            //try to load particle, particleDefined = true if the i,j particle
+            //was specified in the donfig file.
+            particleDefined = (inLoader.GetField( tmp , val ) == 0); 
+
+            if( !particleDefined && !meshAutoCreated )
             {
                 cout << "ERROR: no parameters specified for particle @ " << j << "," << i  << endl;
                 noerr = false;
                 break;
             }
 
-            if( rc == 0 )
+            //------------------------------------------------------------------
+            // If a mesh is autocreated then individual particle positions can
+            // be overrided by specifying them explicitly, however if the mesh
+            // was not autocreated each particle must be specified.
+            //
+            // There are 2 different syntaxes for specifying a particle:
+            // 1. (i,j) = x,y,z,m,p - particle pos., mass, and true/fals as to
+            //                        whether the particle is pinned ornot.
+            //    Note that this version has 5 fields.
+            // 2. (i,j) = PIN       - pin the specified particle in place, this
+            //                        option only has 1 parameter and can only
+            //                        be specified when autocreating a mesh.
+            //      
+            //------------------------------------------------------------------
+            if( particleDefined )
             {
 
                 //parse
-                loader.GetDblArray( val, arr, &xDim, &yDim );
+                inLoader.GetDblArray( val, arr, &xDim, &yDim );
 
-                //particle only has 1 dimension thank you!
+                //particle should only be defined with 1 dimension in config file
+                //if there is more than 1 then we have an error
                 if( yDim != 1 )
                 {
-                    if( arr != 0 ) delete[] arr; //deallocate memory...
-
                     cout << "ERROR: yDim of particle @" << j << "," << i <<
                         "must be exactly 1 is (" << yDim << ")" << endl;
                     noerr = false;
@@ -190,8 +265,6 @@ ClothLoader::Load( ParticleSystem &inSystem, string &inFileName )
                 //check we don't get extra data
                 if( !meshAutoCreated && xDim != C_NUM_FIELDS_IN_PARTICLE )
                 {
-                    if( arr != 0 ) delete[] arr; //deallocate memory...
-
                     cout << "ERROR: xDim of particle @" << j << "," << i <<
                         "should be" << C_NUM_FIELDS_IN_PARTICLE << "is (" << yDim << ")" << endl;
                     noerr = false;
@@ -199,8 +272,6 @@ ClothLoader::Load( ParticleSystem &inSystem, string &inFileName )
                 }
                 else if( meshAutoCreated && xDim != C_NUM_FIELDS_IN_PARTICLE && xDim != 1 )
                 {
-                    if( arr != 0 ) delete[] arr; //deallocate memory...
-
                     cout << "ERROR: autocreate xDim of particle @" << j << "," << i <<
                         "should be" << C_NUM_FIELDS_IN_PARTICLE << "or 1 is (" << yDim << ")" << endl;
                     noerr = false;
@@ -217,12 +288,11 @@ ClothLoader::Load( ParticleSystem &inSystem, string &inFileName )
                 }
                 else if( meshAutoCreated && xDim == 1 )
                 {
-                    //debug
-                    cout << "SUCCESS: pinning particle @ " << j << "," << i << endl;
+                    cout << "Pinning particle @ " << j << "," << i << endl;
                     inSystem.pinParticle( j,i );
                 }
 
-                delete [] arr;
+                SAFE_DELETE_ARR( arr );
             }
 
         }
@@ -230,76 +300,40 @@ ClothLoader::Load( ParticleSystem &inSystem, string &inFileName )
         //missing particle
         if( !noerr )
             break;
+        ret = true;
+        } while( 0 );
 
-        //------------- Read StepSize ------------------
-        if( loader.GetField( C_STEP_SIZE_TAG, val ) != 0 )
-        {
-            cout << "ERROR: step size not specified: " << C_STEP_SIZE_TAG << endl;
-            break;
-        }
-        
-        stepSize = atof( val.c_str() );
+        //----------- Cleanup ---------
+        SAFE_DELETE_ARR( arr );
 
-        if( stepSize <= 0 )
-        {
-            cout << "ERROR: illegal stepsize, must be >= 0 " << endl;
-            break;
-        }
+        return ret;
+}
 
-        inSystem.setStepSize( stepSize );
-        
-        //------------- Setup Springs ------------------
-        double k, b, shearK, shearB, flexK, flexB;
-        if( loader.GetField( C_SPRING_CONST_TAG , val ) != 0 )
-        {
-            cout << "ERROR: spring constant undefined " << C_SPRING_CONST_TAG << endl;
-            break;
-        }
-        k = atof( val.c_str() );
+bool
+ClothLoader::readSprings( ParticleSystem &inSystem, CLoadIni &inLoader )
+{
+    bool ret = false;
+    string val;
+    double k, b, shearK, shearB, flexK, flexB;
 
-        if( loader.GetField( C_SPRING_DRAG_TAG , val ) != 0 )
-        {
-            cout << "ERROR: spring drag constant undefined " << C_SPRING_DRAG_TAG << endl;
-            break;
-        }
-        b = atof( val.c_str() );
-
-        if( loader.GetField( C_SHEAR_SPRING_CONST_TAG , val ) != 0 )
-        {
-            cout << "ERROR: shear spring constant undefined " << C_SPRING_CONST_TAG << endl;
-            break;
-        }
-        shearK = atof( val.c_str() );
-
-        if( loader.GetField( C_SHEAR_SPRING_DRAG_TAG , val ) != 0 )
-        {
-            cout << "ERROR: shear spring drag constant undefined " << C_SPRING_CONST_TAG << endl;
-            break;
-        }
-        shearB= atof( val.c_str() );
-
-        if( loader.GetField( C_FLEX_SPRING_CONST_TAG , val ) != 0 )
-        {
-            cout << "ERROR: Flexion spring constant undefined " << C_SPRING_CONST_TAG << endl;
-            break;
-        }
-        flexK = atof( val.c_str() );
-        if( loader.GetField( C_FLEX_SPRING_DRAG_TAG , val ) != 0 )
-        {
-            cout << "ERROR: Flexion spring drag constant undefined " << C_SPRING_CONST_TAG << endl;
-            break;
-        }
-        flexB = atof( val.c_str() );
+    do {
+        //Read spring constants
+        LOAD_F( C_SPRING_CONST_TAG, "ERROR: spring constant undefined", k );
+        LOAD_F( C_SPRING_DRAG_TAG, "ERROR: spring drag undefined", b );
+        LOAD_F( C_SHEAR_SPRING_CONST_TAG, "ERROR: shear spring constant undefined", shearK );
+        LOAD_F( C_SHEAR_SPRING_DRAG_TAG, "ERROR: shear spring drag constant undefined", shearB );
+        LOAD_F( C_FLEX_SPRING_CONST_TAG, "ERROR: Flexion spring constant undefined", flexK );
+        LOAD_F( C_FLEX_SPRING_DRAG_TAG, "ERROR: Flexion spring drag constant undefined", flexB );
 
         // add springs to system
         inSystem.constructSprings( k, b, shearK, shearB, flexK, flexB );
 
-
-        //if we got here everything is ok
-        //debug
-        cout << "LOADED OK!" << endl;
         ret = true;
-       } while(0);
+    } while(0);
 
     return ret;
 }
+
+#undef LOAD_L
+#undef LOAD_F
+#undef LOAD_I
