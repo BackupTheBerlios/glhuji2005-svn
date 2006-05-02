@@ -214,6 +214,38 @@ ParticleSystem::freeParticleStorage()
 }
 
 void 
+ParticleSystem::getSpatialDimensions( Vector3d &outCenter, double &outRadius )
+{
+    idx_t numParticles = getNumParticles();
+
+    //------------ Find Center Of Mass -------------
+    Vector3d center;
+    center.print();
+    for( idx_t i = 0; i < numParticles; i++ )
+    {
+        center += mParticlePos[i];
+    }
+    center = center / numParticles;
+    center.print();
+
+    outCenter = center;
+
+    //------------ Find Radius -------------
+    double dist = 0;
+
+    for( idx_t i = 0; i < numParticles; i++ )
+    {
+        double tmp = abs( center.dist(mParticlePos[i]) );
+
+        if( tmp > dist )
+            dist = tmp;
+    }
+
+    outRadius = dist;
+
+}
+
+void 
 ParticleSystem::addParticleAt( idx_t inX, idx_t inY, Particle &inParticle )
 {
     //sanity, check we're inside mesh bounds...

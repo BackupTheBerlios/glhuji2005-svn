@@ -6,15 +6,11 @@ class Vector3d
 public:
     Vector3d();
     Vector3d( double inX, double inY, double inZ );
-    virtual ~Vector3d();
 
 	void set(double inX, double inY, double inZ);
 
     //perform cross operation
     Vector3d cross( Vector3d &rhs );
-
-    //project this vector onto vector passed in
-    Vector3d proj( Vector3d &rhs );
 
     //dot product
     double dot( Vector3d &rhs );
@@ -24,14 +20,12 @@ public:
 
     //normalize this vector.
     void normalize();
-	Vector3d normalized();
 
     //returns vector length
     inline double length();
 
-    //check if this vector is "close to" another vector (not exactly equal
-    //but equal within a threshodl value
-    bool sameAs( Vector3d &rhs );
+    //Euclidean Distance
+    double dist( Vector3d &rhs );
 
 	Vector3d operator-( Vector3d &rhs );
 	Vector3d operator+( Vector3d &rhs );

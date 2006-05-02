@@ -48,6 +48,8 @@ public:
 
     void setDimensions( idx_t inMeshWidth, idx_t inMeshHeight );
 
+    void getSpatialDimensions( Vector3d &outCenter, double &outRadius );
+
     void addParticleAt( idx_t inX, idx_t inY, Particle &inParticle );
 
     void pinParticle( idx_t inX, idx_t inY );

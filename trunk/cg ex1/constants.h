@@ -13,6 +13,8 @@ const uint16 C_TIMER_DELAY   = 2;
 const char C_ESCAPE_KEY_CODE = 27;
 const char C_ENTER_KEY_CODE  = 13;
 
+const double C_DEFAULT_FRUSTRUM_ANGLE = 40;
+
 //pause at start of execution
 #define C_PAUSE_STRING            ("pause")
 
@@ -40,5 +42,10 @@ typedef enum {
     C_MIDPOINT_SOLVER         = 3,
     C_RUNGE_KUTTA_SOLVER      = 4
 } SolverType;
+
+#define M_PI                             3.14159265358979323846
+const float  C_SCALE_FACTOR              = 30.0; //factors for scale
+const float  C_TRANSLATION_FACTOR        = -0.1f; //factor for translation
+const float  C_OBJECT_B_RAD              = 45;   //default object radius
 
 #endif //_CONSTANTS_H__

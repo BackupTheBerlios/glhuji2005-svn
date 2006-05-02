@@ -5,12 +5,8 @@
 
 using namespace std;
 
-Vector3d::Vector3d()
-{
-    Vector3d( 0, 0, 0 );
-}
-
-Vector3d::~Vector3d(void)
+Vector3d::Vector3d() :
+    pX(0),pY(0),pZ(0)
 {
 }
 
@@ -33,17 +29,20 @@ Vector3d::cross( Vector3d &rhs )
         );
 }
 
-Vector3d 
-Vector3d::proj( Vector3d &rhs )
-{
-    //return rhs.normalized() * dot(rhs);
-	return rhs.normalized() * (dot(rhs)/rhs.length());
-}
-
 double 
 Vector3d::dot( Vector3d &rhs )
 {
     return (pX*rhs.pX)+(pY*rhs.pY)+(pZ*rhs.pZ);
+}
+
+double 
+Vector3d::dist( Vector3d &rhs )
+{
+    return sqrt(
+        SQR(pX-rhs.pX) +
+        SQR(pY-rhs.pY) +
+        SQR(pZ-rhs.pZ)
+        );
 }
 
 void 
@@ -59,25 +58,6 @@ Vector3d::normalize()
 	}
 }
 
-Vector3d
-Vector3d::normalized()
-{
-    double fac = length();
-
-	Vector3d ret;
-	if (fac == 0)
-	{
-		ret.pX = ret.pY = ret.pZ = 0.0;
-	}
-	else
-	{
-		ret.pX = pX / fac;
-		ret.pY = pY / fac;
-		ret.pZ = pZ / fac;
-	}
-	return ret;
-}
-
 double 
 Vector3d::length()
 {
@@ -88,14 +68,6 @@ Vector3d
 Vector3d::plus( Vector3d &rhs )
 {
     return Vector3d( pX + rhs.pX, pY + rhs.pY, pZ + rhs.pZ );
-}
-
-bool 
-Vector3d::sameAs( Vector3d &rhs )
-{
-    return( abs(pX - rhs.pX) < 0.001 &&
-            abs(pY - rhs.pY) < 0.001 &&
-            abs(pZ - rhs.pZ) < 0.001 );
 }
 
 Vector3d Vector3d::operator-( Vector3d &rhs )

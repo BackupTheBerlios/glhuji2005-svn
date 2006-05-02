@@ -4,11 +4,21 @@
 #include <string>
 #include "ParticleSystem.h"
 #include "ArcBallController.h"
+#include <GL/glut.h>
 
 using namespace std;
 
 class ClothView
 {
+//--------------- Internal Data Types ---------
+protected:
+    typedef enum {
+        MODE_SCALE,
+        MODE_ROTATE,
+        MODE_TRANSLATE,
+        MODE_MOUSE_UP
+    } PROGRAM_STATE;
+
 public:
     static ClothView *getInstance();
 
@@ -27,6 +37,12 @@ public:
 
 protected:
     void drawParticleSystem();
+    void drawArcBallCircle();
+
+    void commitTransform();
+    void doTranslate( int inX, int inY, bool inMouseDown, bool inMouseDrag );
+
+    void resetViewPoint();
 
     //redraw our view
     void redraw();
@@ -40,7 +56,19 @@ protected:
     ArcBallController m3dController;
     int               mWindowWidth;
     int               mWindowHeight;
+    double            mFrustumDeg;
+    double            mArcballRadius;
+    Vector3d          mClothCenter;
+    double            mClothRadius;
     bool              mIsRunning; //true = running false = paused
+    PROGRAM_STATE     mMode;
+    Point2d           mMouseDownPt;
+    Quaternion        mRotation;
+    double            mNear;
+    double            mFar;
+    GLdouble          mTransformation[16]; //saved GL Transformation matrix
+    Vector3d          mTranslation;
+    bool              mCommitTransformation;
 
 //Singleton storage
 protected:

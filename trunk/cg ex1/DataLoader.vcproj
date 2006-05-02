@@ -138,6 +138,9 @@
 				RelativePath=".\NumericalSolver.cpp">
 			</File>
 			<File
+				RelativePath=".\OpenGLUtilities.cpp">
+			</File>
+			<File
 				RelativePath=".\Particle.cpp">
 			</File>
 			<File
@@ -200,10 +203,16 @@
 				RelativePath=".\MidPointSolver.h">
 			</File>
 			<File
+				RelativePath=".\MyMacros.h">
+			</File>
+			<File
 				RelativePath=".\MyTypes.h">
 			</File>
 			<File
 				RelativePath=".\NumericalSolver.h">
+			</File>
+			<File
+				RelativePath=".\OpenGLUtilities.h">
 			</File>
 			<File
 				RelativePath=".\Particle.h">
