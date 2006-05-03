@@ -12,7 +12,10 @@ void
 ClothView::display()
 {
     drawParticleSystem();
-    drawArcBallCircle();
+
+    //todo: remove completely
+    //drawArcBallCircle();
+
     glFlush();
     glutSwapBuffers();
 }
@@ -198,6 +201,12 @@ ClothView::keyPressed( unsigned char inKey, int inX, int inY )
             resetViewPoint();
             redraw();
             break;
+
+        //toggle wireframe/solid
+        case 'w':
+            mWireFrameMode = !mWireFrameMode;
+            redraw();
+            break;
         
         //stop or advance one step on space
         case ' ':
@@ -243,10 +252,7 @@ ClothView::redraw()
 void
 ClothView::drawParticleSystem()
 {
-    GLfloat gOriginX = -2.0f;
-    GLfloat gOriginY = 2.0f;
-    GLfloat gOriginZ = -12.0f;
-
+    
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	// Clear Screen And Depth Buffer
     
     glMatrixMode (GL_PROJECTION);
@@ -269,6 +275,7 @@ ClothView::drawParticleSystem()
     //---------------- Perform Transformations that occurred till now -------
     glMultMatrixd( mTransformation );
 
+    //committransform causes teh current transformation to be saved!
     if( mCommitTransformation )
     {
         //save transformation
@@ -284,21 +291,34 @@ ClothView::drawParticleSystem()
     idx_t w = mParticleSystem.getWidth();
     idx_t h = mParticleSystem.getHeight();
 
-    glColor3f(0.0f,1.0f,0.0f);						// Set The Color To Green
-    for (int y=0; y<h-1; y++){
-        glBegin(GL_QUAD_STRIP);									// Draw A Quad strip for every row
-        for (int x=0; x<w; x++){
+    //only draw outline in wireframe mode
+    if( mWireFrameMode )
+        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+    else
+        glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 
-   		    glColor3f(((float)x/(float)w)*0.5f+0.5f,
+    //do actual drawing
+    for (int y=0; y<h-1; y++){
+        for (int x=0; x<w-1; x++){
+
+            {
+            glColor3f(((float)x/(float)w)*0.5f+0.5f,
                 ((float)(x+y)/(float)(w+h))*0.5f+0.5f,
                 ((float)y/(float)h)*0.5f+0.5f);
+            glBegin(GL_QUADS);
 
-            Vector3d &p1 = mParticleSystem.getParticlePos(x, y+1);
-            Vector3d &p2 = mParticleSystem.getParticlePos(x, y);
+            //draw in CCW order!
+            Vector3d &p1 = mParticleSystem.getParticlePos(x, y);
+            Vector3d &p2 = mParticleSystem.getParticlePos(x, y+1);
+            Vector3d &p3 = mParticleSystem.getParticlePos(x+1, y+1);
+            Vector3d &p4 = mParticleSystem.getParticlePos(x+1, y);
             glVertex3f( p1.pX, p1.pY, p1.pZ);
             glVertex3f( p2.pX, p2.pY, p2.pZ);
+            glVertex3f( p3.pX, p3.pY, p3.pZ);
+            glVertex3f( p4.pX, p4.pY, p4.pZ);
+            glEnd();
+            }
         }
-        glEnd();											// Done Drawing The Quad
     }
 }
 
@@ -319,14 +339,15 @@ ClothView::drawArcBallCircle()
 
 ClothView::ClothView( )
 {
-    mWindowWidth  = C_WINDOW_WIDTH;
-    mFrustumDeg   = C_DEFAULT_FRUSTRUM_ANGLE;
-    mWindowHeight = C_WINDOW_HEIGHT;
-    mArcballRadius       = 0;
-    mIsRunning    = true;
-    mMode         = MODE_MOUSE_UP;
-    mTranslation  = Vector3d();
+    mWindowWidth          = C_WINDOW_WIDTH;
+    mFrustumDeg           = C_DEFAULT_FRUSTRUM_ANGLE;
+    mWindowHeight         = C_WINDOW_HEIGHT;
+    mArcballRadius        = 0;
+    mIsRunning            = true;
+    mMode                 = MODE_MOUSE_UP;
+    mTranslation          = Vector3d();
     mCommitTransformation = false;
+    mWireFrameMode        = true;
 
     resetViewPoint();
 }

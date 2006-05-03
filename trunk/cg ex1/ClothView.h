@@ -56,6 +56,7 @@ protected:
     ArcBallController m3dController;
     int               mWindowWidth;
     int               mWindowHeight;
+    bool              mWireFrameMode; //wire frame/solid toggle
     double            mFrustumDeg;
     double            mArcballRadius;
     Vector3d          mClothCenter;
