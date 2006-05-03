@@ -19,16 +19,12 @@ RungeKuttaSolver::RungeKuttaSolver()
 
 RungeKuttaSolver::~RungeKuttaSolver()
 {
-    #define CLEAN( x ) if( (x) != NULL ) delete [] (x)
-
-    CLEAN( mTmpPos );
-    CLEAN( mTmpV );
-    CLEAN( mK1 );
-    CLEAN( mK2 );
-    CLEAN( mK3 );
-    CLEAN( mK4 );
-
-    #undef CLEAN
+    SAFE_DELETE_ARR( mTmpPos );
+    SAFE_DELETE_ARR( mTmpV );
+    SAFE_DELETE_ARR( mK1 );
+    SAFE_DELETE_ARR( mK2 );
+    SAFE_DELETE_ARR( mK3 );
+    SAFE_DELETE_ARR( mK4 );
 }
 
 void 
@@ -37,6 +33,7 @@ RungeKuttaSolver::step( double h )
     int    numParticles  = mParticleSystem->getNumParticles();
     double airResistance = mParticleSystem->getAirResistance();
     double halfH         = h / 2.0;
+    double h6            = h / 6.0;
 
     //Allocate temp. storage on first call
     if( mTmpPos == NULL )
@@ -96,8 +93,13 @@ RungeKuttaSolver::step( double h )
         if( pInfo[i].pIsPinned )
             continue;
 
-        origV[i]   += (mK1[i] + mK2[i]*2.0 + mK3[i]*2.0 + mK4[i]) * h/6.0;
-        origPos[i] += origV[i] * h;
+        Vector3d &tmpV = origV[i];
+        origPos[i] += ( ( tmpV + mK1[i]*h ) +  
+                        ( tmpV + mK2[i]*halfH ) * 2.0 +
+                        ( tmpV + mK3[i]*halfH ) * 2.0 +
+                        ( tmpV + mK4[i]*h ) )* h6;
+
+        tmpV   += (mK1[i] + mK2[i]*2.0 + mK3[i]*2.0 + mK4[i]) * h6;
 
         origV[i] *= airResistance;
     }

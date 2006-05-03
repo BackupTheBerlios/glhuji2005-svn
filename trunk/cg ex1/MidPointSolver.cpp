@@ -16,14 +16,9 @@ MidPointSolver::MidPointSolver()
 
 MidPointSolver::~MidPointSolver()
 {
-    if( mAccel != NULL )
-        delete [] mAccel;
-
-    if( mTmpPos != NULL )
-        delete [] mTmpPos;
-
-    if( mTmpV != NULL )
-        delete [] mTmpV;
+    SAFE_DELETE_ARR( mAccel );
+    SAFE_DELETE_ARR( mTmpPos );
+    SAFE_DELETE_ARR( mTmpV );
 }
 
 void 
@@ -36,9 +31,9 @@ MidPointSolver::step( double h )
     //allocate tmp store if it hasn't been allocated already
     if( mAccel == NULL )
     {
-        mAccel = new Vector3d[ numParticles ];
+        mAccel  = new Vector3d[ numParticles ];
         mTmpPos = new Vector3d[ numParticles ];
-        mTmpV = new Vector3d[ numParticles ];
+        mTmpV   = new Vector3d[ numParticles ];
     }
 
 

@@ -64,8 +64,6 @@ NumericalSolver::calcAccel( Vector3d *inPositions, Vector3d *inVelocities,
         outAccel[bIdx] += F;
     }
 
-    //cout << "-----------------------" << endl;
-
     //----------------- calculate Acceleration -------------------
     for( int i = 0; i < numParticles; i++ )
     {
