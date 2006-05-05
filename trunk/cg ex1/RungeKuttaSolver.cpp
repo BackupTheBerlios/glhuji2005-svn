@@ -94,11 +94,8 @@ RungeKuttaSolver::step( double h )
             continue;
 
         Vector3d &tmpV = origV[i];
-        origPos[i] += ( ( tmpV + mK1[i]*h ) +  
-                        ( tmpV + mK2[i]*halfH ) * 2.0 +
-                        ( tmpV + mK3[i]*halfH ) * 2.0 +
-                        ( tmpV + mK4[i]*h ) )* h6;
-
+        //origPos[i] += ( tmpV + (tmpV + mK1[i]*halfH)*2.0 + (tmpV+mK2[i]*halfH)*2.0 + (tmpV+mK3[i]*h) ) * h6;
+        origPos[i] += tmpV*h + ( mK1[i]*h + mK2[i]*h + mK3[i]*h ) * h6;
         tmpV   += (mK1[i] + mK2[i]*2.0 + mK3[i]*2.0 + mK4[i]) * h6;
 
         origV[i] *= airResistance;

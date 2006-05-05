@@ -58,11 +58,11 @@ ForwardEulerSolver::step( double h )
         if( pInfo[i].pIsPinned )
             continue;
 
+        //Xnew = Xold + h * Vold
+        pos[i]      += velocity[i] * h;
+
         //Vnew = Vold + h * dv/dt
         velocity[i] += mAccel[i] * h;
-        
-        //Xnew = Xold + h * Vnew
-        pos[i]      += velocity[i] * h;
 
         velocity[i] *= airResistance;
     }

@@ -64,8 +64,8 @@ MidPointSolver::step( double h )
         if( pInfo[i].pIsPinned )
             continue;
 
+        origPos[i] += mTmpV[i] * h;
         origV[i]   += mAccel[i] * h;
-        origPos[i] += origV[i] * h;
 
         origV[i] *= airResistance;
     }
