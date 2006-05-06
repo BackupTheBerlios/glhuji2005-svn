@@ -56,6 +56,10 @@ NumericalSolver::calcAccel( Vector3d *inPositions, Vector3d *inVelocities,
         double xLen = dx.length();
         double len  = xLen - theSpring.getRestLength();
 
+        //avoid divide by zero
+        if( ABS(xLen) < NEAR_ZERO || ABS(len) < NEAR_ZERO )
+            continue;
+
         //don't allow springs to stretch more than twice their original length
 //        if( len > (3 * theSpring.getRestLength()) )
 //            continue;

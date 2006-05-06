@@ -4,17 +4,18 @@
 #include "Particle.h"
 #include "Spring.h"
 #include "constants.h"
+#include "MyMacros.h"
 #include "NumericalSolver.h"
 
 #include "Particlesystem.h"
 
 ParticleSystem::ParticleSystem(  )
 {
-    mWidth      = 0;
-    mHeight     = 0;
-    mIsMidPoint = false;
-    mSolver     = NULL;
-    mStepSize   = 0;
+    mWidth          = 0;
+    mHeight         = 0;
+    mIsMidPoint     = false;
+    mSolver         = NULL;
+    mStepSize       = 0;
     mStiffestSpring = 0;
 
     mGravity       = 0;
@@ -194,29 +195,10 @@ ParticleSystem::~ParticleSystem()
 void
 ParticleSystem::freeParticleStorage()
 {
-    if( mParticlePos != NULL )
-    {
-        delete [] mParticlePos;
-        mParticlePos = NULL;
-    }
-
-    if( mParticleVelocity != NULL )
-    {
-        delete [] mParticleVelocity;
-        mParticleVelocity = NULL;
-    }
-
-    if( mParticleInvMass != NULL )
-    {
-        delete [] mParticleInvMass;
-        mParticleInvMass = NULL;
-    }
-
-    if( mParticleInfo != NULL )
-    {
-        delete [] mParticleInfo;
-        mParticleInfo    = NULL;
-    }
+    SAFE_DELETE_ARR( mParticlePos );
+    SAFE_DELETE_ARR( mParticleVelocity );
+    SAFE_DELETE_ARR( mParticleInvMass );
+    SAFE_DELETE_ARR( mParticleInfo );
 }
 
 void 
@@ -241,7 +223,7 @@ ParticleSystem::getSpatialDimensions( Vector3d &outCenter, double &outRadius )
 
     for( idx_t i = 0; i < numParticles; i++ )
     {
-        double tmp = abs( center.dist(mParticlePos[i]) );
+        double tmp = ABS( center.dist(mParticlePos[i]) );
 
         if( tmp > dist )
             dist = tmp;

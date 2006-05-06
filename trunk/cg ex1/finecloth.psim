@@ -7,26 +7,26 @@ MeshHeight    = 7
 #part two: Global Constants
 Gravity       = 9.81 #Gravity Acceleration (In meters per second per second)
 h             = 0.01 #Integration step [Sec]
-AirResistance = 0    #air resistance (in percent)
+AirResistance = 2    #air resistance (in percent)
 
 #constants for various springs
-K             = 40  #spring constant
-B             = 8  #damping
+K             = 40   #spring constant
+B             = 3    #damping
 ShearK        = 10   #Shear spring constant
-ShearB        = 2  #Shear damping
+ShearB        = 3    #Shear damping
 FlexK         = 10   #Flexion spring constant
-FlexB         = 2  #Flexion damping
+FlexB         = 3    #Flexion damping
 
 
 #Solver to use
-# 1 - Forward Euler; 2 - Reverse Euler; 3 - midpoint; 4 - Runge Kutta
-Solver = 1
+# 1 - Forward Euler; 2 - midpoint; 3 - Runge Kutta
+Solver = 3
 
 #Wind parameters
-Wind = 0.25,0.02,0	#Wind force [N] per h [Sec]
+Wind          = 1,0.02,0	#Wind force [N] per h [Sec]
 WindMinFactor = 0.02
 WindMaxFactor = 4
-WindMaxChange = 0.4     # Absolute value of maximal change in wind force per h [Sec]
+WindMaxChange = 0.6     # Absolute value of maximal change in wind force per h [Sec]
 
 #part three: Defining the mesh
 ################################################################################

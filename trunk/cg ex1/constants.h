@@ -42,12 +42,13 @@ const int C_NUM_FIELDS_IN_AUTOCREATE = 6;
 
 typedef enum {
     C_FORWARD_EULER_SOLVER    = 1,
-    C_REVERSE_EULER_SOLVER    = 2, //todo: remove?
-    C_MIDPOINT_SOLVER         = 3,
-    C_RUNGE_KUTTA_SOLVER      = 4
+    C_MIDPOINT_SOLVER         = 2,
+    C_RUNGE_KUTTA_SOLVER      = 3
 } SolverType;
 
-#define M_PI                             3.14159265358979323846
+#define      M_PI                          3.14159265358979323846
+#define      NEAR_ZERO                     0.001
+
 const float  C_SCALE_FACTOR              = 30.0; //factors for scale
 const float  C_TRANSLATION_FACTOR        = -0.1f; //factor for translation
 const float  C_OBJECT_B_RAD              = 45;   //default object radius

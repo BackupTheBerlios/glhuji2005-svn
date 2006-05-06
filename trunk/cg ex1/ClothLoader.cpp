@@ -91,12 +91,6 @@ ClothLoader::readSolver( ParticleSystem &inSystem, CLoadIni &inLoader )
         solver = new ForwardEulerSolver();
         break;
 
-        //todo: reinstate?
-        //case C_REVERSE_EULER_SOLVER:
-        //    cout << "using reverse euler" << endl;
-        //    solver = new ReverseEulerSolver();
-        //    break;
-
     case C_MIDPOINT_SOLVER:
         cout << "using midpoint solver" << endl;
         solver = new MidPointSolver();
@@ -173,19 +167,22 @@ ClothLoader::readGlobalConstants( ParticleSystem &inSystem, CLoadIni &inLoader,
         inSystem.setStepSize( stepSize );
 
 		//------------------------ Set wind parameters ---------------------------
-		Vector3d         WindDirection(0.0,0.0,0.0);
-		Vector3d         Wind(0.0,0.0,0.0);
+		Vector3d         WindDirection;
+		Vector3d         Wind;
 		double	         WindLen = 0;
 		double	         WindMinFactor = 1;
 		double	         WindMaxFactor = 1;
 		double	         WindMaxChange = 0;
-		if( inLoader.GetField(C_WIND_TAG, val ) == 0 )
+		if( inLoader.GetField( C_WIND_TAG, val ) == 0 )
 		{
 			int xDim, yDim;
 			inLoader.GetDblArray( val, arr, &xDim, &yDim );
 			
 			if( yDim != 1 || xDim != 3 )
+            {
 				cout << "ERROR: dimensions of wind vector are wrong" << endl;
+                break;
+            }
 			else
 			{
 				Wind = Vector3d(arr[0], arr[1], arr[2]);
@@ -195,15 +192,15 @@ ClothLoader::readGlobalConstants( ParticleSystem &inSystem, CLoadIni &inLoader,
 			}
 			SAFE_DELETE_ARR( arr );
 		}
-		if( inLoader.GetField(C_WIND_MIN_FACTOR_TAG, val ) == 0 )
+		if( inLoader.GetField( C_WIND_MIN_FACTOR_TAG, val ) == 0 )
 		{
 			WindMinFactor = atof(val.c_str());
 		}
-		if( inLoader.GetField(C_WIND_MAX_FACTOR_TAG, val ) == 0 )
+		if( inLoader.GetField( C_WIND_MAX_FACTOR_TAG, val ) == 0 )
 		{
 			WindMaxFactor = atof(val.c_str());
 		}
-		if( inLoader.GetField(C_WIND_MAX_CHANGE_TAG, val ) == 0 )
+		if( inLoader.GetField( C_WIND_MAX_CHANGE_TAG, val ) == 0 )
 		{
 			WindMaxChange = atof(val.c_str());
 		}
