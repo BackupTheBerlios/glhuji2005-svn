@@ -117,6 +117,24 @@ ClothView::keyPressed( unsigned char inKey, int inX, int inY )
             exit( 0 );
         break;
         
+		//toggle wireframe/solid
+        case 'w':
+            mWireFrameMode = !mWireFrameMode;
+            redraw();
+            break;
+
+		//show/hide normals
+        case 'n':
+            mNormalsMode = !mNormalsMode;
+            redraw();
+            break;
+        
+		//enable/disable normals' smoothing
+        case 's':
+            mSmoothByNormals = !mSmoothByNormals;
+            redraw();
+            break;
+
         //stop or advance one step on space
         case ' ':
             if( mIsRunning == false )
@@ -174,13 +192,46 @@ ClothView::drawParticleSystem()
 	glRotatef(g_xRotated,1.0f,0.0f,0.0f);					// Rotate The Quad On The X axis ( NEW )
 	glRotatef(g_yRotated,0.0f,1.0f,0.0f);					// Rotate The Quad On The Y axis ( NEW )
 	glRotatef(g_zRotated,0.0f,0.0f,1.0f);					// Rotate The Quad On The Z axis ( NEW )
+
+	// update normals
+	mParticleSystem.calculateNormals();
+	// show normals?
+	if (mNormalsMode)
+	{
+		for (int y=0; y<h; y++){
+			for (int x=0; x<w; x++){
+				glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+				glBegin(GL_LINES);
+				glColor3f(1.0,0,0);
+				Vector3d &p1 = mParticleSystem.getParticlePos(x, y);
+				Vector3d &normal = mParticleSystem.getParticleNormal(x, y);
+				glVertex3f(p1.pX, p1.pY, p1.pZ);
+				glVertex3f(p1.pX + normal.pX, p1.pY + normal.pY, p1.pZ + normal.pZ);
+				glEnd();
+			}
+		}
+	}
+
+	//only draw outline in wireframe mode
+    if( mWireFrameMode )
+        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+    else
+        glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+
     for (int y=0; y<h-1; y++){
         glBegin(GL_QUAD_STRIP);									// Draw A Quad strip for every row
         for (int x=0; x<w; x++){
 		    glColor3f(((float)x/(float)w)*0.5f+0.5f,((float)(x+y)/(float)(w+h))*0.5f+0.5f,((float)y/(float)h)*0.5f+0.5f);
 			Vector3d &p1 = mParticleSystem.getParticlePos(x, y+1);
             Vector3d &p2 = mParticleSystem.getParticlePos(x, y);
+			
+			Vector3d &n1 = mParticleSystem.getParticleNormal(x, y+1);
+            Vector3d &n2 = mParticleSystem.getParticleNormal(x, y);
+
+			if (mSmoothByNormals) glNormal3f(n1.pX, n1.pY, n1.pZ);
             glVertex3f( p1.pX, p1.pY, p1.pZ);
+
+			if (mSmoothByNormals) glNormal3f(n2.pX, n2.pY, n2.pZ);
             glVertex3f( p2.pX, p2.pY, p2.pZ);
 //			Particle& p1 = mParticleSystem.getParticleAt(x, y+1);
 //            Particle& p2 = mParticleSystem.getParticleAt(x, y);
@@ -197,6 +248,9 @@ ClothView::ClothView( )
     mWindowWidth  = C_WINDOW_WIDTH;
     mWindowHeight = C_WINDOW_HEIGHT;
     mIsRunning    = true;
+	mWireFrameMode   = true;
+	mNormalsMode     = false;
+	mSmoothByNormals = true;
 }
 
 void 
