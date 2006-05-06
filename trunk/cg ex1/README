@@ -1,0 +1,47 @@
+Advanced Graphics Ex 1
+
+By:
+Itai Basel          T.Z. 035781848
+Jeremy Moskovich    T.Z. 036382489
+Dagan Eshar         T.Z. 
+
+Description:
+
+    We implemented a particle simulation using the spring model (structural, 
+    shear, and flex).
+    
+    Our solver include Forward Euler, Midpoint and Runge Kutta solvers using 
+    fixed stepsizes, and wind (air resistance can also be specified).
+    
+    All simulatin parameters can be specified in an ascii configuration file, 
+    we've included a couple of anotated examples.
+    
+    Meshes can be of arbitrary size (given enough memory) though in practice
+    meshes larger than 32x32 start to act slowly.
+    
+How to run:
+    Clothsim.exe <configurationFile>
+    
+Controls:
+    * esc - quit the simulation
+    * w - toggle wireframe/solid view
+    * space - stop and then single step through the simulation.
+    * enter - restart the simulation after it's been stopped.
+
+Implementation Notes:
+    The main particle simulation is contained in the ParticleSystem class, which
+stores the particle's position, & velocity as Vector arrays.
+
+    Solvers are subclasses of the NumericalSolver class which contains a method
+called calcAccel(), given an array of velocities and positions it calculates the
+net accelleration on each particle.  This function is used by all the solvers to
+calculate derivatives.
+
+    The Clothloader class is responsible for loading the simulation file and
+passing all parameters to ParticleSystem which is then responsible for the 
+simulation.
+
+    The ClothView class handles display and user interaction.
+    
+Thank you,
+Itai, Dagan, & Jeremy
