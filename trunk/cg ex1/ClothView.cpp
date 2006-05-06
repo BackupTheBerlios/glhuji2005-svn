@@ -3,8 +3,7 @@
 #include "ClothLoader.h"
 #include "Clothview.h"
 #include "constants.h"
-#include "OpenGLUtilities.h"
-#include <math.h>
+#include <GL/glut.h>
 
 void timerCallback( int inVal );
 
@@ -12,10 +11,6 @@ void
 ClothView::display()
 {
     drawParticleSystem();
-
-    //todo: remove completely
-    //drawArcBallCircle();
-
     glFlush();
     glutSwapBuffers();
 }
@@ -23,166 +18,92 @@ ClothView::display()
 void 
 ClothView::reshape( int inWidth, int inHeight )
 {
-    /*//Set a new projection matrix
+    //Set a new projection matrix
     glMatrixMode(GL_PROJECTION);  
     glLoadIdentity();
     //Angle of view:40 degrees
     //Near clipping plane distance: 0.5
     //Far clipping plane distance: 20.0
-    gluPerspective(40.0,(GLdouble)inWidth/(GLdouble)inHeight,0.5,20.0);
+    gluPerspective(40.0,(GLdouble)inWidth/(GLdouble)inHeight,0.5,20000.0);
     glMatrixMode(GL_MODELVIEW);
-    glViewport(0,0,inWidth,inHeight);*/
-    
-    
-    mWindowWidth = inWidth;
+    glViewport(0,0,inWidth,inHeight);
+
+    /*mWindowWidth = inWidth;
     mWindowHeight = inHeight;
 
     //----- Calculate New Values for Radius and frustum -----
-    mArcballRadius = 0.48 * min(inWidth,inHeight); // Setting arcball's radius
+    mRadius = 0.4 * min(inWidth,inHeight); // Setting arcball's radius
 
-    //----- Frustum -----
-    mFrustumDeg = 40;
+    //----- Update Object Properties -----
+    m3dObject.setFrustum( min(2*C_OBJECT_B_RAD, tan(0.5*mFrustumDeg)*mNear) );
 
     //----- Update Arcball Controller -----
-    m3dController.setRadius( mArcballRadius );
+    m3dController.setRadius( mRadius );
     m3dController.setScreenCenter( Point2d( inWidth/2, inHeight/2 ) );
 
     //----- Set Viewport Geometry -----
-    glViewport(0, 0, (GLsizei)inWidth, (GLsizei)inHeight);
+    glViewport(0, 0, (GLsizei)inWidth, (GLsizei)inHeight);*/
 }
 
-void
-ClothView::resetViewPoint()
-{
-    OpenGLUtilities::initTranslationMatrix( -2, 2, -12, mTransformation );
-
-    mFrustumDeg   = 40;
-
-    //todo: change to constants
-    mNear         = 0.5;
-    mFar          = 20;
-
-    mCommitTransformation = false;
-    mRotation             = Quaternion();
-    mTranslation          = Vector3d();
-}
+#define MOVEMENT_STEP 0.009
+#define ROTATION_STEP 0.3
+#define ZOOM_STEP 1
+bool gLBDown = false;
+bool gRBDown = false;
+int gLastX;
+int gLastY;
+GLfloat gOriginX = -2.0f;
+GLfloat gOriginY = 2.0f;
+GLfloat gOriginZ = -12.0f;
+GLfloat g_xRotated = 60.0f;
+GLfloat g_yRotated = 20.0f;
+GLfloat g_zRotated = 0.0f;
 
 void 
 ClothView::mousePressed( int inButton, int inState, int inX, int inY )
 {
-    //---------------- Translate coordinates -----------------------
-    int translatedX = inX;
-    int translatedY = mWindowHeight-inY;
-
-    //---------------- Mouse Up -----------------------
-    if( inState == GLUT_UP ) 
-    {
-        if( mMode == MODE_ROTATE )
-        {
-            //Accumulate rotation
-            commitTransform();
-        }
-        else if( mMode == MODE_TRANSLATE )
-        {
-            //doTranslate( translatedX, translatedY, false, false );
-        }
-
-        mMode = MODE_MOUSE_UP;
-    }
-    //---------------- Mouse Down -----------------------
-    else
-    {
-
-        if( inButton == GLUT_LEFT_BUTTON )                            //Rotate
-        {
-            mMode = MODE_ROTATE;
-            mMouseDownPt = Point2d( translatedX, translatedY );
-        }
-        else if (inButton == GLUT_RIGHT_BUTTON)                       //Translate
-        {
-            mMode = MODE_TRANSLATE;
-            doTranslate( translatedX, translatedY, true, false );
-        }
-        else if (inButton == GLUT_MIDDLE_BUTTON)                      //Scale
-        {
-            mMode = MODE_SCALE;
-            mMouseDownPt = Point2d( translatedX, translatedY );
-        }
-    }
-
-    //---------------- Redraw WIndow -----------------------   
-    redraw() ;	
+	// if we want both mouse and ALT (for example) use this instead of next line
+	//specialKey = glutGetModifiers();
+	//if ((inState == GLUT_DOWN) && (specialKey == GLUT_ACTIVE_ALT)) {
+	gLastX = inX;
+	gLastY = inY;
+	if (inState == GLUT_DOWN && inButton == GLUT_LEFT_BUTTON) {
+		gLBDown = true;
+	}
+	else if (inState == GLUT_UP && inButton == GLUT_LEFT_BUTTON) {
+		gLBDown = false;
+	}
+	if (inState == GLUT_DOWN && inButton == GLUT_RIGHT_BUTTON) {
+		gRBDown = true;
+	}
+	else if (inState == GLUT_UP && inButton == GLUT_RIGHT_BUTTON) {
+		gRBDown = false;
+	}
 }
 
 void 
 ClothView::mouseMoved( int inX, int inY )
 {
-    //---------------- Translate coordinates -----------------------
-    int translatedX = inX;
-    int translatedY = mWindowHeight-inY;
-
-    //---------------- Rotate -----------------------
-    if( mMode == MODE_ROTATE )
-    {
-        Point2d p = Point2d( translatedX,  translatedY );
-
-        m3dController.getRotation( mMouseDownPt,  p, mRotation );
-    }
-    //---------------- Scale -----------------------
-    else if( mMode == MODE_SCALE )
-    {
-        double temp =  (double)(translatedY - mMouseDownPt.getY())/C_SCALE_FACTOR;
-
-        if( mFrustumDeg + temp < 180.0 )
-            mFrustumDeg += temp;
-
-        //limit
-        if( mFrustumDeg < 0.1 ) mFrustumDeg = 0.1;
-    }
-    //---------------- Translate -----------------------
-    else if( mMode == MODE_TRANSLATE )
-    {
-        doTranslate( translatedX, translatedY, false, true );
-    }
-
-    //---------------- Redraw -----------------------
-    redraw();
-}
-
-void
-ClothView::commitTransform()
-{
-    mCommitTransformation = true;
-}
-
-void
-ClothView::doTranslate( int inX, int inY, bool inMouseDown, bool inMouseDrag )
-{
-    int x = inX;
-    int y = inY;
-
-    if( inMouseDown )
-    {
-        mMouseDownPt = Point2d( inX, inY );
-    }
-    else //mouse drag and mouse up
-    {
-
-        //Limit Mouse Coordinates to inside window bounds...
-        if( inX < 0 ) x = 0;
-        if( inX > mWindowWidth ) x = mWindowWidth;
-        if( inY < 0 ) y = 0;
-        if( inY > mWindowHeight ) y = mWindowHeight;
-
-        Point2d a( inX, inY );
-        a -= mMouseDownPt;
-         mTranslation = Vector3d( a.getX()*C_TRANSLATION_FACTOR,
-                                  a.getY()*C_TRANSLATION_FACTOR, 0 );
-
-    }
-
-    if( !inMouseDown && !inMouseDrag ) //mouse Up
-        commitTransform();
+	int dx = (inX-gLastX);
+	int dy = (inY-gLastY);
+	if (gLBDown && gRBDown)
+	{
+		gOriginZ -= ((float)dy)*ZOOM_STEP;
+	}
+	else if (gLBDown)
+	{
+		int dx = (inX-gLastX);
+		int dy = (inY-gLastY);
+		g_xRotated += ((float)dy)*ROTATION_STEP;
+		g_yRotated += ((float)dx)*ROTATION_STEP;
+	}
+	else if (gRBDown)
+	{
+		gOriginX -= ((float)dx)*MOVEMENT_STEP*(gOriginZ/(ZOOM_STEP*3));
+		gOriginY += ((float)dy)*MOVEMENT_STEP*(gOriginZ/(ZOOM_STEP*3));
+	}
+	gLastX = inX;
+	gLastY = inY;
 }
 
 void 
@@ -195,18 +116,6 @@ ClothView::keyPressed( unsigned char inKey, int inX, int inY )
         case 'q':
             exit( 0 );
         break;
-
-        //reset viewpoing on 'r' keypress
-        case 'r':
-            resetViewPoint();
-            redraw();
-            break;
-
-        //toggle wireframe/solid
-        case 'w':
-            mWireFrameMode = !mWireFrameMode;
-            redraw();
-            break;
         
         //stop or advance one step on space
         case ' ':
@@ -252,113 +161,48 @@ ClothView::redraw()
 void
 ClothView::drawParticleSystem()
 {
-    
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	// Clear Screen And Depth Buffer
-    
-    glMatrixMode (GL_PROJECTION);
-    glLoadIdentity();
-
-    gluPerspective( mFrustumDeg, (GLfloat)mWindowWidth/(GLfloat)mWindowHeight, 0.5, 20 );
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-
-    Vector3d v = mRotation.vec();
-    double   t = mRotation.theta();
-    glTranslated( -mClothCenter.pX, -mClothCenter.pY, -mClothCenter.pZ );
-    glRotated( RAD2DEG(t), v.pX, v.pY, v.pZ );
-    glTranslated( mClothCenter.pX, mClothCenter.pY, mClothCenter.pZ );
-
-    //---------------- Perform Translation ---------------------
-    glTranslated( mTranslation.pX, mTranslation.pY, mTranslation.pZ );
-
-    //---------------- Perform Transformations that occurred till now -------
-    glMultMatrixd( mTransformation );
-
-    //committransform causes teh current transformation to be saved!
-    if( mCommitTransformation )
-    {
-        //save transformation
-        glGetDoublev( GL_MODELVIEW_MATRIX, mTransformation );
-
-        mCommitTransformation = false;
-        mRotation             = Quaternion();
-        mTranslation          = Vector3d();
-    }
-
+    glLoadIdentity();									// Reset The Current Modelview Matrix
     // Here we draw our mesh
     // ---------------------
     idx_t w = mParticleSystem.getWidth();
     idx_t h = mParticleSystem.getHeight();
 
-    //only draw outline in wireframe mode
-    if( mWireFrameMode )
-        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-    else
-        glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-
-    //do actual drawing
+    glLoadIdentity();									// Reset The Current Modelview Matrix
+    glTranslatef(gOriginX,gOriginY,gOriginZ);		
+	glRotatef(g_xRotated,1.0f,0.0f,0.0f);					// Rotate The Quad On The X axis ( NEW )
+	glRotatef(g_yRotated,0.0f,1.0f,0.0f);					// Rotate The Quad On The Y axis ( NEW )
+	glRotatef(g_zRotated,0.0f,0.0f,1.0f);					// Rotate The Quad On The Z axis ( NEW )
     for (int y=0; y<h-1; y++){
-        for (int x=0; x<w-1; x++){
-
-            {
-            glColor3f(((float)x/(float)w)*0.5f+0.5f,
-                ((float)(x+y)/(float)(w+h))*0.5f+0.5f,
-                ((float)y/(float)h)*0.5f+0.5f);
-            glBegin(GL_QUADS);
-
-            //draw in CCW order!
-            Vector3d &p1 = mParticleSystem.getParticlePos(x, y);
-            Vector3d &p2 = mParticleSystem.getParticlePos(x, y+1);
-            Vector3d &p3 = mParticleSystem.getParticlePos(x+1, y+1);
-            Vector3d &p4 = mParticleSystem.getParticlePos(x+1, y);
+        glBegin(GL_QUAD_STRIP);									// Draw A Quad strip for every row
+        for (int x=0; x<w; x++){
+		    glColor3f(((float)x/(float)w)*0.5f+0.5f,((float)(x+y)/(float)(w+h))*0.5f+0.5f,((float)y/(float)h)*0.5f+0.5f);
+			Vector3d &p1 = mParticleSystem.getParticlePos(x, y+1);
+            Vector3d &p2 = mParticleSystem.getParticlePos(x, y);
             glVertex3f( p1.pX, p1.pY, p1.pZ);
             glVertex3f( p2.pX, p2.pY, p2.pZ);
-            glVertex3f( p3.pX, p3.pY, p3.pZ);
-            glVertex3f( p4.pX, p4.pY, p4.pZ);
-            glEnd();
-            }
+//			Particle& p1 = mParticleSystem.getParticleAt(x, y+1);
+//            Particle& p2 = mParticleSystem.getParticleAt(x, y);
+//            glVertex3f( (p1.getPos()).pX, (p1.getPos()).pY, (p1.getPos()).pZ);
+//            glVertex3f( (p2.getPos()).pX, (p2.getPos()).pY, (p2.getPos()).pZ);
         }
+        glEnd();											// Done Drawing The Quad
     }
-}
-
-void
-ClothView::drawArcBallCircle()
-{
-    glColor3f( 0, 1.0, 0 );
-    glMatrixMode(GL_PROJECTION) ;
-    glLoadIdentity() ;
-    gluOrtho2D(0, (GLdouble)mWindowWidth, 0, (GLdouble)mWindowHeight) ;
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-
-    OpenGLUtilities::drawCircle( mArcballRadius, mWindowWidth/2, mWindowHeight/2, 0.0, 3.0  );
 }
 
 
 ClothView::ClothView( )
 {
-    mWindowWidth          = C_WINDOW_WIDTH;
-    mFrustumDeg           = C_DEFAULT_FRUSTRUM_ANGLE;
-    mWindowHeight         = C_WINDOW_HEIGHT;
-    mArcballRadius        = 0;
-    mIsRunning            = true;
-    mMode                 = MODE_MOUSE_UP;
-    mTranslation          = Vector3d();
-    mCommitTransformation = false;
-    mWireFrameMode        = true;
-
-    resetViewPoint();
+    mWindowWidth  = C_WINDOW_WIDTH;
+    mWindowHeight = C_WINDOW_HEIGHT;
+    mIsRunning    = true;
 }
 
 void 
 ClothView::loadSimulation( string &inFileName )
 {
     ClothLoader::Load( mParticleSystem, inFileName );
-    mParticleSystem.getSpatialDimensions( mClothCenter, mClothRadius );
-
-    resetViewPoint();
 }
 
 void 
