@@ -7,11 +7,11 @@ MeshHeight    = 32
 #part two: Global Constants
 Gravity       = 9.81 #Gravity Acceleration (In meters per second per second)
 h             = 0.01 #Integration step [Sec]
-AirResistance = 0.008    #air resistance (in percent)
+AirResistance = 0.08    #air resistance (in percent)
 
 #constants for various springs
-K             = 400   #spring constant
-B             = 30    #damping
+K             = 40   #spring constant
+B             = 10    #damping
 ShearK        = 10   #Shear spring constant
 ShearB        = 3    #Shear damping
 FlexK         = 10   #Flexion spring constant
@@ -48,7 +48,7 @@ WindMaxChange = 0.6     # Absolute value of maximal change in wind force per h [
 #                 mass  - of each particle
 #                 xOfs  - between Particles
 #                 zOfs  - between Particles
-AutoCreateMesh = -1.0, 0, -2, 0.02, 1.5, 1.5
+AutoCreateMesh = -10.0, 0, -20, 0.05, 1.5, 1.5
 
 #pin individual particles to make things interesting
 (0,0) = PIN
@@ -61,7 +61,7 @@ AutoCreateMesh = -1.0, 0, -2, 0.02, 1.5, 1.5
 (0,28) = PIN
 
 (15,8) = PIN
-(15,16) = PIN
+(15,20) = PIN
 
 #(0,6) = PIN
 #(0,6) = PIN

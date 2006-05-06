@@ -64,7 +64,16 @@ NumericalSolver::calcAccel( Vector3d *inPositions, Vector3d *inVelocities,
 //        if( len > (3 * theSpring.getRestLength()) )
 //            continue;
 
-        Vector3d F = (dx/xLen)*(len*theSpring.getK() + (dv.dot(dx)/xLen)*theSpring.getB());
+        Vector3d F = (dx/xLen)*(len*theSpring.getK());
+		Vector3d FB = (dx/xLen)*(dv.dot(dx)/xLen)*theSpring.getB();
+		if ((F.normalized()+FB.normalized()).length() < 0.1)
+		{
+			if (FB.length() > F.length())
+				F.set(0,0,0);
+			else
+				F += FB;
+		}
+		
 
         //force affects both springs in opposite directions
         outAccel[aIdx] -= F;
@@ -75,10 +84,5 @@ NumericalSolver::calcAccel( Vector3d *inPositions, Vector3d *inVelocities,
     for( int i = 0; i < numParticles; i++ )
     {
         outAccel[i] = gravity + (outAccel[i] * inInvMasses[i]);
-		if (outAccel[i].length() > gravity.length()*2)
-		{
-			outAccel[i].normalize();
-			outAccel[i] = outAccel[i]*(gravity.length()*2);
-		}
     }
 }

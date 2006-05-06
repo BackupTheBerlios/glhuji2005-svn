@@ -58,6 +58,15 @@ Vector3d::normalize()
 	}
 }
 
+
+Vector3d 
+Vector3d::normalized()
+{
+	Vector3d ret (pX, pY, pZ);
+	ret.normalize();
+	return ret;
+}
+
 double 
 Vector3d::length()
 {

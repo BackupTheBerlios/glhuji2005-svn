@@ -53,10 +53,10 @@ bool gRBDown = false;
 int gLastX;
 int gLastY;
 GLfloat gOriginX = -2.0f;
-GLfloat gOriginY = 2.0f;
-GLfloat gOriginZ = -12.0f;
-GLfloat g_xRotated = 60.0f;
-GLfloat g_yRotated = 20.0f;
+GLfloat gOriginY = 6.0f;
+GLfloat gOriginZ = -52.0f;
+GLfloat g_xRotated = 15.0f;
+GLfloat g_yRotated = 10.0f;
 GLfloat g_zRotated = 0.0f;
 
 void 

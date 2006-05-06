@@ -20,6 +20,7 @@ public:
 
     //normalize this vector.
     void normalize();
+	Vector3d normalized();
 
     //returns vector length
     inline double length();
