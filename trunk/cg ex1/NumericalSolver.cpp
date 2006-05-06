@@ -75,5 +75,10 @@ NumericalSolver::calcAccel( Vector3d *inPositions, Vector3d *inVelocities,
     for( int i = 0; i < numParticles; i++ )
     {
         outAccel[i] = gravity + (outAccel[i] * inInvMasses[i]);
+		if (outAccel[i].length() > gravity.length()*2)
+		{
+			outAccel[i].normalize();
+			outAccel[i] = outAccel[i]*(gravity.length()*2);
+		}
     }
 }
