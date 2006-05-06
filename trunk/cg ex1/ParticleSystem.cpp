@@ -31,6 +31,10 @@ ParticleSystem::ParticleSystem(  )
     mParticleVelocity    = NULL;
     mParticleInvMass     = NULL;
     mParticleInfo        = NULL;
+
+	mFaceNormals   = NULL;
+	mVertexNormals = NULL;
+
 }
 
 void 
@@ -63,6 +67,9 @@ ParticleSystem::setDimensions( idx_t inMeshWidth, idx_t inMeshHeight )
     mParticlePos       = new Vector3d[numParticles];
     mParticleInvMass   = new double[numParticles];
     mParticleVelocity  = new Vector3d[numParticles];
+
+	mFaceNormals       = new Vector3d[numParticles]; // actually we need a little less
+	mVertexNormals     = new Vector3d[numParticles];
 }
 
 void 
@@ -199,6 +206,8 @@ ParticleSystem::freeParticleStorage()
     SAFE_DELETE_ARR( mParticleVelocity );
     SAFE_DELETE_ARR( mParticleInvMass );
     SAFE_DELETE_ARR( mParticleInfo );
+	SAFE_DELETE_ARR( mFaceNormals );
+	SAFE_DELETE_ARR( mVertexNormals );
 }
 
 void 
@@ -322,4 +331,140 @@ ParticleSystem::getNewWind()
 	else if (WindLen < mWindMinLen)
 		mWind = mWindDirection*mWindMinLen;
 	return mWind;
+}
+
+Vector3d    &
+ParticleSystem::getParticleNormal( idx_t inX, idx_t inY )
+{
+	//sanity, check we're inside mesh bounds...
+    assert( (inX < mWidth) && (inY < mHeight) );
+	assert( mVertexNormals != NULL );
+
+    return mVertexNormals[ inX + (inY*mWidth) ];
+}
+
+void 
+ParticleSystem::calculateNormals()
+{
+	assert(mFaceNormals != NULL && mVertexNormals != NULL);
+
+	#define IDX(u,v) ( (u)+((v)*mWidth) )
+
+	// normals calculation
+	// calculate normals to faces
+	for (int y=0; y<mHeight-1; y++){
+        for (int x=0; x<mWidth-1; x++){
+			Vector3d &p1 = getParticlePos(x, y);
+            Vector3d &p2 = getParticlePos(x, y+1);
+			Vector3d &p4 = getParticlePos(x+1, y);
+			Vector3d v1 = p2-p1;
+			Vector3d v2 = p4-p1;
+			mFaceNormals[IDX(x,y)] = v1.cross(v2);
+			mFaceNormals[IDX(x,y)].normalize();
+		}
+	}
+	// calculate normals to vertices
+	Vector3d normal1, normal2, normal3, normal4;
+	Vector3d normal;
+	for (int y=0; y<mHeight; y++){
+        for (int x=0; x<mWidth; x++){
+			// corners
+			if (x==0 && y==0){
+				Vector3d &p1 = getParticlePos(x, y);
+				Vector3d &p2 = getParticlePos(x+1, y);
+				Vector3d &p3 = getParticlePos(x, y+1);
+				normal = calcTriangleNormal( p1, p2, p3);
+			}
+			else if (x==0 && y==mHeight-1){
+				Vector3d &p1 = getParticlePos(x, y);
+				Vector3d &p2 = getParticlePos(x, y-1);
+				Vector3d &p3 = getParticlePos(x+1, y);
+				normal = calcTriangleNormal( p1, p2, p3);
+			}
+			else if (x==mWidth-1 && y==0){
+				Vector3d &p1 = getParticlePos(x, y);
+				Vector3d &p2 = getParticlePos(x, y+1);
+				Vector3d &p3 = getParticlePos(x-1, y);
+				normal = calcTriangleNormal( p1, p2, p3);
+			}
+			else if (x==mWidth-1 && y==mHeight-1){
+				Vector3d &p1 = getParticlePos(x, y);
+				Vector3d &p2 = getParticlePos(x-1, y);
+				Vector3d &p3 = getParticlePos(x, y-1);
+				normal = calcTriangleNormal( p1, p2, p3);
+			}
+			// edges
+			else if (x==0){
+				Vector3d &p1 = getParticlePos(x, y);
+				Vector3d &p2 = getParticlePos(x, y-1);
+				Vector3d &p3 = getParticlePos(x+1, y);
+				Vector3d &p4 = getParticlePos(x, y+1);
+				normal1 = calcTriangleNormal( p1, p2, p3);
+				normal2 = calcTriangleNormal( p1, p3, p4);
+				normal = normal1 + normal2;
+			}
+			else if (x==mWidth-1){
+				Vector3d &p1 = getParticlePos(x, y);
+				Vector3d &p2 = getParticlePos(x, y+1);
+				Vector3d &p3 = getParticlePos(x-1, y);
+				Vector3d &p4 = getParticlePos(x, y-1);
+				normal1 = calcTriangleNormal( p1, p2, p3);
+				normal2 = calcTriangleNormal( p1, p3, p4);
+				normal = normal1 + normal2;
+			}
+			else if (y==0){
+				Vector3d &p1 = getParticlePos(x, y);
+				Vector3d &p2 = getParticlePos(x+1, y);
+				Vector3d &p3 = getParticlePos(x, y+1);
+				Vector3d &p4 = getParticlePos(x-1, y);
+				normal1 = calcTriangleNormal( p1, p2, p3);
+				normal2 = calcTriangleNormal( p1, p3, p4);
+				normal = normal1 + normal2;
+			}
+			else if (y==mHeight-1){
+				Vector3d &p1 = getParticlePos(x, y);
+				Vector3d &p2 = getParticlePos(x-1, y);
+				Vector3d &p3 = getParticlePos(x, y-1);
+				Vector3d &p4 = getParticlePos(x+1, y);
+				normal1 = calcTriangleNormal( p1, p2, p3);
+				normal2 = calcTriangleNormal( p1, p3, p4);
+				normal = normal1 + normal2;
+			}
+			// inner vertices
+			else{
+				Vector3d &p1 = getParticlePos(x, y);
+				Vector3d &p2 = getParticlePos(x-1, y);
+				Vector3d &p3 = getParticlePos(x, y-1);
+				Vector3d &p4 = getParticlePos(x+1, y);
+				Vector3d &p5 = getParticlePos(x, y+1);
+				normal1 = calcTriangleNormal( p1, p2, p3);
+				normal2 = calcTriangleNormal( p1, p3, p4);
+				normal3 = calcTriangleNormal( p1, p4, p5);
+				normal4 = calcTriangleNormal( p1, p5, p2);
+				normal = normal1 + normal2 + normal3 + normal4;
+			}
+			normal.normalize();
+			mVertexNormals[IDX(x,y)] = normal;
+		}
+	}
+
+	#undef IDX
+}
+
+void 
+ParticleSystem::move( Vector3d direction )
+{
+	idx_t numParticles = getNumParticles();
+	for( idx_t i = 0; i < numParticles; i++ )
+    {
+        mParticlePos[i] += direction;
+    }
+}
+
+Vector3d 
+ParticleSystem::calcTriangleNormal(Vector3d vertex1, Vector3d vertex2, Vector3d vertex3)
+{
+	Vector3d normal = (vertex2 - vertex1).cross(vertex3 - vertex1);
+	normal.normalize();
+	return normal;
 }

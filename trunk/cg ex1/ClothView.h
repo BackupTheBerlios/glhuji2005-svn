@@ -57,6 +57,8 @@ protected:
     int               mWindowWidth;
     int               mWindowHeight;
     bool              mWireFrameMode; //wire frame/solid toggle
+	bool              mNormalsMode; //normals show/hide toggle
+	bool              mSmoothByNormals; // smooth using normals info
     double            mFrustumDeg;
     double            mArcballRadius;
     Vector3d          mClothCenter;

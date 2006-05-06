@@ -15,6 +15,17 @@ void mouseMovedCallback( int inX, int inY );
 void keyPressedCallback( unsigned char inKey, int inX, int inY );
 void timerCallback( int inVal );
 
+//Lights settings
+GLfloat light_ambient[]= { 0.9f, 0.9f, 0.9f, 1.0f };
+GLfloat light_diffuse[]= { 1.0f, 1.0f, 1.0f, 1.0f };
+GLfloat light_specular[]= { 1.0f, 1.0f, 1.0f, 1.0f };
+GLfloat light_position1[]= { -14.0f, -1.0f, -4.0f, 1.0f };
+//Materials settings
+GLfloat mat_ambient[]= { 0.3f, 0.3f, 0.3f, 0.0f };
+GLfloat mat_diffuse[]= { 0.8f, 0.8f, 0.8f, 0.0f };
+GLfloat mat_specular[]= { 1.0f, 1.0f, 1.0f, 0.0f };
+GLfloat mat_shininess[]= { 1.0f };
+
 int main (int argc, char **argv)
 {
     string simFile = string(C_DEFAULT_SIMULATION_FILE);
@@ -48,6 +59,21 @@ int main (int argc, char **argv)
     glutCreateWindow("Cloth Simulation");
     glPolygonMode( GL_FRONT_AND_BACK,GL_LINE );
     glClearColor(0.0,0.0,0.0,0.0);
+	glShadeModel(GL_SMOOTH);							// Enable Smooth Shading
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);	// Really Nice Perspective Calculations
+	
+	// shed some light
+	glLightfv (GL_LIGHT1, GL_AMBIENT, light_ambient);
+    glLightfv (GL_LIGHT1, GL_DIFFUSE, light_diffuse);
+    glLightfv (GL_LIGHT1, GL_DIFFUSE, light_specular);
+    glLightfv (GL_LIGHT1, GL_POSITION, light_position1);    
+    glEnable (GL_LIGHT1);
+    glEnable (GL_LIGHTING);
+	//Materials initialization and activation
+	glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
+    glMaterialfv (GL_FRONT_AND_BACK, GL_DIFFUSE, mat_diffuse);
+    glMaterialfv (GL_FRONT_AND_BACK, GL_DIFFUSE, mat_specular);
+    glMaterialfv (GL_FRONT_AND_BACK, GL_POSITION, mat_shininess);
 
     //Assign callbacks
     glutDisplayFunc( displayCallback );

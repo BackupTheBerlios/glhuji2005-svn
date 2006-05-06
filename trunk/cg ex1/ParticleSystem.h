@@ -60,6 +60,11 @@ public:
 
     void constructSprings( double inK, double inB, double shearK, double shearB, double flexK, double flexB );
 
+	void calculateNormals();
+	Vector3d calcTriangleNormal(Vector3d vertex1, Vector3d vertex2, Vector3d vertex3);
+
+	void move( Vector3d direction );
+
     void freeParticleStorage();
 
     //access to particle storage
@@ -79,6 +84,7 @@ public:
 
     //getters
     Vector3d    &getParticlePos( idx_t inX, idx_t inY );
+	Vector3d    &getParticleNormal( idx_t inX, idx_t inY );
     double      getStiffestSpring();
     idx_t       getNumParticles();
 	idx_t       getWidth(){ return mWidth; };
@@ -123,6 +129,10 @@ protected:
     double	         mWindMinLen;
     double	         mWindMaxLen;
     double	         mWindMaxChange;
+
+	Vector3d         *mFaceNormals;
+	Vector3d         *mVertexNormals;
+
 };
 
 #endif //__PARTICLE_SYSTEM_H__
