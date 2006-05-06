@@ -7,7 +7,7 @@ const int C_WINDOW_WIDTH     = 500;
 const int C_WINDOW_HEIGHT    = 400;
 
 //delay in milliseconds for calling timer function.
-const uint16 C_TIMER_DELAY   = 2;
+const uint16 C_TIMER_DELAY   = 15;
 
 //code for keyboard keys
 const char C_ESCAPE_KEY_CODE = 27;

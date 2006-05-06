@@ -1,8 +1,8 @@
 # Cloth Data File - all values are MKS
 
 #part one: Mesh Dimensions
-MeshWidth     = 7
-MeshHeight    = 7
+MeshWidth     = 32
+MeshHeight    = 32
 
 #part two: Global Constants
 Gravity       = 9.81 #Gravity Acceleration (In meters per second per second)
@@ -20,7 +20,7 @@ FlexB         = 3    #Flexion damping
 
 #Solver to use
 # 1 - Forward Euler; 2 - midpoint; 3 - Runge Kutta
-Solver = 3
+Solver = 1
 
 #Wind parameters
 Wind          = 1,0.02,0	#Wind force [N] per h [Sec]
