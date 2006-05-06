@@ -32,6 +32,10 @@ const double C_DEFAULT_FRUSTRUM_ANGLE = 40;
 #define C_AIR_RESISTANCE_TAG     ("AirResistance")
 #define C_SOLVER_TYPE_TAG        ("Solver")
 #define C_AUTOCREATE_MESH_TAG    ("AutoCreateMesh")
+#define C_WIND_TAG               ("Wind")
+#define C_WIND_MIN_FACTOR_TAG    ("WindMinFactor")
+#define C_WIND_MAX_FACTOR_TAG    ("WindMaxFactor")
+#define C_WIND_MAX_CHANGE_TAG    ("WindMaxChange")
 
 const int C_NUM_FIELDS_IN_PARTICLE   = 5;
 const int C_NUM_FIELDS_IN_AUTOCREATE = 6;

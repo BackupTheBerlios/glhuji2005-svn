@@ -27,6 +27,12 @@ NumericalSolver::attachToParticleSystem( ParticleSystem *inParticleSystem, bool 
 }
 
 void 
+GetWindForce (Vector3d &inPos, Vector3d &outF)
+{
+    Vector3d wind(4,-2,-3);
+}
+
+void 
 NumericalSolver::calcAccel( Vector3d *inPositions, Vector3d *inVelocities, 
                              double *inInvMasses, Vector3d *outAccel )
 {
@@ -35,9 +41,12 @@ NumericalSolver::calcAccel( Vector3d *inPositions, Vector3d *inVelocities,
 
     gravity.pY = -(mParticleSystem->getGravity());
 
-    //---------- Zero Particle Forces ----------
+    //---------- Initialize Particle Forces to wind force ----------
+	Vector3d Wind = mParticleSystem->getNewWind();
     for( int i = 0; i < numParticles; i++ )
-        outAccel[i].set(0,0,0);
+	{
+        outAccel[i] = Wind;
+	}
 
     //---------- Sum Forces ----------
     for( SpringListIt it = mParticleSystem->getSprings().begin(); 
@@ -54,8 +63,8 @@ NumericalSolver::calcAccel( Vector3d *inPositions, Vector3d *inVelocities,
         double len  = xLen - theSpring.getRestLength();
 
         //don't allow springs to stretch more than twice their original length
-        if( len > (3 * theSpring.getRestLength()) )
-            continue;
+//        if( len > (3 * theSpring.getRestLength()) )
+//            continue;
 
         Vector3d F = (dx/xLen)*(len*theSpring.getK() + (dv.dot(dx)/xLen)*theSpring.getB());
 
@@ -67,6 +76,8 @@ NumericalSolver::calcAccel( Vector3d *inPositions, Vector3d *inVelocities,
     //----------------- calculate Acceleration -------------------
     for( int i = 0; i < numParticles; i++ )
     {
-        outAccel[i] = gravity + (outAccel[i] * inInvMasses[i]);
+		Vector3d wind;
+		GetWindForce (inPositions[i], wind);
+        outAccel[i] = gravity + ((wind+outAccel[i]) * inInvMasses[i]);
     }
 }

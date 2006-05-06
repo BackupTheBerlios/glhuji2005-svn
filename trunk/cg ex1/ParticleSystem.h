@@ -2,6 +2,7 @@
 #define __PARTICLE_SYSTEM_H__
 
 #include <vector>
+#include "Vector3d.h"
 #include "Spring.h"
 #include "NumericalSolver.h"
 
@@ -90,6 +91,16 @@ public:
 public:
     bool IsMidPoint(){return mIsMidPoint;}
     void setIsMidPoint(bool bMidPoint){mIsMidPoint = bMidPoint;}
+	void setWind (Vector3d WindDirection, Vector3d Wind, double WindMinLen, double WindMaxLen, double WindMaxChange)
+	{
+		mWindDirection = WindDirection;
+		mWind = Wind;
+		mWindMinLen = WindMinLen;
+		mWindMaxLen = WindMaxLen;
+		mWindMaxChange = WindMaxChange;
+	}
+
+	Vector3d getNewWind();
 
 protected:
     idx_t            mWidth;
@@ -106,6 +117,12 @@ protected:
     Vector3d         *mParticleVelocity;
     ParticleInfo     *mParticleInfo;
     double           *mParticleInvMass; // 1/m
+
+    Vector3d         mWindDirection;
+    Vector3d         mWind;
+    double	         mWindMinLen;
+    double	         mWindMaxLen;
+    double	         mWindMaxChange;
 };
 
 #endif //__PARTICLE_SYSTEM_H__

@@ -20,6 +20,12 @@ ParticleSystem::ParticleSystem(  )
     mGravity       = 0;
     mAirResistance = 0;
 
+	mWindDirection = Vector3d(0,0,0);
+    mWind = Vector3d(0,0,0);
+    mWindMinLen = 0.0;
+    mWindMaxLen = 0.0;
+    mWindMaxChange = 0.0;
+
     mParticlePos         = NULL;
     mParticleVelocity    = NULL;
     mParticleInvMass     = NULL;
@@ -321,4 +327,17 @@ ParticleSystem::setSolver( NumericalSolver *inSolver )
 
     mSolver = inSolver;
     mSolver->attachToParticleSystem( this, mIsMidPoint );
+}
+
+Vector3d
+ParticleSystem::getNewWind()
+{
+	double change = mWindMaxChange*(1.0-double(rand())/double(RAND_MAX));
+	mWind += mWindDirection*change;
+	double WindLen = mWind.length();
+	if (WindLen > mWindMaxLen)
+		mWind = mWindDirection*mWindMaxLen;
+	else if (WindLen < mWindMinLen)
+		mWind = mWindDirection*mWindMinLen;
+	return mWind;
 }
