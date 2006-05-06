@@ -27,12 +27,6 @@ NumericalSolver::attachToParticleSystem( ParticleSystem *inParticleSystem, bool 
 }
 
 void 
-GetWindForce (Vector3d &inPos, Vector3d &outF)
-{
-    Vector3d wind(4,-2,-3);
-}
-
-void 
 NumericalSolver::calcAccel( Vector3d *inPositions, Vector3d *inVelocities, 
                              double *inInvMasses, Vector3d *outAccel )
 {
@@ -76,8 +70,6 @@ NumericalSolver::calcAccel( Vector3d *inPositions, Vector3d *inVelocities,
     //----------------- calculate Acceleration -------------------
     for( int i = 0; i < numParticles; i++ )
     {
-		Vector3d wind;
-		GetWindForce (inPositions[i], wind);
-        outAccel[i] = gravity + ((wind+outAccel[i]) * inInvMasses[i]);
+        outAccel[i] = gravity + (outAccel[i] * inInvMasses[i]);
     }
 }
