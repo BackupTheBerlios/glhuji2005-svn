@@ -176,6 +176,10 @@ ClothView::redraw()
     glutPostRedisplay();
 }
 
+GLfloat light0Pos[4] = { -50, 40, 0, 1 };
+GLfloat light1Pos[4] = { 50, 40, 0, 1 };
+GLfloat white[4] = { 1, 1, 1, 1 };
+
 void
 ClothView::drawParticleSystem()
 {
@@ -214,9 +218,34 @@ ClothView::drawParticleSystem()
 
 	//only draw outline in wireframe mode
     if( mWireFrameMode )
+	{
         glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+	}
     else
+	{
         glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+	/*	GLfloat red[4] = { 0.4, 0, 0, 5 };
+		GLfloat white[4] = { 6, 6, 6, 6 };
+		glMaterialfv(GL_FRONT, GL_AMBIENT, red);
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, red);
+		glMaterialfv(GL_FRONT, GL_SPECULAR, white);
+		glMaterialf(GL_FRONT, GL_SHININESS, 90.0);*/
+		glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
+		glEnable(GL_LIGHT0);
+		glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
+		glLightfv(GL_LIGHT0, GL_POSITION, light1Pos);
+
+		//attenuate
+		glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 0.2);
+		glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.1);
+		glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.0);
+
+		glPointSize(12.0);
+		glBegin(GL_POINTS);
+		glVertex3fv(light0Pos);
+		glEnd();
+	}
+
 
     for (int y=0; y<h-1; y++){
         glBegin(GL_QUAD_STRIP);									// Draw A Quad strip for every row
@@ -228,10 +257,10 @@ ClothView::drawParticleSystem()
 			Vector3d &n1 = mParticleSystem.getParticleNormal(x, y+1);
             Vector3d &n2 = mParticleSystem.getParticleNormal(x, y);
 
-			if (mSmoothByNormals) glNormal3f(n1.pX, n1.pY, n1.pZ);
+			if (mSmoothByNormals) glNormal3f(-n1.pX, -n1.pY, -n1.pZ);
             glVertex3f( p1.pX, p1.pY, p1.pZ);
 
-			if (mSmoothByNormals) glNormal3f(n2.pX, n2.pY, n2.pZ);
+			if (mSmoothByNormals) glNormal3f(-n2.pX, -n2.pY, -n2.pZ);
             glVertex3f( p2.pX, p2.pY, p2.pZ);
 //			Particle& p1 = mParticleSystem.getParticleAt(x, y+1);
 //            Particle& p2 = mParticleSystem.getParticleAt(x, y);
