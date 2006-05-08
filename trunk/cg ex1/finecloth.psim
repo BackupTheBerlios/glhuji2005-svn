@@ -23,10 +23,10 @@ FlexB         = 3    #Flexion damping
 Solver = 1
 
 #Wind parameters
-Wind          = 0,0.00,0	#Wind force [N] per h [Sec]
-WindMinFactor = 0.02
-WindMaxFactor = 4
-WindMaxChange = 0.6     # Absolute value of maximal change in wind force per h [Sec]
+Wind          = 0.001,0,0	#Wind force [N] per h [Sec]
+WindMinFactor = 0.1
+WindMaxFactor = 400
+WindMaxChange = 0.08     # Absolute value of maximal change in wind force per h [Sec]
 
 #part three: Defining the mesh
 ################################################################################
