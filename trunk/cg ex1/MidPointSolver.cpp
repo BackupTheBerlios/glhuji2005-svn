@@ -51,7 +51,14 @@ MidPointSolver::step( double h )
     //---------- 2. calculate x & v at midpoint ----------
     for( int i = 0; i < numParticles; i++ )
     {
-        mTmpV[i]   = origV[i]   + (mAccel[i] * halfH);
+        if( pInfo[i].pIsPinned )
+		{
+			mTmpV[i]   = origV[i];
+			mTmpPos[i] = origPos[i];
+            continue;
+		}
+
+		mTmpV[i]   = origV[i]   + (mAccel[i] * halfH);
         mTmpPos[i] = origPos[i] + (mTmpV[i] * halfH);
     }
 

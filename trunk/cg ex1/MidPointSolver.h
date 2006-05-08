@@ -1,7 +1,7 @@
 #ifndef __MIDPOINT_SOLVER_H__
 #define __MIDPOINT_SOLVER_H__
 
-class NumericalSolver;
+#include "NumericalSolver.h"
 
 class MidPointSolver : public NumericalSolver
 {

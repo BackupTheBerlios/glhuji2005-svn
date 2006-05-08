@@ -1,10 +1,10 @@
 #include "StdAfx.h"
+#include "ParticleSystem.h"
 #include "Vector3d.h"
 #include "Particle.h"
 #include "Spring.h"
 #include "Force.h"
 #include "constants.h"
-#include "ParticleSystem.h"
 #include "Rungekuttasolver.h"
 
 RungeKuttaSolver::RungeKuttaSolver()
@@ -60,7 +60,14 @@ RungeKuttaSolver::step( double h )
     //---------- 2. k2 = h*f(x,y+k1/2) ----------
     for( int i = 0; i < numParticles; i++ )
     {
-        mTmpV[i]    = origV[i]   + (mK1[i] * halfH);
+        if( pInfo[i].pIsPinned )
+		{
+			mTmpV[i]   = origV[i];
+			mTmpPos[i] = origPos[i];
+            continue;
+		}
+
+		mTmpV[i]    = origV[i]   + (mK1[i] * halfH);
         mTmpPos[i]  = origPos[i] + (mTmpV[i] * halfH);
     }
 
@@ -69,7 +76,14 @@ RungeKuttaSolver::step( double h )
     //---------- 3. k3 = h*f(x,y+k2/2) ----------
     for( int i = 0; i < numParticles; i++ )
     {
-        mTmpV[i]   = origV[i]     + (mK2[i] * halfH);
+        if( pInfo[i].pIsPinned )
+		{
+			mTmpV[i]   = origV[i];
+			mTmpPos[i] = origPos[i];
+            continue;
+		}
+
+		mTmpV[i]   = origV[i]     + (mK2[i] * halfH);
         mTmpPos[i] = origPos[i] + (mTmpV[i] * halfH);
     }
 
@@ -78,7 +92,14 @@ RungeKuttaSolver::step( double h )
     //---------- 3. k4 = h*f(x,y+k3) ----------
     for( int i = 0; i < numParticles; i++ )
     {
-        mTmpV[i]   =  origV[i]   + (mK3[i] * h);
+        if( pInfo[i].pIsPinned )
+		{
+			mTmpV[i]   = origV[i];
+			mTmpPos[i] = origPos[i];
+            continue;
+		}
+
+		mTmpV[i]   =  origV[i]   + (mK3[i] * h);
         mTmpPos[i] = origPos[i] + (mTmpV[i] * h);
     }
 
