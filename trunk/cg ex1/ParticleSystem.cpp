@@ -118,7 +118,7 @@ ParticleSystem::constructSprings( double inK, double inB, double shearK, double 
 					dist *= -1;
                 //double dist = 0.5;
 
-                mSprings.push_back( Spring( a, b, dist, inK, inB ) );
+                mSprings.push_back( Spring( a, b, dist, inK, inB, 0 ) );
             }
 
             //connect springs down for all except bottom row
@@ -133,7 +133,7 @@ ParticleSystem::constructSprings( double inK, double inB, double shearK, double 
 					dist *= -1;
                 //double dist = 0.5;
 
-                mSprings.push_back( Spring( a, b, dist, inK, inB ) );
+                mSprings.push_back( Spring( a, b, dist, inK, inB, 0 ) );
             }
 
 			//Add backslashed Shear springs for all but rightmost particles and bottom row
@@ -146,7 +146,7 @@ ParticleSystem::constructSprings( double inK, double inB, double shearK, double 
                 //double dist = abs((p2V-p1V).length());
                 double dist = (p1V - p2V).length();	//Set rest distance as current distance
 
-                mSprings.push_back( Spring( a, b, dist, shearK, shearB ) );
+                mSprings.push_back( Spring( a, b, dist, shearK, shearB, 1 ) );
             }
 			//Add slashed Shear springs for all but leftmost particles and bottom row
             if( x != 0 && y != mHeight-1 )
@@ -158,7 +158,7 @@ ParticleSystem::constructSprings( double inK, double inB, double shearK, double 
                 //double dist = abs((p2V-p1V).length());
                 double dist = (p1V - p2V).length();	//Set rest distance as current distance
 
-                mSprings.push_back( Spring( a, b, dist, shearK, shearB ) );
+                mSprings.push_back( Spring( a, b, dist, shearK, shearB, 1 ) );
             }
 
 
@@ -172,7 +172,7 @@ ParticleSystem::constructSprings( double inK, double inB, double shearK, double 
                 //double dist = abs((p2V-p1V).length());
                 double dist = (p1V - p2V).length();	//Set rest distance as current distance
 
-                mSprings.push_back( Spring( a, b, dist, flexK, flexB ) );
+                mSprings.push_back( Spring( a, b, dist, flexK, flexB, 2 ) );
             }
 			//Add flexion springs for all but 2 bottommost rows
             if( y < mHeight-2 )
@@ -184,7 +184,7 @@ ParticleSystem::constructSprings( double inK, double inB, double shearK, double 
                 //double dist = abs((p2V-p1V).length());
                 double dist = (p1V - p2V).length();	//Set rest distance as current distance
 
-                mSprings.push_back( Spring( a, b, dist, flexK, flexB ) );
+                mSprings.push_back( Spring( a, b, dist, flexK, flexB, 2 ) );
             }
         }
 
@@ -341,6 +341,16 @@ ParticleSystem::getParticleNormal( idx_t inX, idx_t inY )
 	assert( mVertexNormals != NULL );
 
     return mVertexNormals[ inX + (inY*mWidth) ];
+}
+
+Vector3d    &
+ParticleSystem::getParticleNormal( idx_t idx )
+{
+	//sanity, check we're inside mesh bounds...
+    assert( idx < (mWidth*mHeight) );
+	assert( mVertexNormals != NULL );
+
+    return mVertexNormals[ idx ];
 }
 
 void 

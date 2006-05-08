@@ -37,9 +37,15 @@ NumericalSolver::calcAccel( Vector3d *inPositions, Vector3d *inVelocities,
 
     //---------- Initialize Particle Forces to wind force ----------
 	Vector3d Wind = mParticleSystem->getNewWind();
+	Vector3d NormalizedWind = Wind.normalized();
+	double dotp;
     for( int i = 0; i < numParticles; i++ )
 	{
-        outAccel[i] = Wind;
+		Vector3d &normal = mParticleSystem->getParticleNormal(i);
+		dotp = NormalizedWind.dot(normal);
+		if (dotp < 0)
+			dotp *= -1;
+        outAccel[i] = Wind*dotp;
 	}
 
     //---------- Sum Forces ----------
@@ -69,11 +75,20 @@ NumericalSolver::calcAccel( Vector3d *inPositions, Vector3d *inVelocities,
 		if ((F.normalized()+FB.normalized()).length() < 0.1)
 		{
 			if (FB.length() > F.length())
-				F.set(0,0,0);
+				continue;
 			else
 				F += FB;
 		}
-		
+/*		//used for debugging
+		if (theSpring.mType == 1)
+		{
+			continue;
+		}
+		if (theSpring.mType == 2)
+		{
+			continue;
+		}
+*/		
 
         //force affects both springs in opposite directions
         outAccel[aIdx] -= F;

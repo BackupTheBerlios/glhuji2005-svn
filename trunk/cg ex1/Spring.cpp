@@ -5,17 +5,18 @@
 
 Spring::Spring()
 {
-    Spring( -1, -1, 0.5,  0, 0 );
+    Spring( -1, -1, 0.5,  0, 0, 0 );
 }
 
 Spring::Spring( idx_t inParticleA, idx_t inParticleB,
-       double inLength, double inK, double inB )
+       double inLength, double inK, double inB, int nType )
 {
     mParticleA  = inParticleA;
     mParticleB  = inParticleB;
     mK          = inK;
     mB          = inB;
     mRestLength = inLength;
+	mType = nType;
 }
 
 Spring::~Spring()

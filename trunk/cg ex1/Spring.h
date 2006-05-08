@@ -11,7 +11,7 @@ class Spring
 public:
     Spring();
     Spring( idx_t inParticleA, idx_t inParticleB,
-            double inLength, double inK, double inB );
+            double inLength, double inK, double inB, int nType );
     virtual ~Spring();
 
     idx_t getParticleA();
@@ -21,7 +21,7 @@ public:
     double    getB();
 
     double    getRestLength();
-
+	int mType;
 protected:
     idx_t    mParticleA;    //Particle 1
     idx_t    mParticleB;    //Particle 2

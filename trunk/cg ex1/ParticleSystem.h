@@ -85,6 +85,7 @@ public:
     //getters
     Vector3d    &getParticlePos( idx_t inX, idx_t inY );
 	Vector3d    &getParticleNormal( idx_t inX, idx_t inY );
+	Vector3d	&getParticleNormal( idx_t idx );
     double      getStiffestSpring();
     idx_t       getNumParticles();
 	idx_t       getWidth(){ return mWidth; };

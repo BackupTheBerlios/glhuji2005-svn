@@ -177,7 +177,6 @@ ClothView::redraw()
 }
 
 GLfloat light0Pos[4] = { -50, 40, 0, 1 };
-GLfloat light1Pos[4] = { 50, 40, 0, 1 };
 GLfloat white[4] = { 1, 1, 1, 1 };
 
 void
@@ -233,8 +232,7 @@ ClothView::drawParticleSystem()
 		glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
 		glEnable(GL_LIGHT0);
 		glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
-		glLightfv(GL_LIGHT0, GL_POSITION, light1Pos);
-
+		glLightfv(GL_LIGHT0, GL_POSITION, light0Pos);
 		//attenuate
 		glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 0.2);
 		glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.1);
