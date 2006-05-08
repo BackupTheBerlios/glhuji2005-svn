@@ -275,7 +275,7 @@ ClothView::ClothView( )
     mWindowWidth  = C_WINDOW_WIDTH;
     mWindowHeight = C_WINDOW_HEIGHT;
     mIsRunning    = true;
-	mWireFrameMode   = true;
+	mWireFrameMode   = false;
 	mNormalsMode     = false;
 	mSmoothByNormals = true;
 }
