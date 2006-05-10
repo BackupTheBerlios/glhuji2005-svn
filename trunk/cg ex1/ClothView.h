@@ -57,6 +57,8 @@ protected:
     int               mWindowWidth;
     int               mWindowHeight;
     bool              mWireFrameMode; //wire frame/solid toggle
+	bool              mSmoothShading;	//toggle smooth/flat shading
+              
 	bool              mNormalsMode; //normals show/hide toggle
 	bool              mSmoothByNormals; // smooth using normals info
     double            mFrustumDeg;

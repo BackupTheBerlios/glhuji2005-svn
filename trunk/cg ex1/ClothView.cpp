@@ -104,6 +104,7 @@ ClothView::mouseMoved( int inX, int inY )
 	}
 	gLastX = inX;
 	gLastY = inY;
+    redraw();
 }
 
 void 
@@ -123,6 +124,12 @@ ClothView::keyPressed( unsigned char inKey, int inX, int inY )
             redraw();
             break;
 
+		//toggle smooth/flat shading
+        case 'f':
+            mSmoothShading = !mSmoothShading;
+            redraw();
+            break;
+			
 		//show/hide normals
         case 'n':
             mNormalsMode = !mNormalsMode;
@@ -223,6 +230,15 @@ ClothView::drawParticleSystem()
     else
 	{
         glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+		if (mSmoothShading)
+		{
+			glShadeModel ( GL_SMOOTH );
+		}
+		else
+		{
+			glShadeModel ( GL_FLAT );
+		}
+		
 	/*	GLfloat red[4] = { 0.4, 0, 0, 5 };
 		GLfloat white[4] = { 6, 6, 6, 6 };
 		glMaterialfv(GL_FRONT, GL_AMBIENT, red);
@@ -276,6 +292,7 @@ ClothView::ClothView( )
     mWindowHeight = C_WINDOW_HEIGHT;
     mIsRunning    = true;
 	mWireFrameMode   = false;
+	mSmoothShading = true;
 	mNormalsMode     = false;
 	mSmoothByNormals = true;
 }

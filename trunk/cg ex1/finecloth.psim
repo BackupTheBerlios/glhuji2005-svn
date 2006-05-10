@@ -1,8 +1,8 @@
 # Cloth Data File - all values are MKS
 
 #part one: Mesh Dimensions
-MeshWidth     = 32
-MeshHeight    = 32
+MeshWidth     = 64
+MeshHeight    = 64
 
 #part two: Global Constants
 Gravity       = 9.81 #Gravity Acceleration (In meters per second per second)
@@ -20,7 +20,7 @@ FlexB         = 3    #Flexion damping
 
 #Solver to use
 # 1 - Forward Euler; 2 - midpoint; 3 - Runge Kutta
-Solver = 1
+Solver = 2
 
 #Wind parameters
 Wind          = 0.001,0,0	#Wind force [N] per h [Sec]
@@ -55,13 +55,13 @@ AutoCreateMesh = -10.0, 0, -20, 0.05, 1.5, 1.5
 (0,1) = PIN
 (0,2) = PIN
 (0,3) = PIN
-(0,31) = PIN
-(0,30) = PIN
-(0,29) = PIN
-(0,28) = PIN
+(0,63) = PIN
+(0,62) = PIN
+(0,61) = PIN
+(0,60) = PIN
 
-(15,8) = PIN
-(15,20) = PIN
+(35,18) = PIN
+(35,40) = PIN
 
 #(0,6) = PIN
 #(0,6) = PIN
