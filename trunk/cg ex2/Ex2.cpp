@@ -14,7 +14,7 @@ int main(int argc, char* argv[])
     bool ok;
 
     ArticulatedFigure fig;
-    BVHParser parser( string("aero working.bvh"), fig, ok );
+    BVHParser parser( string("example.bvh"), fig, ok );
 
     cout << "Loading BVH File..." << endl;
     parser.parse( ok );
