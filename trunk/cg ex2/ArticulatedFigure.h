@@ -20,6 +20,7 @@ public:
         Node( const Node &inNode );
 
         void setNumChannels( int inNumChannels ){ pNumChannels = inNumChannels; }
+		void draw(int frameNum, bool lineFigure);
 
     public:
         std::string   pNodeName;
@@ -41,6 +42,10 @@ public:
     ~ArticulatedFigure();
 
     void setRuntimeParamters( int inNumFrames, double inFPS );
+	float getMaxOffset(){ return 1.0; }//TODO: should return the maxmal joint offset
+	static float getJointRadius(){ return 0.5; }//TODO: let the user decide
+	void draw(int frameNum, bool lineFigure);
+	int getNumOfFrames(){ return mNumFrames; }
 
 //--------------- Storage -----------
 protected:
