@@ -128,8 +128,8 @@ void ArticulatedFigure::Node::draw(int frameNum, bool lineFigure)
 	// TODO: apply animation translate/rotate
 	if (pOffsets.size()>0) {
 		float x = pOffsets[frameNum][0];
-		float y = pOffsets[frameNum][0];
-		float z = pOffsets[frameNum][0];
+		float y = pOffsets[frameNum][1];
+		float z = pOffsets[frameNum][2];
 		glTranslatef(x,y,z);
 	}
 	
