@@ -174,7 +174,7 @@ int main(int argc, char **argv)
     glutInit( &argc, argv );
     glutInitDisplayMode( GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH );
     glutInitWindowSize( WINSIZE, WINSIZE );
-    glutCreateWindow( "MOCAP Player" );
+    glutCreateWindow( "BVH Player" );
     glutDisplayFunc( DisplayCallback );
 //    glutMouseFunc(mousebutton);
 //    glutMotionFunc(mousemotion);

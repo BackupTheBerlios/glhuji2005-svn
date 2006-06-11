@@ -152,16 +152,14 @@ void ArticulatedFigure::Node::draw(int frameNum, bool lineFigure)
 	glutSolidSphere(getJointRadius(),20,10);
 	
 	  // draw line from joint to end site (if necessary)
-	/* TODO: what about the end-sites???
-	if (endSite) {
+	if( pChildren.size() == 0 ) {
 		glLineWidth(3);
 		glColor3f(0.8,0.4,0);
 		glBegin(GL_LINES);
 		glVertex3f(0,0,0);
-		glVertex3f(endLength[0],endLength[1],endLength[2]);
+		glVertex3f(pPosition[0],pPosition[1],pPosition[2]);
 		glEnd();
 	}
-	*/
 
 	  // recursively draw all child joints
 	for (unsigned int n=0; n<pChildren.size(); n++)
