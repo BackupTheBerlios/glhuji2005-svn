@@ -46,6 +46,7 @@ public:
 	static float getJointRadius(){ return 0.5; }//TODO: let the user decide
 	void draw(int frameNum, bool lineFigure);
 	int getNumOfFrames(){ return mNumFrames; }
+	double getFrameTime(){ return mFPS; }
 
 //--------------- Storage -----------
 protected:
