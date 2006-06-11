@@ -28,6 +28,71 @@ int getms(const SYSTEMTIME& st)
 	return (st.wMilliseconds + (st.wSecond+(st.wMinute+(st.wHour+st.wDay*24)*60)*60)*1000);
 }
 
+
+#define MOVEMENT_STEP 0.009
+#define ROTATION_STEP 0.3
+#define ZOOM_STEP 1
+bool gLBDown = false;
+bool gRBDown = false;
+int gLastX;
+int gLastY;
+GLfloat gOriginX = 0.0f;
+GLfloat gOriginY = 0.0f;
+GLfloat gOriginZ = -163.0f;
+GLfloat g_xRotated = 15.0f;
+GLfloat g_yRotated = 10.0f;
+GLfloat g_zRotated = 0.0f;
+
+
+void 
+mousePressedCallback( int inButton, int inState, int inX, int inY )
+{
+	// if we want both mouse and ALT (for example) use this instead of next line
+	//specialKey = glutGetModifiers();
+	//if ((inState == GLUT_DOWN) && (specialKey == GLUT_ACTIVE_ALT)) {
+	gLastX = inX;
+	gLastY = inY;
+	if (inState == GLUT_DOWN && inButton == GLUT_LEFT_BUTTON) {
+		gLBDown = true;
+	}
+	else if (inState == GLUT_UP && inButton == GLUT_LEFT_BUTTON) {
+		gLBDown = false;
+	}
+	if (inState == GLUT_DOWN && inButton == GLUT_RIGHT_BUTTON) {
+		gRBDown = true;
+	}
+	else if (inState == GLUT_UP && inButton == GLUT_RIGHT_BUTTON) {
+		gRBDown = false;
+	}
+}
+
+void DisplayCallback();
+void 
+mouseMovedCallback( int inX, int inY )
+{
+	int dx = (inX-gLastX);
+	int dy = (inY-gLastY);
+	if (gLBDown && gRBDown)
+	{
+		gOriginZ -= ((float)dy)*ZOOM_STEP;
+	}
+	else if (gLBDown)
+	{
+		int dx = (inX-gLastX);
+		int dy = (inY-gLastY);
+		g_xRotated += ((float)dy)*ROTATION_STEP;
+		g_yRotated += ((float)dx)*ROTATION_STEP;
+	}
+	else if (gRBDown)
+	{
+		gOriginX -= ((float)dx)*MOVEMENT_STEP*(gOriginZ/(ZOOM_STEP*3));
+		gOriginY += ((float)dy)*MOVEMENT_STEP*(gOriginZ/(ZOOM_STEP*3));
+	}
+	gLastX = inX;
+	gLastY = inY;
+    DisplayCallback();
+}
+
 /////////////////////////////////////////////////////
 // FUNC: Initialize()
 // DOES: basic OpenGL initialization
@@ -37,8 +102,9 @@ void Initialize()
 {
       // initialize matrix stacks
     glMatrixMode( GL_PROJECTION );
-    glLoadIdentity();
-	gluPerspective(30,1,1,200);
+    glLoadIdentity();									// Reset The Current Modelview Matrix
+
+	gluPerspective(30,1,1,20000);
     glMatrixMode( GL_MODELVIEW );
     glLoadIdentity();
 	gluLookAt(0,0,-150,  0,0,0,  0,1,0);
@@ -74,6 +140,7 @@ void Initialize()
 // PROC:   BVH::drawGround()
 // DOES:   draws a ground plane and grid
 //////////////////////////////////////////////////
+
 void drawGround()
 {
 	float x,z;
@@ -117,7 +184,13 @@ void DisplayCallback()
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
 	glPushMatrix();
-//	glScalef(drawScale,drawScale,drawScale);
+    glLoadIdentity();									// Reset The Current Modelview Matrix
+    glTranslatef(gOriginX,gOriginY,gOriginZ);		
+	glRotatef(g_xRotated,1.0f,0.0f,0.0f);					// Rotate The Quad On The X axis ( NEW )
+	glRotatef(g_yRotated,0.0f,1.0f,0.0f);					// Rotate The Quad On The Y axis ( NEW )
+	glRotatef(g_zRotated,0.0f,0.0f,1.0f);					// Rotate The Quad On The Z axis ( NEW )
+
+	//	glScalef(drawScale,drawScale,drawScale);
 //	glTranslatef(-drawCenter[0],-drawCenter[1],-drawCenter[2]);
 	
 	// draw a mesh at the "ground level"
@@ -125,8 +198,8 @@ void DisplayCallback()
 	drawGround();
 
 	glColor3f(0,0,1);
-	float sphereSize = 0.06f*g_articulatedFigure.getMaxOffset();
-	glutSolidSphere(sphereSize,20,10);// a ball at the (0,0,0) point
+//	float sphereSize = 0.06f*g_articulatedFigure.getMaxOffset();
+//	glutSolidSphere(sphereSize,20,10);// a ball at the (0,0,0) point
 
 	g_articulatedFigure.draw(g_nFrameNum, g_bLinesOnly);
 
@@ -173,6 +246,9 @@ void keypress(unsigned char key, int x, int y)
 	case '+':
 		g_fFrameTime -= g_articulatedFigure.getFrameTime()*0.33;
 		break;
+	case '0':
+		g_nFrameNum = 0;
+		break;
 	case 'p':
 		g_bPause = !g_bPause;
 		break;
@@ -184,6 +260,7 @@ void keypress(unsigned char key, int x, int y)
 		printf(" + --> increase speed\n");
 		printf(" - --> decrease speed\n");
 		printf(" * --> default speed\n");
+		printf(" 0 --> goto first frame\n");
 		printf(" p --> toggle pause/play\n");
 		printf(" l --> toggle line-figure/muscular-figure\n");
 		//TODO:...
@@ -227,6 +304,8 @@ int main(int argc, char **argv)
     glutCreateWindow( "BVH Player" );
     glutDisplayFunc( DisplayCallback );
     glutIdleFunc( idleFunc );
+    glutMouseFunc( mousePressedCallback );
+    glutMotionFunc( mouseMovedCallback );
 	
 //    glutMouseFunc(mousebutton);
 //    glutMotionFunc(mousemotion);
