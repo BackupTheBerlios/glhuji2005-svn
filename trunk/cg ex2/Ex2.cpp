@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "ArticulatedFigure.h"
 #include "BVHParser.h"
+#include "windows.h"
 #include <string>
 #include <iostream>
 
@@ -17,6 +18,15 @@ static const float WINSIZE = 512;
 ArticulatedFigure g_articulatedFigure;
 int g_nFrameNum = 0;
 bool g_bLinesOnly = false;
+bool g_bPause = false;
+SYSTEMTIME gLastFrameTime;
+double g_fFrameTime = 0.33333;
+
+//Gets number of milliseconds in a systemtime variable
+int getms(const SYSTEMTIME& st)
+{
+	return (st.wMilliseconds + (st.wSecond+(st.wMinute+(st.wHour+st.wDay*24)*60)*60)*1000);
+}
 
 /////////////////////////////////////////////////////
 // FUNC: Initialize()
@@ -135,13 +145,17 @@ void keypress(unsigned char key, int x, int y)
 	case 'q':          // quit
 		exit(0);
 		break;
-	case '+':
+	case ' ':
+		if (!g_bPause)
+			break;
 		g_nFrameNum++;
 		if (g_nFrameNum >= g_articulatedFigure.getNumOfFrames()){
 			g_nFrameNum = 0;
 		}
 		break;
-	case '-':
+	case 0x08:	//Backspace
+		if (!g_bPause)
+			break;
 		g_nFrameNum--;
 		if (g_nFrameNum < 0){
 			g_nFrameNum = g_articulatedFigure.getNumOfFrames()-1;
@@ -150,11 +164,27 @@ void keypress(unsigned char key, int x, int y)
 	case 'l':
 		g_bLinesOnly = !g_bLinesOnly;
 		break;
+	case '*':
+		g_fFrameTime = g_articulatedFigure.getFrameTime();
+		break;
+	case '-':
+		g_fFrameTime += g_articulatedFigure.getFrameTime()*0.33;
+		break;
+	case '+':
+		g_fFrameTime -= g_articulatedFigure.getFrameTime()*0.33;
+		break;
+	case 'p':
+		g_bPause = !g_bPause;
+		break;
 	case 'h':           // lists commands
 		printf("\n");
 		printf(" h --> help\n");
-		printf(" + --> next frame\n");
-		printf(" - --> previous frame\n");
+		printf(" space --> next frame\n");
+		printf(" backspae --> previous frame\n");
+		printf(" + --> increase speed\n");
+		printf(" - --> decrease speed\n");
+		printf(" * --> default speed\n");
+		printf(" p --> toggle pause/play\n");
 		printf(" l --> toggle line-figure/muscular-figure\n");
 		//TODO:...
 		printf(" q -- quit\n");
@@ -163,11 +193,31 @@ void keypress(unsigned char key, int x, int y)
 	glutPostRedisplay();
 }
 
+void idleFunc(void)
+{
+	SYSTEMTIME st;
+
+	if (g_bPause)
+	{
+		GetSystemTime(&gLastFrameTime);	//Set 'last frame time'
+		return;
+	}
+	GetSystemTime(&st);	//Set initial 'last frame time'
+	if (getms(st)-getms(gLastFrameTime) > (int)(g_fFrameTime*1000))
+	{
+		g_nFrameNum++;
+		if (g_nFrameNum >= g_articulatedFigure.getNumOfFrames()){
+			g_nFrameNum = 0;
+		}
+		DisplayCallback();
+		GetSystemTime(&gLastFrameTime);	//Set 'last frame time'
+	}
+}
+
 /////////////////////////////////////////////////////
 // FUNC: main()
 // DOES: initializes glut, reads BVH file, then hands control to glut
 /////////////////////////////////////////////////////
-
 int main(int argc, char **argv)
 {
     // create window and rendering context
@@ -176,6 +226,8 @@ int main(int argc, char **argv)
     glutInitWindowSize( WINSIZE, WINSIZE );
     glutCreateWindow( "BVH Player" );
     glutDisplayFunc( DisplayCallback );
+    glutIdleFunc( idleFunc );
+	
 //    glutMouseFunc(mousebutton);
 //    glutMotionFunc(mousemotion);
 	glutKeyboardFunc(keypress);
@@ -193,6 +245,8 @@ int main(int argc, char **argv)
 
 //    while(1);
 
+	g_fFrameTime = g_articulatedFigure.getFrameTime();	//Initialize to loaded value
+	GetSystemTime(&gLastFrameTime);	//Set initial 'last frame time'
     glutMainLoop();
     return 0;           // never reached
 }
