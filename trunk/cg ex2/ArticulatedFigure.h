@@ -3,6 +3,8 @@
 
 #include "MyTypes.h"
 
+class BaseMotionFilter;
+
 class ArticulatedFigure
 {
 //--------------- Internal Class Definitions -----------
@@ -20,7 +22,8 @@ public:
         Node( const Node &inNode );
 
         void setNumChannels( int inNumChannels ){ pNumChannels = inNumChannels; }
-		void draw(int frameNum, bool lineFigure);
+		void draw(int frameNum, bool lineFigure, bool isFiltered);
+		void applyFilter(BaseMotionFilter* pFilter);
 
     public:
         std::string   pNodeName;
@@ -34,6 +37,9 @@ public:
 
         NodePtrList pChildren; //child nodes
 
+		// filtered data
+		PointVec      pFilteredOffsets;
+        PointVec      pFilteredRotations;
     };
 
 //--------------- Public Methods -----------
@@ -45,7 +51,9 @@ public:
 	float getMaxOffset(){ return 100.0; }//TODO: should return the maxmal joint offset
 	static float getJointRadius(){ return 0.5; }//TODO: let the user decide
 	void draw(int frameNum, bool lineFigure);
+	void applyFilter(BaseMotionFilter* pFilter);
 	int getNumOfFrames(){ return mNumFrames; }
+	bool isFiltered(){ return mIsFiltered; }
 	double getFrameTime(){ return mFPS; }
 
 //--------------- Storage -----------
@@ -53,6 +61,7 @@ protected:
     NodePtrList mRootNodes; //can be more than one root node!
     int         mNumFrames;
     double      mFPS;
+	bool		mIsFiltered;
 
 friend class BVHParser;
 

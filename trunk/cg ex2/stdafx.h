@@ -9,7 +9,9 @@
 
 #include <iostream>
 #include <tchar.h>
+#include <stdio.h>
 
 #include <GL/glut.h>
 
+using namespace std;
 // TODO: reference additional headers your program requires here

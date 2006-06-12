@@ -5,6 +5,7 @@
 #include "ArticulatedFigure.h"
 #include "BVHParser.h"
 #include "windows.h"
+#include "basemotionfilter.h"
 #include <string>
 #include <iostream>
 
@@ -214,6 +215,8 @@ void DisplayCallback()
 
 void keypress(unsigned char key, int x, int y)
 {
+	BaseMotionFilter* pFilter=NULL;
+
 	switch(key) {
 	case 'q':          // quit
 		exit(0);
@@ -233,6 +236,14 @@ void keypress(unsigned char key, int x, int y)
 		if (g_nFrameNum < 0){
 			g_nFrameNum = g_articulatedFigure.getNumOfFrames()-1;
 		}
+		break;
+	case 's':
+		pFilter = BaseMotionFilter::createFilter(BaseMotionFilter::MF_SMOOTH);
+		pFilter->loadFilter(3.0);
+		g_articulatedFigure.applyFilter(pFilter);
+		break;
+	case 'r':
+		g_articulatedFigure.applyFilter(NULL);
 		break;
 	case 'l':
 		g_bLinesOnly = !g_bLinesOnly;
@@ -263,10 +274,16 @@ void keypress(unsigned char key, int x, int y)
 		printf(" 0 --> goto first frame\n");
 		printf(" p --> toggle pause/play\n");
 		printf(" l --> toggle line-figure/muscular-figure\n");
+		printf(" s --> smooth filter\n");
+		printf(" r --> remove filter\n");
 		//TODO:...
 		printf(" q -- quit\n");
 		printf("\n");
 	}
+	if (pFilter!=NULL){
+		delete pFilter;
+	}
+
 	glutPostRedisplay();
 }
 

@@ -119,10 +119,19 @@
 				RelativePath=".\ArticulatedFigure.cpp">
 			</File>
 			<File
+				RelativePath=".\BaseMotionFilter.cpp">
+			</File>
+			<File
 				RelativePath=".\BVHParser.cpp">
 			</File>
 			<File
 				RelativePath=".\Ex2.cpp">
+			</File>
+			<File
+				RelativePath=".\SharpenMotionFilter.cpp">
+			</File>
+			<File
+				RelativePath=".\SmoothMotionFilter.cpp">
 			</File>
 			<File
 				RelativePath=".\stdafx.cpp">
@@ -148,10 +157,19 @@
 				RelativePath=".\ArticulatedFigure.h">
 			</File>
 			<File
+				RelativePath=".\BaseMotionFilter.h">
+			</File>
+			<File
 				RelativePath=".\BVHParser.h">
 			</File>
 			<File
 				RelativePath=".\MyTypes.h">
+			</File>
+			<File
+				RelativePath=".\SharpenMotionFilter.h">
+			</File>
+			<File
+				RelativePath=".\SmoothMotionFilter.h">
 			</File>
 			<File
 				RelativePath=".\stdafx.h">
