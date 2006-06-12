@@ -10,5 +10,6 @@ typedef OpenMesh::Vec3d Color3d;
 
 typedef std::vector<Point3d> PointVec;
 typedef PointVec::iterator   PointVecIt;
+typedef std::vector<double> DoubleVec;
 
 #endif //__MY_TYPES_H__

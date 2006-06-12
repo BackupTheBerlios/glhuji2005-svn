@@ -12,6 +12,7 @@ public:
 
 	// static initializer
 	static BaseMotionFilter* createFilter(MotionFilterType inType);
+	static void convolutePoints(PointVec& inPoints, DoubleVec& inFilter, PointVec& outPoints);
 
 	// interface methods
 	virtual bool loadFilter(double inIntensity) = 0;

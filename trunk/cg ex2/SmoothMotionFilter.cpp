@@ -46,6 +46,9 @@ bool SmoothMotionFilter::applyFilter(PointVec& inRotations, PointVec& inOffsets,
 		sumOff[0] = sumOff[1] = sumOff[2] = 0;
 		for (int j=-smoothRadius; j<=smoothRadius; j++)
 		{
+			//TODO:
+			// (1) switch to the convolution method
+			// (2) there's a problem in averaging degrees since 179 and -179 become 0 and not 180
 			index = i+j;
 			if (index<0) {
 				index=nFrames+index;
