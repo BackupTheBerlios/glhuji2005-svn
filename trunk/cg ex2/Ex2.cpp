@@ -23,6 +23,12 @@ bool g_bLinesOnly = false;
 bool g_bPause = false;
 SYSTEMTIME gLastFrameTime;
 double g_fFrameTime = 0.33333;
+bool gLineBackground = false;
+
+static GLuint gTexName;
+const int gCheckImageWidth = 64;
+const int gCheckImageHeight = 64;
+static GLubyte gCheckImage[gCheckImageHeight][gCheckImageWidth][4];
 
 //Gets number of milliseconds in a systemtime variable
 int getms(const SYSTEMTIME& st)
@@ -95,6 +101,33 @@ mouseMovedCallback( int inX, int inY )
     DisplayCallback();
 }
 
+void
+generateCheckerBoard()
+{
+    int width = 1;
+
+    for( int i = 0; i < gCheckImageHeight; i++) {
+        for( int j = 0; j < gCheckImageWidth; j++) {
+            
+            gCheckImage[i][j][0] = (GLubyte) 0;
+            gCheckImage[i][j][3] = (GLubyte) 255;
+
+            bool blueSquare = ((i / width)%2==0) ^ ((j / width)%2==0);
+            if( blueSquare )
+            {
+                gCheckImage[i][j][1] = (GLubyte) 0;
+                gCheckImage[i][j][2] = (GLubyte) 255;
+            }
+            else
+            {
+                gCheckImage[i][j][1] = (GLubyte) 255;
+                gCheckImage[i][j][2] = (GLubyte) 0;
+            }
+            
+        }
+    }
+}
+
 /////////////////////////////////////////////////////
 // FUNC: Initialize()
 // DOES: basic OpenGL initialization
@@ -135,7 +168,20 @@ void Initialize()
    glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
 
    glEnable(GL_LIGHT0);
-   glEnable(GL_NORMALIZE); 
+   glEnable(GL_NORMALIZE);
+
+   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+   generateCheckerBoard();
+   glGenTextures(1, &gTexName);
+   glBindTexture(GL_TEXTURE_2D, gTexName);
+
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, gCheckImageWidth, gCheckImageHeight, 
+       0, GL_RGBA, GL_UNSIGNED_BYTE, gCheckImage);
 }
 
 //////////////////////////////////////////////////
@@ -145,34 +191,52 @@ void Initialize()
 
 void drawGround()
 {
-	float x,z;
-	int nx, nz;
-	const float xmin=-10, xmax=10;
-	const float zmin=-10, zmax=10;
-	const int nsteps = 20;
-	glColor3f(0,0,0); 
-	float dx = (xmax - xmin)/nsteps;
-	float dz = (zmax - zmin)/nsteps;
-		// draw grid lines in xz-plane, parallel to z axis
-	glPushMatrix();
-	float sf = g_articulatedFigure.getMaxOffset();
-	glScalef(sf,sf,sf);
-	glLineWidth(1);
-	glBegin(GL_LINES);
-	for (nx=0; nx<=nsteps; nx++) {
-		x = xmin + nx*dx;
-		glVertex3f(x,0,zmin);
-		glVertex3f(x,0,zmax);
-	}
-	glEnd();
-		// draw grid lines in xz-plane, parallel to x-axis
-	glBegin(GL_LINES);
-	for (nz=0; nz<=nsteps; nz++) {
-		z = zmin + nz*dz;
-		glVertex3f(xmin,0,z);
-		glVertex3f(xmax,0,z);
-	}
-	glEnd();
+    float x,z;
+    int nx, nz;
+    const float xmin=-10, xmax=10;
+    const float zmin=-10, zmax=10;
+    const int nsteps = 20;
+    glColor3f(0,0,0); 
+    float dx = (xmax - xmin)/nsteps;
+    float dz = (zmax - zmin)/nsteps;
+    // draw grid lines in xz-plane, parallel to z axis
+    glPushMatrix();
+    float sf = g_articulatedFigure.getMaxOffset();
+    glScalef(sf,sf,sf);
+
+    if( !gLineBackground )
+    {
+        glEnable(GL_TEXTURE_2D);
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+        glBindTexture(GL_TEXTURE_2D, gTexName);
+        glBegin(GL_QUADS);
+        glTexCoord2f(0.0, 0.0); glVertex3f(xmin, 0, zmin);
+        glTexCoord2f(0.0, 1.0); glVertex3f(xmax, 0, zmin);
+        glTexCoord2f(1.0, 1.0); glVertex3f(xmax, 0, zmax);
+        glTexCoord2f(1.0, 0.0); glVertex3f(xmin, 0, zmax);
+        glEnd();
+        glFlush();
+        glDisable(GL_TEXTURE_2D);
+    }
+    else
+    {
+	    glLineWidth(1);
+	    glBegin(GL_LINES);
+	    for (nx=0; nx<=nsteps; nx++) {
+		    x = xmin + nx*dx;
+		    glVertex3f(x,0,zmin);
+		    glVertex3f(x,0,zmax);
+	    }
+	    glEnd();
+		    // draw grid lines in xz-plane, parallel to x-axis
+	    glBegin(GL_LINES);
+	    for (nz=0; nz<=nsteps; nz++) {
+		    z = zmin + nz*dz;
+		    glVertex3f(xmin,0,z);
+		    glVertex3f(xmax,0,z);
+	    }
+	    glEnd();
+    }
 	glPopMatrix();
 }
 
@@ -192,8 +256,8 @@ void DisplayCallback()
 	glRotatef(g_yRotated,0.0f,1.0f,0.0f);					// Rotate The Quad On The Y axis ( NEW )
 	glRotatef(g_zRotated,0.0f,0.0f,1.0f);					// Rotate The Quad On The Z axis ( NEW )
 
-	//	glScalef(drawScale,drawScale,drawScale);
-//	glTranslatef(-drawCenter[0],-drawCenter[1],-drawCenter[2]);
+    /*glScalef(drawScale,drawScale,drawScale);
+	glTranslatef(-drawCenter[0],-drawCenter[1],-drawCenter[2]);*/
 	
 	// draw a mesh at the "ground level"
 	//TODO: not sure we need that
@@ -249,6 +313,9 @@ void keypress(unsigned char key, int x, int y)
 	case 'l':
 		g_bLinesOnly = !g_bLinesOnly;
 		break;
+    case 'b': //toggle checkerboard/line ground display
+        gLineBackground = !gLineBackground;
+        break;
 	case '*':
 		g_fFrameTime = g_articulatedFigure.getFrameTime();
 		break;
@@ -275,6 +342,7 @@ void keypress(unsigned char key, int x, int y)
 		printf(" 0 --> goto first frame\n");
 		printf(" p --> toggle pause/play\n");
 		printf(" l --> toggle line-figure/muscular-figure\n");
+        printf(" b --> toggle checkerboard/line ground display\n");
 		printf(" s --> smooth filter\n");
 		printf(" r --> remove filter\n");
 		//TODO:...
