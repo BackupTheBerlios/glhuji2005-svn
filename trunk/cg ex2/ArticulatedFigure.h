@@ -14,6 +14,18 @@ public:
     typedef std::vector<Node *>   NodePtrList;
     typedef NodePtrList::iterator NodePtrListIt;
 
+    //------------- Keeping track of Channel positions -----------
+    class ParamMappingArr
+    {
+    public:
+        ParamMappingArr()
+        {
+            for( int i = 0; i < 6; i++ ) pArr[i] = INVALID_PLCMNT;
+        }
+
+        ParamPlacement pArr[6];
+    };
+
     //------------- The Basic Node Structure -----------
     class Node {
     public:
@@ -26,10 +38,11 @@ public:
 		void applyFilter(BaseMotionFilter* pFilter);
 
     public:
-        std::string   pNodeName;
-        int           pNumChannels;
-        Point3d       pPosition;
-        PointVec      pOffsets;
+        std::string     pNodeName;
+        int             pNumChannels;
+        ParamMappingArr pChannelMapping;
+        Point3d         pPosition;
+        PointVec        pOffsets;
 
         //VERY IMPORTANT: order to perform these rotations is:
         // Xrotation Zrotation Yrotation - according to BVH file format
@@ -47,23 +60,25 @@ public:
     ArticulatedFigure();
     ~ArticulatedFigure();
 
-    void setRuntimeParamters( int inNumFrames, double inFPS );
+    void setRuntimeParamters( int inNumFrames, double inFrameTime );
 	float getMaxOffset(){ return 100.0; }//TODO: should return the maxmal joint offset
 	static float getJointRadius(){ return 0.5; }//TODO: let the user decide
 	void draw(int frameNum, bool lineFigure);
 	void applyFilter(BaseMotionFilter* pFilter);
 	int getNumOfFrames(){ return mNumFrames; }
 	bool isFiltered(){ return mIsFiltered; }
-	double getFrameTime(){ return mFPS; }
+	double getFrameTime(){ return mFrameTime; }
+    int    getNumFrames(){ return mNumFrames; }
 
 //--------------- Storage -----------
 protected:
     NodePtrList mRootNodes; //can be more than one root node!
     int         mNumFrames;
-    double      mFPS;
+    double      mFrameTime;
 	bool		mIsFiltered;
 
 friend class BVHParser;
+friend class BVHWriter;
 
 };
 

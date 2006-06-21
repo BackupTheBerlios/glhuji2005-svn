@@ -38,7 +38,7 @@ ArticulatedFigure::Node::Node( const Node &inRhs )
 
 ArticulatedFigure::ArticulatedFigure(void)
 {
-    mFPS		= -1;
+    mFrameTime  = -1;
     mNumFrames	= -1;
 	mIsFiltered	= false;
 }
@@ -54,9 +54,9 @@ ArticulatedFigure::~ArticulatedFigure(void)
 }
 
 void 
-ArticulatedFigure::setRuntimeParamters( int inNumFrames, double inFPS )
+ArticulatedFigure::setRuntimeParamters( int inNumFrames, double inFrameTime )
 {
-    mFPS       = inFPS;
+    mFrameTime = inFrameTime;
     mNumFrames = inNumFrames;
 }
 

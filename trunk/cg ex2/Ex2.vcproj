@@ -125,6 +125,9 @@
 				RelativePath=".\BVHParser.cpp">
 			</File>
 			<File
+				RelativePath=".\BVHWriter.cpp">
+			</File>
+			<File
 				RelativePath=".\Ex2.cpp">
 			</File>
 			<File
@@ -161,6 +164,9 @@
 			</File>
 			<File
 				RelativePath=".\BVHParser.h">
+			</File>
+			<File
+				RelativePath=".\BVHWriter.h">
 			</File>
 			<File
 				RelativePath=".\MyTypes.h">

@@ -10,27 +10,6 @@ using namespace std;
 
 class BVHParser
 {
-//-------------- Internal Type Definitions ---------------
-protected:
-    typedef enum {
-        INVALID_PLCMNT,
-        XROT, YROT, ZROT,
-        XPOS, YPOS, ZPOS
-    } ParamPlacement;
-
-    class ParamMappingArr
-    {
-    public:
-        ParamMappingArr()
-        {
-            for( int i = 0; i < 6; i++ ) pArr[i] = INVALID_PLCMNT;
-        }
-
-        ParamPlacement pArr[6];
-    };
-
-    typedef vector< ParamMappingArr >        ParamePlcmntList;
-    typedef ParamePlcmntList::iterator       ParamePlcmntListIt;
 
 //-------------- Public Methods ---------------
 public:
@@ -45,6 +24,9 @@ protected:
 
     //returns next token in lowercase
     string getNextToken();
+
+    //retrieve next token, without converting it to lowercase.
+    string getNextTokenPreserveCase();
     
     //returns true if there are more tokens in the stream.
     bool   hasMoreTokens();
@@ -56,7 +38,8 @@ protected:
     void readFrames( bool &outParseSuccesfull );
 
     //read a single motion for a node
-    void readNodeMotions( ArticulatedFigure::Node *inNodePtr, ParamMappingArr &inArr, bool &outParseOK );
+    void readNodeMotions( ArticulatedFigure::Node *inNodePtr, 
+                ArticulatedFigure::ParamMappingArr &inArr, bool &outParseOK );
 
 
 //-------------- Storage ---------------
@@ -64,7 +47,6 @@ protected:
     ifstream                          mInputStream;
     ArticulatedFigure                 &mArticulatedFigure;
     ArticulatedFigure::NodePtrList    mLinearNodeList;
-    ParamePlcmntList                  mParamMapping; //map channel placement for each node
 };
 
 #endif __BVH_PARSER_H__

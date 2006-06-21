@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "ArticulatedFigure.h"
 #include "BVHParser.h"
+#include "BVHWriter.h"
 #include "windows.h"
 #include "basemotionfilter.h"
 #include <string>
@@ -267,7 +268,7 @@ void keypress(unsigned char key, int x, int y)
 		printf("\n");
 		printf(" h --> help\n");
 		printf(" space --> next frame\n");
-		printf(" backspae --> previous frame\n");
+		printf(" backspace --> previous frame\n");
 		printf(" + --> increase speed\n");
 		printf(" - --> decrease speed\n");
 		printf(" * --> default speed\n");
@@ -332,10 +333,30 @@ int main(int argc, char **argv)
 
     bool ok;
 
-    BVHParser parser( string("aero.bvh"), g_articulatedFigure, ok );
+    do {
+        //todo: check command line parameters
 
-    cout << "Loading BVH File..." << endl;
-    parser.parse( ok );
+        BVHParser parser( string("aero.bvh"), g_articulatedFigure, ok );
+        if( !ok ) break;
+
+        cout << "Loading BVH File..." << endl;
+        parser.parse( ok );
+
+        //todo: example of writing a BVH file
+        /*cout << "Start Writing BVH File..." << endl;
+        BVHWriter writer;
+        writer.write( g_articulatedFigure, string("aero1.bvh") );
+        cout << "End Writing BVH File..." << endl;*/
+
+    }
+    while(0);
+
+    if( !ok )
+    {
+        cout << "EXITING: error loading BVH file!!" << endl;
+        while(1);
+        exit(0);
+    }
 
     cout << "done loading BVH File " << endl;
 

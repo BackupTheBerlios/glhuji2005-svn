@@ -4,7 +4,8 @@
 #include <algorithm> //transform
 
 //Make the code a little more readable
-typedef ArticulatedFigure::Node Node;
+typedef ArticulatedFigure::Node            Node;
+typedef ArticulatedFigure::ParamMappingArr ParamMappingArr;
 
 BVHParser::BVHParser( string &inFilename, ArticulatedFigure &inFigure, bool &outOK ) :
                 mInputStream(inFilename.c_str(), ios_base::in ),
@@ -18,11 +19,11 @@ BVHParser::~BVHParser()
         mInputStream.close();
 }
 
-#define CHECK_STR(str_,cmpStr_,errStr_)    do{ \
+#define CHECK_STR(str_,cmpStr_,errStr_)    { \
                                                 string bla_ = (str_); \
                                                 if( bla_ != string(cmpStr_) )\
                                                 { cout << "ERROR:" << (errStr_) << " (" << bla_ << ")" <<endl; break;}\
-                                             }while(0)
+                                             }
 
 #define CHECK_TOKEN(cmpStr_, errStr_ ) CHECK_STR( getNextToken(), cmpStr_, errStr_ )
 
@@ -82,19 +83,27 @@ BVHParser::readFrames( bool &outParseSuccesfull )
             break;
         }
 
+        //------------ Optimization - reserve space in vectors ---------------
+        for( ArticulatedFigure::NodePtrListIt it = mLinearNodeList.begin(); 
+                                             it != mLinearNodeList.end(); it++ )
+        {
+            Node *n = *it;
+            
+            n->pOffsets.reserve( numFrames );
+            n->pRotations.reserve( numFrames );
+        }
+
         //------------ Read movement vectors --------
         mArticulatedFigure.setRuntimeParamters( numFrames, fps );
-        
 
         bool readMotionsOK = true;
         for( int i = 0; i < numFrames && readMotionsOK; i++ )
         {
             ArticulatedFigure::NodePtrListIt it = mLinearNodeList.begin();
-            ParamePlcmntListIt               pIt = mParamMapping.begin();
-            for( ; it != mLinearNodeList.end() && readMotionsOK; it++, pIt++ )
+            for( ; it != mLinearNodeList.end() && readMotionsOK; it++ )
             {
                 Node *n = *it;
-                ParamMappingArr &pMap = *pIt;
+                ParamMappingArr &pMap = n->pChannelMapping;
 
                 readNodeMotions( n, pMap, readMotionsOK );
             }
@@ -108,7 +117,8 @@ BVHParser::readFrames( bool &outParseSuccesfull )
 }
 
 void
-BVHParser::readNodeMotions( ArticulatedFigure::Node *inNodePtr, ParamMappingArr &inArr, bool &outParseOK )
+BVHParser::readNodeMotions( ArticulatedFigure::Node *inNodePtr, 
+                    ArticulatedFigure::ParamMappingArr &inArr, bool &outParseOK )
 {
     double xRot = 0, yRot = 0, zRot = 0;
     double xPos = 0, yPos = 0, zPos = 0;
@@ -184,12 +194,12 @@ BVHParser::readHierarchy( ArticulatedFigure::Node *inParent, bool isEnd, bool &o
     do {
 
         //----------- Read Hierarchy Name and '{' --------------
-        token = getNextToken();
+        token = getNextTokenPreserveCase();
 
         if( token !=  string("{") )
         {
             hierarchyName = token;
-            mInputStream >> token;
+            token = getNextToken();
         }
 
         CHECK_STR( token, "{", "expected '{' at start of hierarchy" );
@@ -237,7 +247,7 @@ BVHParser::readHierarchy( ArticulatedFigure::Node *inParent, bool isEnd, bool &o
 
             //-------- Read off channel name tokens ------
             bool plcmntError = false;
-            ParamMappingArr plcmnt;
+            ParamMappingArr &plcmnt = curNode->pChannelMapping;
             for( int i = 0; i < numChannels; i++ )
             {
                 token = getNextToken();
@@ -264,8 +274,6 @@ BVHParser::readHierarchy( ArticulatedFigure::Node *inParent, bool isEnd, bool &o
 
             if( plcmntError ) break;
 
-            mParamMapping.push_back( plcmnt );
-
             //-------- End site or joint? ------
        
             token = getNextToken();
@@ -280,11 +288,6 @@ BVHParser::readHierarchy( ArticulatedFigure::Node *inParent, bool isEnd, bool &o
             bool readOK = false;
 
             readHierarchy( curNode, token == string("end"), readOK ); if( !readOK ) break;
-        }
-        else
-        {
-            ParamMappingArr tmp;
-            mParamMapping.push_back( tmp );
         }
 
         bool nextJointReadOK = false;
@@ -337,5 +340,13 @@ BVHParser::getNextToken()
 
     //convert to lowercase
     transform( ret.begin(),ret.end(), ret.begin(), tolower);
+    return ret;
+}
+
+string 
+BVHParser::getNextTokenPreserveCase()
+{
+    string ret;
+    mInputStream >> ret;
     return ret;
 }
