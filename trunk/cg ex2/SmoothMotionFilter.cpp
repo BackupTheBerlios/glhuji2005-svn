@@ -26,7 +26,7 @@ bool SmoothMotionFilter::loadFilter(double inIntensity)
 	for (int i=0; i<filtSize; i++){
 		mFilter.push_back(filtVal);
 	}
-	//
+	return true;
 }
 
 bool SmoothMotionFilter::applyFilter(PointVec& inRotations, PointVec& inOffsets, 
