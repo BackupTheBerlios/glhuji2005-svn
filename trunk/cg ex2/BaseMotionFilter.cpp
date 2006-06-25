@@ -33,8 +33,8 @@ BaseMotionFilter* BaseMotionFilter::createFilter(MotionFilterType inType)
 void BaseMotionFilter::convolutePoints(PointVec& inPoints, DoubleVec& inFilter, PointVec& outPoints, bool isAngles)
 {
 	int index=0;
-	int filterSize = inFilter.size();
-	int pointsSize = inPoints.size();
+	int filterSize = (int)inFilter.size();
+	int pointsSize = (int)inPoints.size();
 	Point3d sumPoint;
 	outPoints.clear();
 	for (int i=0; i<pointsSize; i++)
