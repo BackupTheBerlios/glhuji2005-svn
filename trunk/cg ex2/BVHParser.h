@@ -32,7 +32,7 @@ protected:
     bool   hasMoreTokens();
 
     //this is the recursive descent part...
-    void readHierarchy( ArticulatedFigure::Node *inParent, bool isEnd, bool &outParseSuccesfull );
+    void readHierarchy( ArticulatedFigure::Node *inParent, bool isEnd, bool &outParseSuccesfull, Point3d curOffset );
 
     //Read actual motion vectors (the MOTIONS section)
     void readFrames( bool &outParseSuccesfull );

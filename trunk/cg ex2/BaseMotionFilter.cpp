@@ -30,7 +30,7 @@ BaseMotionFilter* BaseMotionFilter::createFilter(MotionFilterType inType)
 	return pBaseFilter;
 }
 
-void BaseMotionFilter::convolutePoints(PointVec& inPoints, DoubleVec& inFilter, PointVec& outPoints)
+void BaseMotionFilter::convolutePoints(PointVec& inPoints, DoubleVec& inFilter, PointVec& outPoints, bool isAngles)
 {
 	int index=0;
 	int filterSize = inFilter.size();
@@ -45,7 +45,12 @@ void BaseMotionFilter::convolutePoints(PointVec& inPoints, DoubleVec& inFilter, 
 			index = i-j;
 			if (index >= 0 && index < pointsSize)
 			{
-				sumPoint += (inPoints[index] * inFilter[j]);
+				if (isAngles){
+					sumAngles(sumPoint, inPoints[index] * inFilter[j]);
+				}
+				else{
+					sumPoint += (inPoints[index] * inFilter[j]);
+				}
 			}
 		}
 		outPoints.push_back(sumPoint);

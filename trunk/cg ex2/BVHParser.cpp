@@ -34,6 +34,8 @@ BVHParser::parse(bool &outParseSuccesfull )
     bool   readOK = false;
 
     outParseSuccesfull = false;
+
+	Point3d curOffset(0,0,0);
     
     do {
         //------- Read Start Token ----------
@@ -42,15 +44,18 @@ BVHParser::parse(bool &outParseSuccesfull )
         //------ Read Hierarchy -----------
         CHECK_TOKEN( "root", "expected 'ROOT' token" );
 
-        readHierarchy( NULL, false, readOK ); if( !readOK ) break;
+        readHierarchy( NULL, false, readOK, curOffset ); if( !readOK ) break;
 
         //------ Read Frames ---------
         CHECK_TOKEN( "motion", "expected 'MOTION' token" );
         readFrames( readOK ); if( !readOK ) break;
 
+		//------ Calculate mass center of the body --------
+		mArticulatedFigure.mBodyCenter = mArticulatedFigure.mTotalOffset / mArticulatedFigure.mNodesCounter;
+		mArticulatedFigure.mMaxOffsetDistance = mArticulatedFigure.mMaxOffset.max();
+
         outParseSuccesfull = true;
-    } while(0);
-    
+    } while(0);    
 }
 
 void 
@@ -185,7 +190,7 @@ BVHParser::readNodeMotions( ArticulatedFigure::Node *inNodePtr,
 }
 
 void 
-BVHParser::readHierarchy( ArticulatedFigure::Node *inParent, bool isEnd, bool &outParseSuccesfull )
+BVHParser::readHierarchy( ArticulatedFigure::Node *inParent, bool isEnd, bool &outParseSuccesfull, Point3d curOffset )
 {
     outParseSuccesfull = false;
     string hierarchyName(""), token;
@@ -212,9 +217,11 @@ BVHParser::readHierarchy( ArticulatedFigure::Node *inParent, bool isEnd, bool &o
         y = atof( getNextToken().c_str() );
         z = atof( getNextToken().c_str() );
 
+		Point3d offset(x,y,z);
+
         if( inParent == NULL )
         {
-            Node *theNode = new Node( hierarchyName, Point3d(x,y,z) );
+            Node *theNode = new Node( hierarchyName, offset );
             mArticulatedFigure.mRootNodes.push_back( theNode );
 
             curNode = theNode;
@@ -222,12 +229,23 @@ BVHParser::readHierarchy( ArticulatedFigure::Node *inParent, bool isEnd, bool &o
         }
         else
         {
-            Node *theNode = new Node( hierarchyName, Point3d(x,y,z) );
+            Node *theNode = new Node( hierarchyName, offset );
             inParent->pChildren.push_back( theNode );
 
             curNode = theNode;
             mLinearNodeList.push_back( theNode );
         }
+
+		//---------- update offset details ------------
+		mArticulatedFigure.mNodesCounter++;
+		curOffset += offset;
+		mArticulatedFigure.mTotalOffset += curOffset;
+		mArticulatedFigure.mMaxOffset[0] = abs(curOffset[0]) > mArticulatedFigure.mMaxOffset[0]? 
+			abs(curOffset[0]) : mArticulatedFigure.mMaxOffset[0];
+		mArticulatedFigure.mMaxOffset[1] = abs(curOffset[1]) > mArticulatedFigure.mMaxOffset[1]? 
+			abs(curOffset[1]) : mArticulatedFigure.mMaxOffset[1];
+		mArticulatedFigure.mMaxOffset[2] = abs(curOffset[2]) > mArticulatedFigure.mMaxOffset[2]? 
+			abs(curOffset[2]) : mArticulatedFigure.mMaxOffset[2];
 
         //----------- Read channels --------------
         if( !isEnd )
@@ -287,7 +305,8 @@ BVHParser::readHierarchy( ArticulatedFigure::Node *inParent, bool isEnd, bool &o
 
             bool readOK = false;
 
-            readHierarchy( curNode, token == string("end"), readOK ); if( !readOK ) break;
+            readHierarchy( curNode, token == string("end"), readOK, curOffset ); 
+			if( !readOK ) break;
         }
 
         bool nextJointReadOK = false;
@@ -308,7 +327,8 @@ BVHParser::readHierarchy( ArticulatedFigure::Node *inParent, bool isEnd, bool &o
             {
                 bool readOK = false;
 
-                readHierarchy( curNode, false, readOK ); if(!readOK ) break;
+                readHierarchy( curNode, false, readOK, curOffset ); 
+				if(!readOK ) break;
             }
             else // read "}"
             {

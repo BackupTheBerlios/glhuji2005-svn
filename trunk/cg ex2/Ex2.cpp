@@ -47,8 +47,8 @@ int gLastY;
 GLfloat gOriginX = 0.0f;
 GLfloat gOriginY = 0.0f;
 GLfloat gOriginZ = -163.0f;
-GLfloat g_xRotated = 15.0f;
-GLfloat g_yRotated = 10.0f;
+GLfloat g_xRotated = 0.0f;	//15.0f;
+GLfloat g_yRotated = 0.0f;	//10.0f;
 GLfloat g_zRotated = 0.0f;
 
 
@@ -135,7 +135,7 @@ generateCheckerBoard()
 
 void Initialize()
 {
-      // initialize matrix stacks
+    // initialize matrix stacks
     glMatrixMode( GL_PROJECTION );
     glLoadIdentity();									// Reset The Current Modelview Matrix
 
@@ -201,8 +201,8 @@ void drawGround()
     float dz = (zmax - zmin)/nsteps;
     // draw grid lines in xz-plane, parallel to z axis
     glPushMatrix();
-    float sf = g_articulatedFigure.getMaxOffset();
-    glScalef(sf,sf,sf);
+    double sf = g_articulatedFigure.getMaxOffsetDistance();
+    glScaled(sf,sf,sf);
 
     if( !gLineBackground )
     {
@@ -249,15 +249,20 @@ void DisplayCallback()
 	glClearColor(1.0f,1.0f,1.0f,0);
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
+	double maxOffset = g_articulatedFigure.getMaxOffsetDistance();
+	double drawScale = 20/maxOffset;
+	Point3d bodyCenter = g_articulatedFigure.getBodyCenter();
+
 	glPushMatrix();
-    glLoadIdentity();									// Reset The Current Modelview Matrix
+    glLoadIdentity();										// Reset The Current Modelview Matrix
+	
     glTranslatef(gOriginX,gOriginY,gOriginZ);		
 	glRotatef(g_xRotated,1.0f,0.0f,0.0f);					// Rotate The Quad On The X axis ( NEW )
 	glRotatef(g_yRotated,0.0f,1.0f,0.0f);					// Rotate The Quad On The Y axis ( NEW )
 	glRotatef(g_zRotated,0.0f,0.0f,1.0f);					// Rotate The Quad On The Z axis ( NEW )
 
-    /*glScalef(drawScale,drawScale,drawScale);
-	glTranslatef(-drawCenter[0],-drawCenter[1],-drawCenter[2]);*/
+    glScalef(drawScale,drawScale,drawScale);
+	glTranslatef(-bodyCenter[0],-bodyCenter[1],-bodyCenter[2]);
 	
 	// draw a mesh at the "ground level"
 	drawGround();
@@ -303,7 +308,7 @@ void keypress(unsigned char key, int x, int y)
 		break;
 	case 's':
 		pFilter = BaseMotionFilter::createFilter(BaseMotionFilter::MF_SMOOTH);
-		pFilter->loadFilter(7.0);
+		pFilter->loadFilter(3.0);
 		g_articulatedFigure.applyFilter(pFilter);
 		break;
 	case 'r':
@@ -424,8 +429,8 @@ int main(int argc, char **argv)
 
     if( !ok )
     {
-        cout << "EXITING: error loading BVH file!!" << endl;
-        while(1);
+        cout << "EXITING: error loading BVH file!!" << endl;		
+        Sleep(2000);
         exit(0);
     }
 

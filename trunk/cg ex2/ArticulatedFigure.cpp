@@ -41,6 +41,11 @@ ArticulatedFigure::ArticulatedFigure(void)
     mFrameTime  = -1;
     mNumFrames	= -1;
 	mIsFiltered	= false;
+
+	mMaxOffset[0] = mMaxOffset[1] = mMaxOffset[2] = 0;
+	mTotalOffset[0] = mTotalOffset[1] = mTotalOffset[2] = 0;
+	mBodyCenter[0] = mBodyCenter[1] = mBodyCenter[2] = 0;
+	mNodesCounter = 0;
 }
 
 ArticulatedFigure::~ArticulatedFigure(void)
@@ -64,7 +69,7 @@ void
 ArticulatedFigure::draw(int frameNum, bool lineFigure)
 {
 	for (unsigned int i=0; i<mRootNodes.size(); i++){
-		mRootNodes[i]->draw(frameNum, lineFigure, mIsFiltered);
+		mRootNodes[i]->draw(frameNum, lineFigure, mIsFiltered, getJointRadius());
 	}
 }
 
@@ -89,7 +94,7 @@ void ArticulatedFigure::applyFilter(BaseMotionFilter* pFilter)
 // PROC:   JOINT::draw()
 // DOES:   recursively draws joints
 //////////////////////////////////////////////////
-void ArticulatedFigure::Node::draw(int frameNum, bool lineFigure, bool isFiltered)
+void ArticulatedFigure::Node::draw(int frameNum, bool lineFigure, bool isFiltered, double jointRadius)
 {
 	glPushMatrix();
 	int nc = 0;       // number of channels already processed
@@ -171,7 +176,7 @@ void ArticulatedFigure::Node::draw(int frameNum, bool lineFigure, bool isFiltere
 
   // draw the joint
 	glColor3f(0,1,0);
-	glutSolidSphere(getJointRadius(),20,10);
+	glutSolidSphere(jointRadius,20,10);
 	
 	  // draw line from joint to end site (if necessary)
 	if( pChildren.size() == 0 ) {
@@ -185,7 +190,7 @@ void ArticulatedFigure::Node::draw(int frameNum, bool lineFigure, bool isFiltere
 
 	  // recursively draw all child joints
 	for (unsigned int n=0; n<pChildren.size(); n++)
-		pChildren[n]->draw(frameNum, lineFigure, isFiltered);
+		pChildren[n]->draw(frameNum, lineFigure, isFiltered, jointRadius);
 	glPopMatrix();
 }
 

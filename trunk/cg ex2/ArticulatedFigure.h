@@ -34,7 +34,7 @@ public:
         Node( const Node &inNode );
 
         void setNumChannels( int inNumChannels ){ pNumChannels = inNumChannels; }
-		void draw(int frameNum, bool lineFigure, bool isFiltered);
+		void draw(int frameNum, bool lineFigure, bool isFiltered, double jointRadius);
 		void applyFilter(BaseMotionFilter* pFilter);
 
     public:
@@ -61,8 +61,9 @@ public:
     ~ArticulatedFigure();
 
     void setRuntimeParamters( int inNumFrames, double inFrameTime );
-	float getMaxOffset(){ return 100.0; }//TODO: should return the maxmal joint offset
-	static float getJointRadius(){ return 0.5; }//TODO: let the user decide
+	double getMaxOffsetDistance(){ return mMaxOffsetDistance; }
+	double getJointRadius(){ return getMaxOffsetDistance()/50.0; }
+	Point3d getBodyCenter(){ return mBodyCenter; }
 	void draw(int frameNum, bool lineFigure);
 	void applyFilter(BaseMotionFilter* pFilter);
 	int getNumOfFrames(){ return mNumFrames; }
@@ -76,6 +77,12 @@ protected:
     int         mNumFrames;
     double      mFrameTime;
 	bool		mIsFiltered;
+
+	Point3d		mMaxOffset;
+	double		mMaxOffsetDistance;
+	Point3d		mTotalOffset;
+	Point3d		mBodyCenter;
+	int			mNodesCounter;
 
 friend class BVHParser;
 friend class BVHWriter;

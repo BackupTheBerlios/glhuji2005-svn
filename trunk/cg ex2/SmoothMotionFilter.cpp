@@ -17,6 +17,16 @@ bool SmoothMotionFilter::loadFilter(double inIntensity)
 		return false;
 	}
 	mIntensity = (int) inIntensity;
+
+	//convolution stuff
+	int filtSize = 2*mIntensity + 1;
+	double filtVal = 1.0/filtSize;
+
+	mFilter.clear();
+	for (int i=0; i<filtSize; i++){
+		mFilter.push_back(filtVal);
+	}
+	//
 }
 
 bool SmoothMotionFilter::applyFilter(PointVec& inRotations, PointVec& inOffsets, 
@@ -36,6 +46,12 @@ bool SmoothMotionFilter::applyFilter(PointVec& inRotations, PointVec& inOffsets,
 
 	outRotations.clear();
 	outOffsets.clear();
+	/* 
+	//convolution
+	convolutePoints(inRotations, mFilter, outRotations, true);
+	convolutePoints(inOffsets, mFilter, outOffsets, true);
+	*/
+	// without convolution
 	Point3d sumRot;
 	Point3d sumOff;
 	Point3d finalRot;
@@ -46,9 +62,7 @@ bool SmoothMotionFilter::applyFilter(PointVec& inRotations, PointVec& inOffsets,
 		sumOff[0] = sumOff[1] = sumOff[2] = 0;
 		for (int j=-smoothRadius; j<=smoothRadius; j++)
 		{
-			//TODO:
-			// (1) switch to the convolution method
-			// (2) there's a problem in averaging degrees since 179 and -179 become 0 and not 180
+			//TODO: there's a problem in averaging degrees since 179 and -179 become 0 and not 180
 			index = i+j;
 			if (index<0) {
 				index=nFrames+index;
