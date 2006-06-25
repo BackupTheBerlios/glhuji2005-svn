@@ -260,7 +260,6 @@ void DisplayCallback()
 	glTranslatef(-drawCenter[0],-drawCenter[1],-drawCenter[2]);*/
 	
 	// draw a mesh at the "ground level"
-	//TODO: not sure we need that
 	drawGround();
 
 	glColor3f(0,0,1);
@@ -304,7 +303,7 @@ void keypress(unsigned char key, int x, int y)
 		break;
 	case 's':
 		pFilter = BaseMotionFilter::createFilter(BaseMotionFilter::MF_SMOOTH);
-		pFilter->loadFilter(3.0);
+		pFilter->loadFilter(7.0);
 		g_articulatedFigure.applyFilter(pFilter);
 		break;
 	case 'r':
@@ -337,7 +336,7 @@ void keypress(unsigned char key, int x, int y)
 		printf(" space --> next frame\n");
 		printf(" backspace --> previous frame\n");
 		printf(" + --> increase speed\n");
-		printf(" - --> decrease speed\n");
+		printf(" - --> decreanse speed\n");
 		printf(" * --> default speed\n");
 		printf(" 0 --> goto first frame\n");
 		printf(" p --> toggle pause/play\n");
@@ -403,8 +402,12 @@ int main(int argc, char **argv)
 
     do {
         //todo: check command line parameters
+		string bvhFilename = "aero.bvh";
+		if (argc > 1){
+			bvhFilename = argv[1];
+		}
 
-        BVHParser parser( string("aero.bvh"), g_articulatedFigure, ok );
+        BVHParser parser( bvhFilename, g_articulatedFigure, ok );
         if( !ok ) break;
 
         cout << "Loading BVH File..." << endl;

@@ -56,10 +56,11 @@ bool SmoothMotionFilter::applyFilter(PointVec& inRotations, PointVec& inOffsets,
 			else if (index>=nFrames){
 				index = index-nFrames;
 			}
-			sumRot += inRotations[index];
+			sumAngles(sumRot, inRotations[index]);
 			sumOff += inOffsets[index];
 		}
 		finalRot = sumRot/smoothSize;
+		fixAngles(finalRot);
 		finalOff = sumOff/smoothSize;
 		outRotations.push_back(finalRot);
 		outOffsets.push_back(finalOff);

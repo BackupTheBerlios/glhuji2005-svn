@@ -13,6 +13,9 @@ public:
 	// static initializer
 	static BaseMotionFilter* createFilter(MotionFilterType inType);
 	static void convolutePoints(PointVec& inPoints, DoubleVec& inFilter, PointVec& outPoints);
+	static void sumAngles(Point3d& inP1, Point3d& inP2);
+	static void fixAngles(Point3d& inPoint);
+	static inline bool isNegative(double inVal) { return (inVal < 0); }
 
 	// interface methods
 	virtual bool loadFilter(double inIntensity) = 0;

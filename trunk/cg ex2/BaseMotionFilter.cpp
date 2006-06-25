@@ -51,3 +51,33 @@ void BaseMotionFilter::convolutePoints(PointVec& inPoints, DoubleVec& inFilter, 
 		outPoints.push_back(sumPoint);
 	}
 }
+
+void BaseMotionFilter::sumAngles(Point3d& inP1, Point3d& inP2)
+{
+	Point3d p2 = inP2;
+	for (int i=0; i<=2; i++){
+		if (isNegative(p2[i]) != isNegative(inP1[i])){
+			if (p2[i] < -90){
+				p2[i] = 360 + p2[i];
+			}
+			else if (p2[i] > 90){
+				p2[i] = -360 + p2[i];
+			}
+		}
+
+		inP1[i] += p2[i];
+	}
+}
+
+void BaseMotionFilter::fixAngles(Point3d& inPoint)
+{
+	for (int i=0; i<=2; i++){
+		if (inPoint[i] < -180){
+			inPoint[i] = -360 - inPoint[i];
+		}
+		else if (inPoint[i] > 180){
+			inPoint[i] = 360 - inPoint[i];
+		}
+
+	}
+}
