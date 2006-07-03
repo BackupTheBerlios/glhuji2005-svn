@@ -7,6 +7,7 @@
 #include "BVHWriter.h"
 #include "windows.h"
 #include "basemotionfilter.h"
+#include "convMotionFilter.h"
 #include <string>
 #include <iostream>
 
@@ -110,17 +111,17 @@ generateCheckerBoard()
         for( int j = 0; j < gCheckImageWidth; j++) {
             
             gCheckImage[i][j][0] = (GLubyte) 0;
-            gCheckImage[i][j][3] = (GLubyte) 255;
+            gCheckImage[i][j][3] = (GLubyte) 128;
 
             bool blueSquare = ((i / width)%2==0) ^ ((j / width)%2==0);
             if( blueSquare )
             {
                 gCheckImage[i][j][1] = (GLubyte) 0;
-                gCheckImage[i][j][2] = (GLubyte) 255;
+                gCheckImage[i][j][2] = (GLubyte) 240;
             }
             else
             {
-                gCheckImage[i][j][1] = (GLubyte) 255;
+                gCheckImage[i][j][1] = (GLubyte) 200;
                 gCheckImage[i][j][2] = (GLubyte) 0;
             }
             
@@ -202,6 +203,8 @@ void drawGround()
     // draw grid lines in xz-plane, parallel to z axis
     glPushMatrix();
     double sf = g_articulatedFigure.getMaxOffsetDistance();
+	float minY = g_articulatedFigure.getMinY();
+	minY = 0;
     glScaled(sf,sf,sf);
 
     if( !gLineBackground )
@@ -210,10 +213,10 @@ void drawGround()
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
         glBindTexture(GL_TEXTURE_2D, gTexName);
         glBegin(GL_QUADS);
-        glTexCoord2f(0.0, 0.0); glVertex3f(xmin, 0, zmin);
-        glTexCoord2f(0.0, 1.0); glVertex3f(xmax, 0, zmin);
-        glTexCoord2f(1.0, 1.0); glVertex3f(xmax, 0, zmax);
-        glTexCoord2f(1.0, 0.0); glVertex3f(xmin, 0, zmax);
+        glTexCoord2f(0.0, 0.0); glVertex3f(xmin, minY, zmin);
+        glTexCoord2f(0.0, 1.0); glVertex3f(xmax, minY, zmin);
+        glTexCoord2f(1.0, 1.0); glVertex3f(xmax, minY, zmax);
+        glTexCoord2f(1.0, 0.0); glVertex3f(xmin, minY, zmax);
         glEnd();
         glFlush();
         glDisable(GL_TEXTURE_2D);
@@ -224,16 +227,16 @@ void drawGround()
 	    glBegin(GL_LINES);
 	    for (nx=0; nx<=nsteps; nx++) {
 		    x = xmin + nx*dx;
-		    glVertex3f(x,0,zmin);
-		    glVertex3f(x,0,zmax);
+		    glVertex3f(x,minY,zmin);
+		    glVertex3f(x,minY,zmax);
 	    }
 	    glEnd();
 		    // draw grid lines in xz-plane, parallel to x-axis
 	    glBegin(GL_LINES);
 	    for (nz=0; nz<=nsteps; nz++) {
 		    z = zmin + nz*dz;
-		    glVertex3f(xmin,0,z);
-		    glVertex3f(xmax,0,z);
+		    glVertex3f(xmin,minY,z);
+		    glVertex3f(xmax,minY,z);
 	    }
 	    glEnd();
     }
@@ -307,8 +310,8 @@ void keypress(unsigned char key, int x, int y)
 		}
 		break;
 	case 's':
-		pFilter = BaseMotionFilter::createFilter(BaseMotionFilter::MF_SMOOTH);
-		pFilter->loadFilter(3.0);
+		pFilter = new ConvMotionFilter();
+		pFilter->loadFilter(1.0);
 		g_articulatedFigure.applyFilter(pFilter);
 		break;
 	case 'r':
@@ -407,7 +410,7 @@ int main(int argc, char **argv)
 
     do {
         //todo: check command line parameters
-		string bvhFilename = "aero.bvh";
+		string bvhFilename = "02Jump.bvh";
 		if (argc > 1){
 			bvhFilename = argv[1];
 		}

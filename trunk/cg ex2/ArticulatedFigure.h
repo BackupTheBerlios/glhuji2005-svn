@@ -43,10 +43,12 @@ public:
         ParamMappingArr pChannelMapping;
         Point3d         pPosition;
         PointVec        pOffsets;
+        PointVec        pOffsetDiff;
 
         //VERY IMPORTANT: order to perform these rotations is:
         // Xrotation Zrotation Yrotation - according to BVH file format
         PointVec      pRotations;
+        PointVec      pRotationDiff;
 
         NodePtrList pChildren; //child nodes
 
@@ -60,6 +62,7 @@ public:
     ArticulatedFigure();
     ~ArticulatedFigure();
 
+	double getMinY(){return mMinOffset[1];}
     void setRuntimeParamters( int inNumFrames, double inFrameTime );
 	double getMaxOffsetDistance(){ return mMaxOffsetDistance; }
 	double getJointRadius(){ return getMaxOffsetDistance()/50.0; }
@@ -79,6 +82,7 @@ protected:
 	bool		mIsFiltered;
 
 	Point3d		mMaxOffset;
+	Point3d		mMinOffset;
 	double		mMaxOffsetDistance;
 	Point3d		mTotalOffset;
 	Point3d		mBodyCenter;

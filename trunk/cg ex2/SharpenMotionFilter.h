@@ -11,5 +11,6 @@ public:
 	// interface methods
 	virtual bool loadFilter(double inIntensity){ return true; }
 	virtual bool applyFilter(PointVec& inRotations, PointVec& inOffsets, 
+		PointVec& inRotationDiff, PointVec& inOffsetDiff,
 		PointVec& outRotations, PointVec& outOffsets){ return true; }//TODO!!!
 };

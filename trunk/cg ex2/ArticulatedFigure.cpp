@@ -43,6 +43,7 @@ ArticulatedFigure::ArticulatedFigure(void)
 	mIsFiltered	= false;
 
 	mMaxOffset[0] = mMaxOffset[1] = mMaxOffset[2] = 0;
+	mMinOffset[0] = mMinOffset[1] = mMinOffset[2] = 100;
 	mTotalOffset[0] = mTotalOffset[1] = mTotalOffset[2] = 0;
 	mBodyCenter[0] = mBodyCenter[1] = mBodyCenter[2] = 0;
 	mNodesCounter = 0;
@@ -164,13 +165,13 @@ void ArticulatedFigure::Node::draw(int frameNum, bool lineFigure, bool isFiltere
 	if (curRotations.size() > 0)
 	{
 		// X
-		if (curRotations[frameNum][0] != 0)
+		if (curRotations[frameNum][0] > 0.0001 || curRotations[frameNum][0] < 0.0001)
 			glRotatef(curRotations[frameNum][0],1,0,0);
 		// Z
-		if (curRotations[frameNum][2] != 0)
+		if (curRotations[frameNum][2] > 0.0001 || curRotations[frameNum][2] < 0.0001)
 			glRotatef(curRotations[frameNum][2],0,0,1);
 		// Y
-		if (curRotations[frameNum][1] != 0)
+		if (curRotations[frameNum][1] > 0.0001 || curRotations[frameNum][1] < 0.0001)
 			glRotatef(curRotations[frameNum][1],0,1,0);
 	}
 
@@ -201,12 +202,28 @@ void ArticulatedFigure::Node::draw(int frameNum, bool lineFigure, bool isFiltere
 void ArticulatedFigure::Node::applyFilter(BaseMotionFilter* pFilter)
 {
 	static bool f=true;
-	pFilter->applyFilter(pRotations, pOffsets, pFilteredRotations, pFilteredOffsets);
+	if (pNodeName.compare("DNeck") == 0)
+	{
+		int a = 0;
+	}
+	if (pNodeName.compare("EHead") == 0)
+	{
+		int a = 0;
+	}
+
+	pFilter->applyFilter(pRotations, pOffsets, pRotationDiff, pOffsetDiff, pFilteredRotations, pFilteredOffsets);
 	//* DEBUG!!!!!!
 	if (f){
 	for (unsigned int i=0; i<pRotations.size(); i++)
 	{
-		cout << pRotations[i] << " --> " << pFilteredRotations[i] << " -->>> " << pOffsets[i] << " --> " << pFilteredOffsets[i] << endl; 
+		if (pRotations[i] != pFilteredRotations[i])
+			cout << "Rot: " << pRotations[i] << " > " << pFilteredRotations[i] << endl;
+		if (pOffsets[i] != pFilteredOffsets[i])
+		{
+			if (pRotations[i] != pFilteredRotations[i])
+				cout << " | ";
+			cout << "Off: " << pOffsets[i] << " > " << pFilteredOffsets[i] << endl;
+		}
 	}
 	cout << endl;
 	}

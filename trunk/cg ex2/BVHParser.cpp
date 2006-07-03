@@ -180,6 +180,16 @@ BVHParser::readNodeMotions( ArticulatedFigure::Node *inNodePtr,
             if( err ) break;
 
             //Finally, set parameters...
+			if (inNodePtr->pOffsets.size() == 0)
+			{
+		        inNodePtr->pOffsetDiff.push_back( Point3d(0, 0, 0) );
+	            inNodePtr->pRotationDiff.push_back( Point3d(0, 0, 0) );
+			}
+			else
+			{
+				inNodePtr->pOffsetDiff.push_back(Point3d(xPos, yPos, zPos)-inNodePtr->pOffsets[inNodePtr->pOffsets.size()-1]);
+				inNodePtr->pRotationDiff.push_back(Point3d(xRot, yRot, zRot)-inNodePtr->pRotations[inNodePtr->pRotations.size()-1]);
+			}
             inNodePtr->pOffsets.push_back( Point3d(xPos, yPos, zPos) );
             inNodePtr->pRotations.push_back( Point3d(xRot, yRot, zRot) );
             
@@ -247,6 +257,15 @@ BVHParser::readHierarchy( ArticulatedFigure::Node *inParent, bool isEnd, bool &o
 		mArticulatedFigure.mMaxOffset[2] = abs(curOffset[2]) > mArticulatedFigure.mMaxOffset[2]? 
 			abs(curOffset[2]) : mArticulatedFigure.mMaxOffset[2];
 
+		double xm = min(curOffset[0], mArticulatedFigure.mTotalOffset[0]);
+		double ym = min(curOffset[1], mArticulatedFigure.mTotalOffset[1]);
+		double zm = min(curOffset[2], mArticulatedFigure.mTotalOffset[2]);
+		mArticulatedFigure.mMinOffset[0] = xm < mArticulatedFigure.mMinOffset[0]? 
+			xm : mArticulatedFigure.mMinOffset[0];
+		mArticulatedFigure.mMinOffset[1] = ym < mArticulatedFigure.mMinOffset[1]? 
+			ym : mArticulatedFigure.mMinOffset[1];
+		mArticulatedFigure.mMinOffset[2] = zm < mArticulatedFigure.mMinOffset[2]? 
+			zm : mArticulatedFigure.mMinOffset[2];
         //----------- Read channels --------------
         if( !isEnd )
         {
