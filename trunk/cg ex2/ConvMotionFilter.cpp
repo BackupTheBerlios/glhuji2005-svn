@@ -2,81 +2,60 @@
 #include "ConvMotionFilter.h"
 
 #define pi 3.14159265358978
-#define DEG(r) ((r)*180/pi)
-#define RAD(d) ((d)*pi/180)
+#define DEG(r) ((r)*180.0f/pi)
+#define RAD(d) ((d)*pi/180.0f)
+
 ConvMotionFilter::ConvMotionFilter(void)
 {
-	_OffsetVec.push_back(Point3d(1,1,1));
-	_OffsetVec.push_back(Point3d(3,3,3));
-	_OffsetVec.push_back(Point3d(4,4,4));
-	_OffsetVec.push_back(Point3d(3,3,3));
-	_OffsetVec.push_back(Point3d(1,1,1));
+	mIntensity  = 0;
+	mMaskFactor = 0;
 
-	_OffsetUTH = Point3d(10001000,10001000,10001000);	//big - allow free movement
-	_OffsetLTH = Point3d(0,0,0); //zero threshold - always filter
-
-	_RotationVec.push_back(Point3d(1,1,1));
-	_RotationVec.push_back(Point3d(3,3,3));
-	_RotationVec.push_back(Point3d(4,4,4));
-	_RotationVec.push_back(Point3d(3,3,3));
-	_RotationVec.push_back(Point3d(1,1,1));
-
-	_RotationUTH = Point3d(44,44,44); //Do not allow more then 12 degrees rotation per DOF per joint pre frame
-	_RotationLTH = Point3d(0,0,0); //zero threshold - always filter
-
-	
-	_ConvolveMask = true;
-	mIntensity = 1.0;
+	mOffsetUTH   = Point3d(10001000,10001000,10001000);	//big - allow free movement
+	mOffsetLTH   = Point3d(0,0,0);      //zero threshold - always filter
+	mRotationUTH = Point3d(44,44,44); //Do not allow more then 12 degrees rotation per DOF per joint pre frame
+	mRotationLTH = Point3d(0,0,0);    //zero threshold - always filter
 }
 
 ConvMotionFilter::~ConvMotionFilter(void)
 {
 }
 
-int ConvMotionFilter::setConvVector(const PointVec& inRotationVec, const PointVec& inOffsetVec)
+void ConvMotionFilter::setConvVector(const PointVec& inRotationVec, 
+									const PointVec& inOffsetVec,
+									double inMaskFactor,
+									double inIntensity )
 {
-	_RotationVec.clear();
-	_OffsetVec.clear();
-	for (unsigned int i=0; i<inRotationVec.size(); i++)
+	mRotationVec.clear();
+	mOffsetVec.clear();
+	for( unsigned int i=0; i<inRotationVec.size(); i++)
 	{
-		_RotationVec.push_back(inRotationVec[i]);
+		mRotationVec.push_back(inRotationVec[i]);
 	}
-	for (unsigned int i=0; i<inOffsetVec.size(); i++)
+
+	for( unsigned int i=0; i<inOffsetVec.size(); i++)
 	{
-		_OffsetVec.push_back(inOffsetVec[i]);
+		mOffsetVec.push_back(inOffsetVec[i]);
 	}
-	return 0;
-}
-bool ConvMotionFilter::loadFilter(double inIntensity)
-{
-//	if (inIntensity < 0){
-//		cerr << "Convolution filter cannot handle non-positive values\n";
-//		return false;
-//	}
-	mIntensity = (int) inIntensity;
 
-	//convolution stuff
-	int filtSize = 2*mIntensity + 1;
-	double filtVal = 1.0/filtSize;
-
-	mFilter.clear();
-	for (int i=0; i<filtSize; i++){
-		mFilter.push_back(filtVal);
-	}
-	return true;
+	mMaskFactor = inMaskFactor;
+	mIntensity  = inIntensity;
 }
 
-bool ConvMotionFilter::applyConv(const PointVec& inVector, const PointVec& inVectorDiff, bool inIsRotation, PointVec& inConvVector,
-								 PointVec& outVector)
+bool ConvMotionFilter::applyConv( const PointVec& inVector, 
+								  const PointVec& inVectorDiff, 
+								  bool inIsRotation, 
+								  PointVec& inConvVector,
+								  PointVec& outVector)
 {
 	outVector.clear();
+
 	int nFrames = (int)inVector.size();
-	if (nFrames == 0)
-		return true;
+
 	int nRadius = (int)inConvVector.size()/2;
-	Point3d Val, ValX, ValY, Sum, SumX, SumY, Factor;
-	int nConvVecPos;
+
+	Point3d Val, ValX, ValY, Sum, SumX, SumY;
 	int nAnglesInSum = 0;
+	
 	for (int nFrame=0; nFrame<nFrames; nFrame++)
 	{
 		if (inIsRotation)
@@ -86,12 +65,15 @@ bool ConvMotionFilter::applyConv(const PointVec& inVector, const PointVec& inVec
 		}
 		else
 			Sum = Point3d(0.0,0.0,0.0);
-		Factor = Point3d(0.0,0.0,0.0);
-		nConvVecPos = 0;
+
+		Point3d Factor = Point3d(0.0,0.0,0.0);
+		int nConvVecPos = 0;
+
 		int w = nFrame+((int)inConvVector.size()-nRadius);
 		for (int i=nFrame-nRadius; i<w; i++)
 		{
 			assert(nConvVecPos <(int)inConvVector.size());
+			
 			if (i < 0)
 			{	//duplicate left edge
 				Val = inVector[0];
@@ -104,7 +86,9 @@ bool ConvMotionFilter::applyConv(const PointVec& inVector, const PointVec& inVec
 			{
 				Val = inVector[i];
 			}
+
 			Factor += inConvVector[nConvVecPos];
+
 			for (int n=0; n<3; n++)
 			{
 				if (inIsRotation)
@@ -119,31 +103,38 @@ bool ConvMotionFilter::applyConv(const PointVec& inVector, const PointVec& inVec
 					Sum[n] = Sum[n]+(inConvVector[nConvVecPos][n]*Val[n]);
 				}
 			}
+
 			nConvVecPos++;
 		}
 		for (int n=0; n<3; n++)
 		{
 			if (Factor[n] != 0)
 				Factor[n] = 1.0/Factor[n];
+
 			if (inIsRotation)
 			{
 				SumX[n] = mIntensity*Factor[n]*SumX[n];
 				SumY[n] = mIntensity*Factor[n]*SumY[n];
+
+
 				Sum[n] = DEG(atan2(SumY[n],SumX[n]));
+
 				if (nFrame > 0)
 				{
 					double diff = subRotation(Sum[n], outVector[outVector.size()-1][n]);
+					
 					if (diff > 180)
 						diff = 360 - diff;
 					if (diff < -180)
 						diff = 360 + diff;
-					if (abs(diff) > _RotationUTH[n])
+
+					if( abs(diff) > mRotationUTH[n] )
 					{
-						Sum[n] = fixRotation(outVector[outVector.size()-1][n]) + (diff/abs(diff))*_RotationUTH[n];
+						Sum[n] = fixRotation(outVector[outVector.size()-1][n]) + (diff/abs(diff))*mRotationUTH[n];
 					}
-					if (abs(diff) <= _RotationLTH[n])
+					if (abs(diff) <= mRotationLTH[n])
 					{
-						Sum[n] = inVector[nFrame][n];//fixRotation(outVector[outVector.size()-1][n]) + (diff/abs(diff))*_RotationUTH[n];
+						Sum[n] = inVector[nFrame][n];//fixRotation(outVector[outVector.size()-1][n]) + (diff/abs(diff))*mRotationUTH[n];
 					}
 				}
 			}
@@ -153,119 +144,76 @@ bool ConvMotionFilter::applyConv(const PointVec& inVector, const PointVec& inVec
 				if (nFrame > 0)
 				{
 					double diff = Sum[n] - outVector[outVector.size()-1][n];
-					if (abs(diff) > _OffsetUTH[n])
+					if (abs(diff) > mOffsetUTH[n])
 					{
-						Sum[n] = outVector[outVector.size()-1][n] + (diff/abs(diff))*_OffsetUTH[n];
+						Sum[n] = outVector[outVector.size()-1][n] + (diff/abs(diff))*mOffsetUTH[n];
 					}
-					if (abs(diff) <= _OffsetLTH[n])
+					if (abs(diff) <= mOffsetLTH[n])
 					{
-						Sum[n] = inVector[nFrame][n];//fixRotation(outVector[outVector.size()-1][n]) + (diff/abs(diff))*_RotationUTH[n];
+						Sum[n] = inVector[nFrame][n];//fixRotation(outVector[outVector.size()-1][n]) + (diff/abs(diff))*mRotationUTH[n];
 					}
 				}
 			}
 		}
-		outVector.push_back(Sum);
+
+		Point3d result = Sum;
+
+		//perform unsharp mask - A-(A-B)*factor
+		//B being the blurred vector
+		if( mMaskFactor != 0 )
+		{
+			result = Val + (Val-Sum)*mMaskFactor;
+		}
+
+		outVector.push_back(result);
 	}
 	return true;
 }
-/*
-bool ConvMotionFilter::applyConv(const PointVec& inVector, const PointVec& inVectorDiff, bool inIsRotation, PointVec& inConvVector,
-								 PointVec& outVector)
+
+double 
+ConvMotionFilter::fixRotation(const double inVal)
 {
-	outVector.clear();
-	int nFrames = (int)inVector.size();
-//	if (_ConvolveDiff)
-//		nFrames = (int)inVectorDiff.size();
-	if (nFrames == 0)
-		return true;
-	int nRadius = (int)inConvVector.size()/2;
-	Point3d Val, Sum, Factor;
-	int nConvVecPos;
-	for (int nFrame=0; nFrame<nFrames; nFrame++)
-	{
-		Sum = Point3d(0.0,0.0,0.0);
-		Factor = Point3d(0.0,0.0,0.0);
-		nConvVecPos = 0;
-		for (int i=nFrame-nRadius; i<nFrame+((int)inConvVector.size()-nRadius); i++)
-		{
-			assert(nConvVecPos <(int)inConvVector.size());
-			if (i < 0)
-			{
-//				if (_ConvolveDiff)
-//					Val = inVectorDiff[i];
-//				else
-					Val = inVector[i];
-			}
-			else if (i >= nFrames)
-			{
-//				if (_ConvolveDiff)
-//					Val = inVectorDiff[nFrames-1];
-//				else
-					Val = inVector[nFrames-1];
-			}
-			else
-			{
-//				if (_ConvolveDiff)
-//					Val = inVectorDiff[i];
-//				else
-					Val = inVector[i];
-			}
-			Factor += inConvVector[nConvVecPos];
-			for (int n=0; n<3; n++)
-			{
-				if (inIsRotation)
-					Sum[n] = sumRotation(Sum[n],(inConvVector[nConvVecPos][n]*Val[n]));
-				else
-					Sum[n] = Sum[n]+(inConvVector[nConvVecPos][n]*Val[n]);
-			}
-			nConvVecPos++;
-		}
-		for (int n=0; n<3; n++)
-		{
-			Factor[n] = Factor[n]*mIntensity;
-			if (Factor[n] != 0)
-				Factor[n] = 1.0/Factor[n];
-			Sum[n] = Sum[n]*Factor[n];
-			if (inIsRotation)
-				Sum[n] = fixRotation(Sum[n]);
-		}
-		if (_ConvolveDiff)
-		{
-				if (inIsRotation)
-				{
-					if (nFrame != 0)
-					{
-						Sum = sumRotation(outVector[outVector.size()-1], subRotation(inVector[nFrame], Sum));
-					}
-					outVector.push_back(Sum);
-				}
-				else
-				{
-					if (nFrame != 0)
-					{
-						Sum = outVector[outVector.size()-1] + (inVector[nFrame] - Sum);
-					}
-					outVector.push_back(Sum);
-				}
-		}
-		else
-		{
-			for (int n=0; n<3; n++)
-			{
-				if (Sum[n] > 180)
-					Sum[n] = Sum[n] - 360;
-			}
-			outVector.push_back(Sum);
-		}
-	}
-	return true;
+	double ret = inVal;
+	while (ret < 0)
+		ret = 360+ret;
+	while (ret >= 360)
+		ret = ret-360;
+
+	return ret;
 }
-*/
-bool ConvMotionFilter::applyFilter(PointVec& inRotations, PointVec& inOffsets,
+
+Point3d 
+ConvMotionFilter::fixRotation(Point3d inPoint)
+{
+	Point3d ret = inPoint;
+	for (int i=0; i<3; i++)
+	{
+		ret[i] = fixRotation(ret[i]);
+	}
+	return ret;
+}
+
+double 
+ConvMotionFilter::subRotation(const double inPointA, const double inPointB)
+{
+	double ret = fixRotation(inPointA) - fixRotation(inPointB);
+	return fixRotation(ret);
+}
+
+bool 
+ConvMotionFilter::applyFilter(PointVec& inRotations, PointVec& inOffsets,
 									 PointVec& inRotationDiff, PointVec& inOffsetDiff,
 		PointVec& outRotations, PointVec& outOffsets)
 {
-	if (!applyConv (inRotations, inRotationDiff, true, _RotationVec, outRotations))
-		return false;
-	return applyConv (inOffsets, inOffsetDiff, false, _OffsetVec, outOffsets);
+	bool ret = true;
+
+	if( inRotations.size() > 0 )
+		ret = applyConv (inRotations, inRotationDiff, true, mRotationVec, outRotations);
+
+	bool noErrInRotationConvolution = ret;
+
+	if( noErrInRotationConvolution && inOffsets.size() > 0 )
+		ret = applyConv (inOffsets, inOffsetDiff, false, mOffsetVec, outOffsets);
+
+	return ret;
 }

@@ -1,9 +1,10 @@
 #include "StdAfx.h"
 
 #include "ArticulatedFigure.h"
-#include "BaseMotionFilter.h"
+#include "ConvMotionFilter.h"
 
 #include <iostream>
+#include <fstream>
 #include <string>
 using namespace std;
 
@@ -74,7 +75,7 @@ ArticulatedFigure::draw(int frameNum, bool lineFigure)
 	}
 }
 
-void ArticulatedFigure::applyFilter(BaseMotionFilter* pFilter)
+void ArticulatedFigure::applyFilter(ConvMotionFilter* pFilter)
 {
 	if (pFilter == NULL)
 	{
@@ -195,13 +196,20 @@ void ArticulatedFigure::Node::draw(int frameNum, bool lineFigure, bool isFiltere
 	glPopMatrix();
 }
 
+//start debug
+//static ofstream out( "c:\\out.txt", ios_base::trunc );
+//end debug
+
 //////////////////////////////////////////////////
 // PROC:   JOINT::applyFilter(BaseMotionFilter* pFilter)
 // DOES:   recursively filter the motion data (rotation and offsets)
 //////////////////////////////////////////////////
-void ArticulatedFigure::Node::applyFilter(BaseMotionFilter* pFilter)
+void ArticulatedFigure::Node::applyFilter(ConvMotionFilter* pFilter)
 {
-	static bool f=true;
+	//start debug
+	/*static bool f=true;
+
+
 	if (pNodeName.compare("DNeck") == 0)
 	{
 		int a = 0;
@@ -209,11 +217,68 @@ void ArticulatedFigure::Node::applyFilter(BaseMotionFilter* pFilter)
 	if (pNodeName.compare("EHead") == 0)
 	{
 		int a = 0;
+	} */
+	//end debug
+
+	pFilter->applyFilter( pRotations, pOffsets, 
+		pRotationDiff, pOffsetDiff, 
+		pFilteredRotations, pFilteredOffsets );
+
+	//start debug
+	if (pNodeName.compare("AHip") == 0)
+	{
+		#define PRN(g) do{ std::cout << "(" << g[0] << ", " << g[1] << ", " << g[2] << ")"; }while(0);
+		for( int i = 0; i < (int)pRotations.size(); i++ )
+		{
+			Point3d a = pRotations[i];
+			Point3d b = pFilteredRotations[i];
+
+			PRN(a);
+			std::cout << "->";
+			PRN(b);
+			std::cout << std::endl;
+		}
+	}
+	//end debug
+
+
+	//start debug
+	/*out << pNodeName << std::endl;
+	out << "before filter" << std::endl;
+
+	out << "offsets:" << std::endl;
+	for( PointVecIt it = pOffsets.begin();  it != pOffsets.end(); it++ )
+	{
+		Point3d &p = *it;
+		out << p[0] << ", " << p[1] << ", " << p[2] << std::endl;
 	}
 
-	pFilter->applyFilter(pRotations, pOffsets, pRotationDiff, pOffsetDiff, pFilteredRotations, pFilteredOffsets);
-	//* DEBUG!!!!!!
-	if (f){
+	out << "rotations:" << std::endl;
+	for( PointVecIt it = pRotations.begin(); it != pRotations.end(); it++ )
+	{
+		Point3d &p = *it;
+		out << p[0] << ", " << p[1] << ", " << p[2] << std::endl;
+	}
+
+	out << "after filter" << std::endl;
+
+	out << "offsets:" << std::endl;
+	for( PointVecIt it = pFilteredOffsets.begin(); it != pFilteredOffsets.end(); it++ )
+	{
+		Point3d &p = *it;
+		out << p[0] << ", " << p[1] << ", " << p[2] << std::endl;
+	}
+
+	out << "rotations:" << std::endl;
+	for( PointVecIt it = pFilteredRotations.begin(); it != pFilteredRotations.end(); it++ )
+	{
+		Point3d &p = *it;
+		out << p[0] << ", " << p[1] << ", " << p[2] << std::endl;
+	}*/
+
+	
+	//start debug
+	/* if (f){
 	for (unsigned int i=0; i<pRotations.size(); i++)
 	{
 		if (pRotations[i] != pFilteredRotations[i])
@@ -227,8 +292,8 @@ void ArticulatedFigure::Node::applyFilter(BaseMotionFilter* pFilter)
 	}
 	cout << endl;
 	}
-	f=false;
-	//*/
+	f=false;*/
+	//end debug
 
 	// recursively draw all child joints
 	for (unsigned int n=0; n<pChildren.size(); n++)

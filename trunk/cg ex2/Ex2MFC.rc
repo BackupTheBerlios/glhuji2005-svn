@@ -67,6 +67,11 @@ BEGIN
     LTEXT           "Rotation Conv. Size:",IDC_STATIC,7,55,67,8
     LTEXT           "Pos Conv. Size:",IDC_STATIC,115,55,51,8
     LTEXT           "Presets:",IDC_STATIC,208,55,28,8
+    PUSHBUTTON      "|<",IDC_REW,205,178,14,14
+    PUSHBUTTON      "<",IDC_PREV,223,178,14,14
+    PUSHBUTTON      ">",IDC_NEXT,259,178,14,14
+    PUSHBUTTON      ">|",IDC_FWD,277,178,14,14
+    PUSHBUTTON      "|>",IDC_PLAY,241,178,14,14
 END
 
 

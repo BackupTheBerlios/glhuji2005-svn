@@ -57,6 +57,7 @@ CEx2MFCDlg::CEx2MFCDlg(CWnd* pParent /*=NULL*/)
 void CEx2MFCDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_PLAY, m_PlayBtn);
 }
 
 BEGIN_MESSAGE_MAP(CEx2MFCDlg, CDialog)
@@ -66,6 +67,11 @@ BEGIN_MESSAGE_MAP(CEx2MFCDlg, CDialog)
 	//}}AFX_MSG_MAP
 	ON_BN_CLICKED(IDOK, OnBnClickedOk)
 	ON_BN_CLICKED(IDCANCEL, OnBnClickedCancel)
+	ON_BN_CLICKED(IDC_NEXT, OnBnClickedNext)
+	ON_BN_CLICKED(IDC_PREV, OnBnClickedPrev)
+	ON_BN_CLICKED(IDC_PLAY, OnBnClickedPlay)
+	ON_BN_CLICKED(IDC_FWD, OnBnClickedFwd)
+	ON_BN_CLICKED(IDC_REW, OnBnClickedRew)
 END_MESSAGE_MAP()
 
 
@@ -159,7 +165,7 @@ void CEx2MFCDlg::OnBnClickedOk()
 	{
 		filename[len] = '\\';
 		filename[len+1] = '\0';
-		strcat(filename, "aero.bvh");
+		strcat(filename, "*.bvh");
 	}
 	CFileDialog file (true, "bvh", filename, OFN_FILEMUSTEXIST|OFN_ENABLESIZING, szFilter, this);
 	if (file.DoModal() != IDOK)
@@ -172,4 +178,35 @@ void CEx2MFCDlg::OnBnClickedCancel()
 {
 //	OnCancel();
 	exit(0);
+}
+
+void CEx2MFCDlg::OnBnClickedNext()
+{
+	g_OpenGLWin.gotoNextFrame();
+}
+
+void CEx2MFCDlg::OnBnClickedPrev()
+{
+	g_OpenGLWin.gotoPrevFrame();
+}
+
+void CEx2MFCDlg::OnBnClickedPlay()
+{
+	
+	UpdateData(TRUE);
+	if (g_OpenGLWin.playPause())
+		m_PlayBtn.SetWindowText("|>");
+	else
+		m_PlayBtn.SetWindowText("||");
+	UpdateData(FALSE);
+}
+
+void CEx2MFCDlg::OnBnClickedFwd()
+{
+	g_OpenGLWin.gotoFrame(g_OpenGLWin.getFrameCount()-1);
+}
+
+void CEx2MFCDlg::OnBnClickedRew()
+{
+	g_OpenGLWin.gotoFrame(0);
 }

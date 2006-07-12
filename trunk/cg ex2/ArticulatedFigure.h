@@ -3,7 +3,7 @@
 
 #include "MyTypes.h"
 
-class BaseMotionFilter;
+class ConvMotionFilter;
 
 class ArticulatedFigure
 {
@@ -35,7 +35,7 @@ public:
 
         void setNumChannels( int inNumChannels ){ pNumChannels = inNumChannels; }
 		void draw(int frameNum, bool lineFigure, bool isFiltered, double jointRadius);
-		void applyFilter(BaseMotionFilter* pFilter);
+		void applyFilter(ConvMotionFilter* pFilter);
 
     public:
         std::string     pNodeName;
@@ -43,18 +43,20 @@ public:
         ParamMappingArr pChannelMapping;
         Point3d         pPosition;
         PointVec        pOffsets;
-        PointVec        pOffsetDiff;
 
         //VERY IMPORTANT: order to perform these rotations is:
         // Xrotation Zrotation Yrotation - according to BVH file format
-        PointVec      pRotations;
-        PointVec      pRotationDiff;
+        PointVec        pRotations;
 
-        NodePtrList pChildren; //child nodes
+        NodePtrList     pChildren; //child nodes
 
 		// filtered data
-		PointVec      pFilteredOffsets;
-        PointVec      pFilteredRotations;
+		PointVec		pFilteredOffsets;
+        PointVec		pFilteredRotations;
+
+		//first derivative of the motions - calculated when figure is loaded.
+        PointVec        pOffsetDiff;
+		PointVec        pRotationDiff;
     };
 
 //--------------- Public Methods -----------
@@ -68,7 +70,7 @@ public:
 	double getJointRadius(){ return getMaxOffsetDistance()/50.0; }
 	Point3d getBodyCenter(){ return mBodyCenter; }
 	void draw(int frameNum, bool lineFigure);
-	void applyFilter(BaseMotionFilter* pFilter);
+	void applyFilter(ConvMotionFilter* pFilter);
 	int getNumOfFrames(){ return mNumFrames; }
 	bool isFiltered(){ return mIsFiltered; }
 	double getFrameTime(){ return mFrameTime; }

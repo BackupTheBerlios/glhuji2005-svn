@@ -2,6 +2,7 @@
 //
 
 #pragma once
+#include "afxwin.h"
 
 
 // CEx2MFCDlg dialog
@@ -30,4 +31,10 @@ protected:
 public:
 	afx_msg void OnBnClickedOk();
 	afx_msg void OnBnClickedCancel();
+	afx_msg void OnBnClickedNext();
+	afx_msg void OnBnClickedPrev();
+	afx_msg void OnBnClickedPlay();
+	afx_msg void OnBnClickedFwd();
+	afx_msg void OnBnClickedRew();
+	CButton m_PlayBtn;
 };

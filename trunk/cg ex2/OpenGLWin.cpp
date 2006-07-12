@@ -298,7 +298,44 @@ void COpenGLWin::DisplayCallback()
 }
 
 
+void COpenGLWin::gotoNextFrame()
+{
+	g_nFrameNum++;
+	if (g_nFrameNum >= g_articulatedFigure.getNumOfFrames()){
+		g_nFrameNum = 0;
+	}
+	glutPostRedisplay();
+}
+void COpenGLWin::gotoPrevFrame()
+{
+	g_nFrameNum--;
+	if (g_nFrameNum < 0){
+		g_nFrameNum = g_articulatedFigure.getNumOfFrames()-1;
+	}
+	glutPostRedisplay();
+}
+void COpenGLWin::gotoFrame(int nFrame)
+{
+	g_nFrameNum = nFrame;
+	if (g_nFrameNum < 0)
+	{
+		g_nFrameNum = 0;
+	}
+	if (g_nFrameNum >= g_articulatedFigure.getNumOfFrames())
+		g_nFrameNum = g_articulatedFigure.getNumOfFrames()-1;
+	glutPostRedisplay();
+}
 
+bool COpenGLWin::playPause()
+{
+	g_bPause = !g_bPause;
+	return g_bPause;
+}
+
+int COpenGLWin::getFrameCount()
+{
+	return g_articulatedFigure.getNumOfFrames();
+}
 /////////////////////////////////////////////////////
 // FUNC: keypress()
 // DOES: glut calls this whenever a key is pressed
@@ -314,19 +351,13 @@ void COpenGLWin::keypress(unsigned char key, int x, int y)
 	case ' ':
 		if (!g_bPause)
 			break;
-		g_nFrameNum++;
-		if (g_nFrameNum >= g_articulatedFigure.getNumOfFrames()){
-			g_nFrameNum = 0;
-		}
-		break;
+		gotoNextFrame();
+		return;
 	case 0x08:	//Backspace
 		if (!g_bPause)
 			break;
-		g_nFrameNum--;
-		if (g_nFrameNum < 0){
-			g_nFrameNum = g_articulatedFigure.getNumOfFrames()-1;
-		}
-		break;
+		gotoPrevFrame();
+		return;
 	case 's':
 		pFilter = new ConvMotionFilter();
 		pFilter->loadFilter(1.0);
@@ -351,10 +382,10 @@ void COpenGLWin::keypress(unsigned char key, int x, int y)
 		g_fFrameTime -= g_articulatedFigure.getFrameTime()*0.33;
 		break;
 	case '0':
-		g_nFrameNum = 0;
+		gotoFrame(0);
 		break;
 	case 'p':
-		g_bPause = !g_bPause;
+		playPause();
 		break;
 	case 'h':           // lists commands
 		printf("\n");
