@@ -4,10 +4,13 @@
 
 class COpenGLWin
 {
+	CString m_Filename;
 public:
+	CString getFileName(){return m_Filename;}
 	COpenGLWin(void);
 	~COpenGLWin(void);
 	void Run(CString filename);
+	void Save(CString filename);
 	void Resize(int width, int height);
 	void DisplayCallback();
 	void mousePressedCallback( int inButton, int inState, int inX, int inY );

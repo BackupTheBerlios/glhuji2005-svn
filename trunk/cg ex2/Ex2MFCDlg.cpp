@@ -72,6 +72,8 @@ BEGIN_MESSAGE_MAP(CEx2MFCDlg, CDialog)
 	ON_BN_CLICKED(IDC_PLAY, OnBnClickedPlay)
 	ON_BN_CLICKED(IDC_FWD, OnBnClickedFwd)
 	ON_BN_CLICKED(IDC_REW, OnBnClickedRew)
+	ON_BN_CLICKED(IDWRITE, OnBnClickedWrite)
+	ON_BN_CLICKED(IDCLOSEFILE, OnBnClickedClosefile)
 END_MESSAGE_MAP()
 
 
@@ -209,4 +211,28 @@ void CEx2MFCDlg::OnBnClickedFwd()
 void CEx2MFCDlg::OnBnClickedRew()
 {
 	g_OpenGLWin.gotoFrame(0);
+}
+
+void CEx2MFCDlg::OnBnClickedWrite()
+{
+	static char BASED_CODE szFilter[] = "BVH Files (*.bvh)|*.bvh|All Files (*.*)|*.*||";
+	char filename [520];
+	filename[0] = '\0';	//ToDO: use current filename
+	int len = GetCurrentDirectory(497, filename);
+	if (len > 0 && filename[len-1] != '\\')
+	{
+		filename[len] = '\\';
+		filename[len+1] = '\0';
+		strcat(filename, "*.bvh");
+	}
+	CFileDialog file (false, "bvh", g_OpenGLWin.getFileName(), OFN_ENABLESIZING, szFilter, this);
+	if (file.DoModal() != IDOK)
+		return;
+
+	g_OpenGLWin.Save(file.GetFileName());
+}
+
+void CEx2MFCDlg::OnBnClickedClosefile()
+{
+	// TODO: Add your control notification handler code here
 }

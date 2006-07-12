@@ -2,6 +2,9 @@
 // Microsoft Visual C++ generated include file.
 // Used by Ex2MFC.rc
 //
+#define IDWRITE                         3
+#define IDWRITE2                        4
+#define IDCLOSEFILE                     4
 #define IDM_ABOUTBOX                    0x0010
 #define IDD_ABOUTBOX                    100
 #define IDS_ABOUTBOX                    101
@@ -18,7 +21,6 @@
 #define IDC_PREV                        1011
 #define IDC_NEXT                        1012
 #define IDC_FWD                         1013
-#define IDC_BUTTON6                     1015
 #define IDC_PLAY                        1015
 
 // Next default values for new objects

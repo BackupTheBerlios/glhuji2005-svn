@@ -3,7 +3,6 @@
 #include "ArticulatedFigure.h"
 #include "BVHParser.h"
 #include "BVHWriter.h"
-#include "basemotionfilter.h"
 #include "convMotionFilter.h"
 
 #include <string>
@@ -342,7 +341,7 @@ int COpenGLWin::getFrameCount()
 /////////////////////////////////////////////////////
 void COpenGLWin::keypress(unsigned char key, int x, int y)
 {
-	BaseMotionFilter* pFilter=NULL;
+	ConvMotionFilter* pFilter=NULL;
 
 	switch(key) {
 	case 'q':          // quit
@@ -360,7 +359,6 @@ void COpenGLWin::keypress(unsigned char key, int x, int y)
 		return;
 	case 's':
 		pFilter = new ConvMotionFilter();
-		pFilter->loadFilter(1.0);
 		g_articulatedFigure.applyFilter(pFilter);
 		break;
 	case 'r':
@@ -454,6 +452,11 @@ void COpenGLWin::Resize(int width, int height)
 	0.0, 0.0, 200.0, // eye location
 	0.0, 0.0, 0.0, // center location
 	0.0, 1.0, 0.0); // up vector
+}
+
+void COpenGLWin::Save(CString filename)
+{
+	return;
 }
 
 void COpenGLWin::Run(CString filename)

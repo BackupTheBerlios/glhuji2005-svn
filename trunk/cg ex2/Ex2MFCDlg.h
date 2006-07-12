@@ -37,4 +37,6 @@ public:
 	afx_msg void OnBnClickedFwd();
 	afx_msg void OnBnClickedRew();
 	CButton m_PlayBtn;
+	afx_msg void OnBnClickedWrite();
+	afx_msg void OnBnClickedClosefile();
 };
