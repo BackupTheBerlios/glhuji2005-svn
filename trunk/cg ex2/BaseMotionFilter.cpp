@@ -1,7 +1,5 @@
 #include "StdAfx.h"
 #include ".\basemotionfilter.h"
-#include ".\SmoothMotionFilter.h"
-#include ".\SharpenMotionFilter.h"
 #include ".\ConvMotionFilter.h"
 
 BaseMotionFilter::BaseMotionFilter(void)
@@ -18,10 +16,10 @@ BaseMotionFilter* BaseMotionFilter::createFilter(MotionFilterType inType)
 	switch (inType)
 	{
 	case MF_SMOOTH:
-		pBaseFilter = new SmoothMotionFilter();
+//		pBaseFilter = new SmoothMotionFilter();
 		break;
 	case MF_SHARPEN:
-		pBaseFilter = new SharpenMotionFilter();
+//		pBaseFilter = new SharpenMotionFilter();
 		break;
 	case MF_CONVOLVE:
 		pBaseFilter = new ConvMotionFilter();

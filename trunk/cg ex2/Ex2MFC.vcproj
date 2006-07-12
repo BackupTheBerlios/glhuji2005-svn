@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="Windows-1252"?>
+<?xml version="1.0" encoding="windows-1255"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="7.10"
-	Name="Ex2"
-	ProjectGUID="{481FBA40-51CF-4EA2-BB5C-2F16C3F4B07B}"
-	Keyword="Win32Proj">
+	Name="Ex2MFC"
+	ProjectGUID="{466C7918-AC11-4090-A1BC-3DA853DC98B8}"
+	Keyword="MFCProj">
 	<Platforms>
 		<Platform
 			Name="Win32"/>
@@ -15,15 +15,18 @@
 			OutputDirectory="Debug"
 			IntermediateDirectory="Debug"
 			ConfigurationType="1"
-			CharacterSet="2">
+			UseOfMFC="1"
+			CharacterSet="0">
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/GR"
 				Optimization="0"
 				AdditionalIncludeDirectories="."
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="5"
+				RuntimeLibrary="1"
+				TreatWChar_tAsBuiltInType="TRUE"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="3"
 				WarningLevel="3"
@@ -33,14 +36,14 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)/Ex2.exe"
 				LinkIncremental="2"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile="$(OutDir)/Ex2.pdb"
-				SubSystem="1"
+				SubSystem="2"
 				TargetMachine="1"/>
 			<Tool
-				Name="VCMIDLTool"/>
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="FALSE"/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
 			<Tool
@@ -48,7 +51,10 @@
 			<Tool
 				Name="VCPreLinkEventTool"/>
 			<Tool
-				Name="VCResourceCompilerTool"/>
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"
+				AdditionalIncludeDirectories="$(IntDir)"/>
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
@@ -65,12 +71,16 @@
 			OutputDirectory="Release"
 			IntermediateDirectory="Release"
 			ConfigurationType="1"
+			UseOfMFC="1"
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
-				RuntimeLibrary="4"
-				RuntimeTypeInfo="TRUE"
+				AdditionalOptions="/GR"
+				AdditionalIncludeDirectories="."
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG"
+				MinimalRebuild="FALSE"
+				RuntimeLibrary="0"
+				TreatWChar_tAsBuiltInType="TRUE"
 				UsePrecompiledHeader="3"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="TRUE"
@@ -79,15 +89,16 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)/Ex2.exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
-				SubSystem="1"
+				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				TargetMachine="1"/>
 			<Tool
-				Name="VCMIDLTool"/>
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="FALSE"/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
 			<Tool
@@ -95,7 +106,10 @@
 			<Tool
 				Name="VCPreLinkEventTool"/>
 			<Tool
-				Name="VCResourceCompilerTool"/>
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"
+				AdditionalIncludeDirectories="$(IntDir)"/>
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
@@ -131,13 +145,13 @@
 				RelativePath=".\ConvMotionFilter.cpp">
 			</File>
 			<File
-				RelativePath=".\Ex2.cpp">
+				RelativePath=".\Ex2MFC.cpp">
 			</File>
 			<File
-				RelativePath=".\SharpenMotionFilter.cpp">
+				RelativePath=".\Ex2MFCDlg.cpp">
 			</File>
 			<File
-				RelativePath=".\SmoothMotionFilter.cpp">
+				RelativePath=".\OpenGLWin.cpp">
 			</File>
 			<File
 				RelativePath=".\stdafx.cpp">
@@ -175,16 +189,19 @@
 				RelativePath=".\ConvMotionFilter.h">
 			</File>
 			<File
+				RelativePath=".\Ex2MFC.h">
+			</File>
+			<File
+				RelativePath=".\Ex2MFCDlg.h">
+			</File>
+			<File
 				RelativePath=".\MyTypes.h">
 			</File>
 			<File
-				RelativePath=".\resource.h">
+				RelativePath=".\OpenGLWin.h">
 			</File>
 			<File
-				RelativePath=".\SharpenMotionFilter.h">
-			</File>
-			<File
-				RelativePath=".\SmoothMotionFilter.h">
+				RelativePath=".\Resource.h">
 			</File>
 			<File
 				RelativePath=".\stdafx.h">
@@ -195,13 +212,25 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}">
 			<File
-				RelativePath=".\Ex2.rc">
+				RelativePath=".\res\Ex2MFC.ico">
+			</File>
+			<File
+				RelativePath=".\Ex2MFC.rc">
+			</File>
+			<File
+				RelativePath=".\res\Ex2MFC.rc2">
 			</File>
 		</Filter>
+		<File
+			RelativePath=".\res\Ex2MFC.manifest">
+		</File>
 		<File
 			RelativePath=".\ReadMe.txt">
 		</File>
 	</Files>
 	<Globals>
+		<Global
+			Name="RESOURCE_FILE"
+			Value="Ex2MFC.rc"/>
 	</Globals>
 </VisualStudioProject>

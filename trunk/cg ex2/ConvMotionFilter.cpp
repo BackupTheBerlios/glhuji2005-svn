@@ -7,25 +7,11 @@
 ConvMotionFilter::ConvMotionFilter(void)
 {
 	_OffsetVec.push_back(Point3d(1,1,1));
-/*
-	_OffsetVec.push_back(Point3d(0.01,0.01,0.01));
-	_OffsetVec.push_back(Point3d(0.1,0.1,0.1));
-	_OffsetVec.push_back(Point3d(0.2,0.2,0.2));
-	_OffsetVec.push_back(Point3d(1,1,1));
-	_OffsetVec.push_back(Point3d(2,2,2));
+	_OffsetVec.push_back(Point3d(3,3,3));
 	_OffsetVec.push_back(Point3d(4,4,4));
-	_OffsetVec.push_back(Point3d(6,6,6));
-	_OffsetVec.push_back(Point3d(8,8,8));
-	_OffsetVec.push_back(Point3d(9,9,9));
-	_OffsetVec.push_back(Point3d(0,0,0));	//The rest are zero so it is only done of previous frames
-	_OffsetVec.push_back(Point3d(0,0,0));
-	_OffsetVec.push_back(Point3d(0,0,0));
-	_OffsetVec.push_back(Point3d(0,0,0));
-	_OffsetVec.push_back(Point3d(0,0,0));
-	_OffsetVec.push_back(Point3d(0,0,0));
-	_OffsetVec.push_back(Point3d(0,0,0));
-	_OffsetVec.push_back(Point3d(0,0,0));
-*/
+	_OffsetVec.push_back(Point3d(3,3,3));
+	_OffsetVec.push_back(Point3d(1,1,1));
+
 	_OffsetUTH = Point3d(10001000,10001000,10001000);	//big - allow free movement
 	_OffsetLTH = Point3d(0,0,0); //zero threshold - always filter
 
@@ -35,28 +21,10 @@ ConvMotionFilter::ConvMotionFilter(void)
 	_RotationVec.push_back(Point3d(3,3,3));
 	_RotationVec.push_back(Point3d(1,1,1));
 
-	_RotationUTH = Point3d(12,12,12); //Do not allow more then 12 degrees rotation per DOF per joint pre frame
+	_RotationUTH = Point3d(44,44,44); //Do not allow more then 12 degrees rotation per DOF per joint pre frame
 	_RotationLTH = Point3d(0,0,0); //zero threshold - always filter
 
-	/*
-	_RotationVec.push_back(Point3d(0.01,0.01,0.01));
-	_RotationVec.push_back(Point3d(0.1,0.1,0.1));
-	_RotationVec.push_back(Point3d(0.2,0.2,0.2));
-	_RotationVec.push_back(Point3d(1,1,1));
-	_RotationVec.push_back(Point3d(2,2,2));
-	_RotationVec.push_back(Point3d(4,4,4));
-	_RotationVec.push_back(Point3d(6,6,6));
-	_RotationVec.push_back(Point3d(8,8,8));
-	_RotationVec.push_back(Point3d(9,9,9));
-	_RotationVec.push_back(Point3d(0,0,0));	//The rest are zero so it is only done of previous frames
-	_RotationVec.push_back(Point3d(0,0,0));
-	_RotationVec.push_back(Point3d(0,0,0));
-	_RotationVec.push_back(Point3d(0,0,0));
-	_RotationVec.push_back(Point3d(0,0,0));
-	_RotationVec.push_back(Point3d(0,0,0));
-	_RotationVec.push_back(Point3d(0,0,0));
-	_RotationVec.push_back(Point3d(0,0,0));
-	*/
+	
 	_ConvolveMask = true;
 	mIntensity = 1.0;
 }
