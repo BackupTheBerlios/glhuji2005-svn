@@ -76,6 +76,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/GR"
+				Optimization="0"
 				AdditionalIncludeDirectories="."
 				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG"
 				MinimalRebuild="FALSE"
