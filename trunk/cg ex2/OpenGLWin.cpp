@@ -5,6 +5,8 @@
 #include "BVHWriter.h"
 #include "convMotionFilter.h"
 
+#include "Ex2MFCDlg.h"
+
 #include <string>
 #include <iostream>
 
@@ -299,22 +301,30 @@ void COpenGLWin::DisplayCallback()
 
 void COpenGLWin::gotoNextFrame()
 {
+	if (!m_bLoaded)
+		return;
 	g_nFrameNum++;
 	if (g_nFrameNum >= g_articulatedFigure.getNumOfFrames()){
 		g_nFrameNum = 0;
 	}
+	m_pParent->updateFarme();
 	glutPostRedisplay();
 }
 void COpenGLWin::gotoPrevFrame()
 {
+	if (!m_bLoaded)
+		return;
 	g_nFrameNum--;
 	if (g_nFrameNum < 0){
 		g_nFrameNum = g_articulatedFigure.getNumOfFrames()-1;
 	}
+	m_pParent->updateFarme();
 	glutPostRedisplay();
 }
 void COpenGLWin::gotoFrame(int nFrame)
 {
+	if (!m_bLoaded)
+		return;
 	g_nFrameNum = nFrame;
 	if (g_nFrameNum < 0)
 	{
@@ -322,19 +332,36 @@ void COpenGLWin::gotoFrame(int nFrame)
 	}
 	if (g_nFrameNum >= g_articulatedFigure.getNumOfFrames())
 		g_nFrameNum = g_articulatedFigure.getNumOfFrames()-1;
+	m_pParent->updateFarme();
 	glutPostRedisplay();
 }
 
+bool COpenGLWin::isPaused()
+{
+	return g_bPause;
+}
 bool COpenGLWin::playPause()
 {
+	if (!m_bLoaded)
+		return true;
 	g_bPause = !g_bPause;
+	m_pParent->updateFarme();
 	return g_bPause;
 }
 
 int COpenGLWin::getFrameCount()
 {
+	if (!m_bLoaded)
+		return 0;
 	return g_articulatedFigure.getNumOfFrames();
 }
+int COpenGLWin::getCurFrame()
+{
+	if (!m_bLoaded)
+		return 0;
+	return g_nFrameNum;
+}
+
 /////////////////////////////////////////////////////
 // FUNC: keypress()
 // DOES: glut calls this whenever a key is pressed
@@ -422,17 +449,16 @@ void COpenGLWin::idleFunc(void)
 	GetSystemTime(&st);	//Set initial 'last frame time'
 	if (getms(st)-getms(gLastFrameTime) > (int)(g_fFrameTime*1000))
 	{
-		g_nFrameNum++;
-		if (g_nFrameNum >= g_articulatedFigure.getNumOfFrames()){
-			g_nFrameNum = 0;
-		}
-		DisplayCallback();
+		gotoNextFrame();
 		GetSystemTime(&gLastFrameTime);	//Set 'last frame time'
 	}
 }
 
 COpenGLWin::COpenGLWin(void)
 {
+	m_bLoaded = false;
+	m_bCreated = false;
+	m_pParent = NULL;
 }
 
 COpenGLWin::~COpenGLWin(void)
@@ -456,7 +482,8 @@ void COpenGLWin::Resize(int width, int height)
 
 void COpenGLWin::Save(CString filename)
 {
-	return;
+	BVHWriter writer;
+    writer.write( g_articulatedFigure, string(filename) );
 }
 
 void COpenGLWin::Run(CString filename)
@@ -464,30 +491,25 @@ void COpenGLWin::Run(CString filename)
 	int ac = 1;
 	char v = '\0';
 	char* av = &v;
-    glutInit( &ac, &av );
-    glutInitDisplayMode( GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH );
-    glutInitWindowSize( WINSIZE, WINSIZE );
-    glutCreateWindow( "BVH Player" );
-	glutDisplayFunc( ::DisplayCallback );
-	glutIdleFunc( ::idleFunc );
-	glutMouseFunc( ::mousePressedCallback );
-	glutMotionFunc( ::mouseMovedCallback );
-	
-//    glutMouseFunc(mousebutton);
-//    glutMotionFunc(mousemotion);
-	glutKeyboardFunc(::keypress);
+	if (!m_bCreated)
+	{
+		glutInit( &ac, &av );
+		glutInitDisplayMode( GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH );
+		glutInitWindowSize( WINSIZE, WINSIZE );
+		glutCreateWindow( "BVH Player" );
+		glutDisplayFunc( ::DisplayCallback );
+		glutIdleFunc( ::idleFunc );
+		glutMouseFunc( ::mousePressedCallback );
+		glutMotionFunc( ::mouseMovedCallback );
+		glutKeyboardFunc(::keypress);
+		m_bCreated = true;
+	}
 
     Initialize();
 
     bool ok;
 
     do {
-        //todo: check command line parameters
-/*		string bvhFilename = "02Jump.bvh";
-		if (ac > 1){
-			bvhFilename = av[1];
-		}
-*/
 		string fn(filename);
         BVHParser parser( fn, g_articulatedFigure, ok );
         if( !ok ) break;
@@ -495,26 +517,29 @@ void COpenGLWin::Run(CString filename)
         cout << "Loading BVH File..." << endl;
         parser.parse( ok );
 
-        //todo: example of writing a BVH file
-        /*cout << "Start Writing BVH File..." << endl;
-        BVHWriter writer;
-        writer.write( g_articulatedFigure, string("aero1.bvh") );
-        cout << "End Writing BVH File..." << endl;*/
-
     }
     while(0);
 
+
     if( !ok )
     {
-        cout << "EXITING: error loading BVH file!!" << endl;		
-        Sleep(2000);
-        exit(0);
+		AfxMessageBox( "Error loading bvh file!",0, 0 );
+		return;
     }
 
     cout << "done loading BVH File " << endl;
-
+	m_bLoaded = true;
 	g_fFrameTime = g_articulatedFigure.getFrameTime();	//Initialize to loaded value
 	GetSystemTime(&gLastFrameTime);	//Set initial 'last frame time'
     glutMainLoop();
     return;           // never reached
+}
+
+void 
+COpenGLWin::Close()
+{
+	g_articulatedFigure = ArticulatedFigure();
+	m_bLoaded = false;
+	glutPostRedisplay();
+	m_pParent->updateFarme();
 }

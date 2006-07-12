@@ -42,6 +42,7 @@
 #define _USE_MATH_DEFINES
 
 #include <string>
+#include <vector>
 
 using namespace std;
 #include <GL/glut.h>

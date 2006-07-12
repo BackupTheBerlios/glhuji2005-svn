@@ -143,6 +143,9 @@
 				RelativePath=".\ConvMotionFilter.cpp">
 			</File>
 			<File
+				RelativePath=".\ConvUnit.cpp">
+			</File>
+			<File
 				RelativePath=".\Ex2MFC.cpp">
 			</File>
 			<File
@@ -182,6 +185,9 @@
 			</File>
 			<File
 				RelativePath=".\ConvMotionFilter.h">
+			</File>
+			<File
+				RelativePath=".\ConvUnit.h">
 			</File>
 			<File
 				RelativePath=".\Ex2MFC.h">

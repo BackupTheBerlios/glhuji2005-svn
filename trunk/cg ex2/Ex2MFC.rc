@@ -45,14 +45,16 @@ EXSTYLE WS_EX_APPWINDOW
 CAPTION "Ex2"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "Open File...",IDOK,7,7,50,16
-    PUSHBUTTON      "Quit",IDCANCEL,263,7,50,16
+    GROUPBOX        "",IDC_STATIC_FRM,7,71,306,102
+    CONTROL         "Apply Convolution",IDC_CHECK1,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,18,70,74,10
+    PUSHBUTTON      "Open File...",IDOK,7,7,50,16,BS_FLAT
+    PUSHBUTTON      "Quit",IDCANCEL,263,7,50,16,BS_FLAT
     CONTROL         "",IDC_FRAME_SLIDER,"msctls_trackbar32",TBS_BOTH | 
-                    TBS_NOTICKS | WS_TABSTOP,66,177,128,15
-    EDITTEXT        IDC_FRAME_NO,35,178,28,14,ES_AUTOHSCROLL
+                    TBS_NOTICKS | WS_TABSTOP,84,177,110,15
+    EDITTEXT        IDC_FRAME_NO,35,178,46,14,ES_AUTOHSCROLL | ES_READONLY
     LTEXT           "Frame:",IDC_STATIC,10,181,24,8
-    GROUPBOX        "Convolution",IDC_STATIC,7,71,306,102
-    COMBOBOX        IDC_COMBO1,239,54,74,30,CBS_DROPDOWN | CBS_SORT | 
+    COMBOBOX        IDC_PRESETS,59,32,82,96,CBS_DROPDOWN | CBS_SORT | 
                     WS_VSCROLL | WS_TABSTOP
     EDITTEXT        IDC_ROTATION_CONV_SIZE,78,52,28,14,ES_AUTOHSCROLL | 
                     ES_READONLY
@@ -66,14 +68,17 @@ BEGIN
                     14
     LTEXT           "Rotation Conv. Size:",IDC_STATIC,7,55,67,8
     LTEXT           "Pos Conv. Size:",IDC_STATIC,115,55,51,8
-    LTEXT           "Presets:",IDC_STATIC,208,55,28,8
+    LTEXT           "Conv. Presets:",IDC_STATIC,7,34,49,8
     PUSHBUTTON      "|<",IDC_REW,205,178,14,14
     PUSHBUTTON      "<",IDC_PREV,223,178,14,14
     PUSHBUTTON      ">",IDC_NEXT,259,178,14,14
     PUSHBUTTON      ">|",IDC_FWD,277,178,14,14
     PUSHBUTTON      "|>",IDC_PLAY,241,178,14,14
-    DEFPUSHBUTTON   "Save File...",IDWRITE,129,7,50,16
-    DEFPUSHBUTTON   "Close File",IDCLOSEFILE,68,7,50,16
+    PUSHBUTTON      "Save File...",IDWRITE,129,7,50,16,BS_FLAT
+    PUSHBUTTON      "Close File",IDCLOSEFILE,68,7,50,16,BS_FLAT
+    CONTROL         "Mask",IDC_MASK_CHECK,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,201,54,32,10
+    EDITTEXT        IDC_MASK_FACTOR,235,52,47,14,ES_AUTOHSCROLL
 END
 
 
@@ -166,6 +171,22 @@ END
 LANGUAGE LANG_HEBREW, SUBLANG_DEFAULT
 #pragma code_page(1255)
 #endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_CONV DIALOGEX 0, 0, 32, 40
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_VISIBLE
+EXSTYLE WS_EX_CONTROLPARENT
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    EDITTEXT        IDC_P1,0,13,32,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_P0,0,0,32,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_P2,0,26,32,14,ES_AUTOHSCROLL
+END
+
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////

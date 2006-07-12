@@ -74,7 +74,6 @@ public:
 	int getNumOfFrames(){ return mNumFrames; }
 	bool isFiltered(){ return mIsFiltered; }
 	double getFrameTime(){ return mFrameTime; }
-    int    getNumFrames(){ return mNumFrames; }
 
 //--------------- Storage -----------
 protected:

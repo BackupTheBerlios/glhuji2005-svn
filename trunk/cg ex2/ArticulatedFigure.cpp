@@ -64,7 +64,10 @@ void
 ArticulatedFigure::setRuntimeParamters( int inNumFrames, double inFrameTime )
 {
     mFrameTime = inFrameTime;
-    mNumFrames = inNumFrames;
+	if (mNumFrames > 0)
+		mNumFrames = min(mNumFrames,inNumFrames);
+	else
+		mNumFrames = inNumFrames;
 }
 
 void 

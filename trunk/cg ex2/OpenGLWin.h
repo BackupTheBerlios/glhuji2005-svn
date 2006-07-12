@@ -2,14 +2,19 @@
 
 #include "gl\glut.h"
 
+class CEx2MFCDlg;
 class COpenGLWin
 {
+	bool m_bLoaded;
+	bool m_bCreated;
 	CString m_Filename;
 public:
+	CEx2MFCDlg* m_pParent;
 	CString getFileName(){return m_Filename;}
 	COpenGLWin(void);
 	~COpenGLWin(void);
 	void Run(CString filename);
+	void Close();
 	void Save(CString filename);
 	void Resize(int width, int height);
 	void DisplayCallback();
@@ -23,5 +28,7 @@ public:
 	void gotoPrevFrame();
 	void Initialize();
 	int getFrameCount();
+	int getCurFrame();
 	void drawGround();
+	bool isPaused();
 };

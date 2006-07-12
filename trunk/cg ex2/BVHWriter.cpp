@@ -37,12 +37,12 @@ BVHWriter::write( ArticulatedFigure &inFigure, string &inOutputFilename )
 
     //-------------- Write Out Movements -------------
     mOutputStream << "MOTION" << endl;
-    mOutputStream << "Frames: " << inFigure.getNumFrames() << endl;
+    mOutputStream << "Frames: " << inFigure.getNumOfFrames() << endl;
     mOutputStream << "Frame Time: " << inFigure.getFrameTime() << endl;
     mOutputStream << endl << endl;
 
     //-------------- Write Out Actual Motion Vectors! -------------
-    for( int i = 0; i < inFigure.getNumFrames(); i++ )
+    for( int i = 0; i < inFigure.getNumOfFrames(); i++ )
     {
         ArticulatedFigure::NodePtrListIt it = mLinearNodeList.begin();
         for( ; it != mLinearNodeList.end(); it++ )
@@ -56,6 +56,12 @@ BVHWriter::write( ArticulatedFigure &inFigure, string &inOutputFilename )
 
             Vector3d &pos = n->pOffsets[i];
             Vector3d &rot = n->pRotations[i];
+
+			if( !n->pFilteredOffsets.empty() )
+				pos = n->pFilteredOffsets[i];
+
+			if( !n->pFilteredRotations.empty() )
+				rot = n->pFilteredRotations[i];
 
 
             for( int j = 0; j < numChannels; j++ )
