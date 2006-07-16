@@ -257,9 +257,9 @@ BVHParser::readHierarchy( ArticulatedFigure::Node *inParent, bool isEnd, bool &o
 		mArticulatedFigure.mMaxOffset[2] = abs(curOffset[2]) > mArticulatedFigure.mMaxOffset[2]? 
 			abs(curOffset[2]) : mArticulatedFigure.mMaxOffset[2];
 
-		double xm = min(curOffset[0], mArticulatedFigure.mTotalOffset[0]);
-		double ym = min(curOffset[1], mArticulatedFigure.mTotalOffset[1]);
-		double zm = min(curOffset[2], mArticulatedFigure.mTotalOffset[2]);
+		double xm = curOffset[0];//min(curOffset[0], mArticulatedFigure.mTotalOffset[0]);
+		double ym = curOffset[1];//min(curOffset[1], mArticulatedFigure.mTotalOffset[1]);
+		double zm = curOffset[2];//min(curOffset[2], mArticulatedFigure.mTotalOffset[2]);
 		mArticulatedFigure.mMinOffset[0] = xm < mArticulatedFigure.mMinOffset[0]? 
 			xm : mArticulatedFigure.mMinOffset[0];
 		mArticulatedFigure.mMinOffset[1] = ym < mArticulatedFigure.mMinOffset[1]? 

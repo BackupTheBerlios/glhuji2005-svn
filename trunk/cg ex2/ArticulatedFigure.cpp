@@ -95,6 +95,27 @@ void ArticulatedFigure::applyFilter(ConvMotionFilter* pFilter)
 	}
 }
 
+Point3d ArticulatedFigure::getInitialOffset()
+{
+	if (mRootNodes.size() == 0 || mRootNodes[0]->pOffsets.size() == 0){
+		Point3d initialOffset(0,0,0);
+		return initialOffset;
+	}
+	//NOTE: I assume everything is set according to the first body
+	return mRootNodes[0]->pOffsets[0];
+}
+
+double ArticulatedFigure::getMinY()
+{
+	Point3d minPoint = mMinOffset + getInitialOffset();
+	return minPoint[1];
+}
+
+Point3d ArticulatedFigure::getBodyCenter()
+{ 
+	Point3d midPoint = mBodyCenter + getInitialOffset();
+	return midPoint; 
+}
 //////////////////////////////////////////////////
 // PROC:   JOINT::draw()
 // DOES:   recursively draws joints

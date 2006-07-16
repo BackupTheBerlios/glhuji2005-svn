@@ -64,11 +64,12 @@ public:
     ArticulatedFigure();
     ~ArticulatedFigure();
 
-	double getMinY(){return mMinOffset[1];}
+	double getMinY();
     void setRuntimeParamters( int inNumFrames, double inFrameTime );
 	double getMaxOffsetDistance(){ return mMaxOffsetDistance; }
 	double getJointRadius(){ return getMaxOffsetDistance()/50.0; }
-	Point3d getBodyCenter(){ return mBodyCenter; }
+	Point3d getInitialOffset();
+	Point3d getBodyCenter();
 	void draw(int frameNum, bool lineFigure);
 	void applyFilter(ConvMotionFilter* pFilter);
 	int getNumOfFrames(){ return mNumFrames; }

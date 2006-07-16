@@ -221,9 +221,8 @@ void COpenGLWin::drawGround()
     // draw grid lines in xz-plane, parallel to z axis
     glPushMatrix();
     double sf = g_articulatedFigure.getMaxOffsetDistance();
-	float minY = g_articulatedFigure.getMinY();
-	minY = 0;
-    glScaled(sf,sf,sf);
+	float minY = (g_articulatedFigure.getMinY());
+    glScaled(sf,0,sf);
 
     if( !gLineBackground )
     {
