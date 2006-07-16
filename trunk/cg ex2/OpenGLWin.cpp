@@ -40,6 +40,7 @@ void idleFunc(void)
 ArticulatedFigure g_articulatedFigure;
 int g_nFrameNum = 0;
 bool g_bLinesOnly = false;
+bool g_bLighting = true;
 bool g_bPause = false;
 SYSTEMTIME gLastFrameTime;
 double g_fFrameTime = 0.33333;
@@ -70,6 +71,16 @@ GLfloat gOriginZ = -163.0f;
 GLfloat g_xRotated = 0.0f;	//15.0f;
 GLfloat g_yRotated = 0.0f;	//10.0f;
 GLfloat g_zRotated = 0.0f;
+
+   // Default values for material and light properties.
+   GLfloat mat_ambient[] = { 0.3f, 0.3f, 0.6f, 1.0 };
+   GLfloat mat_diffuse[] = { 0.5f,0.5f,0.8f, 1.0 };
+   GLfloat mat_specular[] = { 0,0,10, 1.0 };
+   GLfloat mat_shininess[] = { 80.0 };
+   GLfloat light_ambient[] = { 1, 1, 1, 1.0 };
+   GLfloat light_diffuse[] = { 1, 1, 1, 1.0 };
+   GLfloat light_specular[] = { 10.0, 10.0, 10.0, 1.0 };
+   GLfloat light_position1[]= { -14.0f, 50.0f, -4.0f, 1.0f };//DE
 
 
 void 
@@ -166,14 +177,8 @@ void COpenGLWin::Initialize()
     glEnable( GL_DEPTH_TEST );
 	glClearColor(0.8f,0.8f,1.0f,0);
 
-   // Default values for material and light properties.
-   GLfloat mat_ambient[] = { 0.3f, 0.3f, 0.3f, 1.0 };
-   GLfloat mat_diffuse[] = { 0.6f,0.6f,0.6f, 1.0 };
-   GLfloat mat_specular[] = { 0,0,10, 1.0 };
-   GLfloat mat_shininess[] = { 100.0 };
-   GLfloat light_ambient[] = { 1, 1, 1, 1.0 };
-   GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
-   GLfloat light_specular[] = { 10.0, 10.0, 10.0, 1.0 };
+   glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+   glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
    glShadeModel (GL_SMOOTH);
 
 //   glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
@@ -182,11 +187,19 @@ void COpenGLWin::Initialize()
    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular);
    glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, mat_shininess);
 
+   glEnable(GL_LIGHT0);
    glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
    glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
    glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+   glLightfv(GL_LIGHT0, GL_POSITION, light_position1); 
 
-   glEnable(GL_LIGHT0);
+   //glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
+	//attenuate
+	glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 0.05);
+	glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.05);
+	glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.0);
+
+	glEnable(GL_LIGHTING);
    glEnable(GL_NORMALIZE);
 
    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -288,8 +301,6 @@ void COpenGLWin::DisplayCallback()
 	drawGround();
 
 	glColor3f(0,0,1);
-//	float sphereSize = 0.06f*g_articulatedFigure.getMaxOffset();
-//	glutSolidSphere(sphereSize,20,10);// a ball at the (0,0,0) point
 
 	g_articulatedFigure.draw(g_nFrameNum, g_bLinesOnly);
 
@@ -393,6 +404,13 @@ void COpenGLWin::keypress(unsigned char key, int x, int y)
 	case 'l':
 		g_bLinesOnly = !g_bLinesOnly;
 		break;
+	case 'L': //toggle lighting
+		if (g_bLighting)
+			glDisable(GL_LIGHTING);
+		else
+			glEnable(GL_LIGHTING);
+		g_bLighting = !g_bLighting;
+
     case 'b': //toggle checkerboard/line ground display
         gLineBackground = !gLineBackground;
         break;
