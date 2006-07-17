@@ -38,7 +38,7 @@ void usage()
 	//TODO:...
 	strcat(buff, " q -- quit\n");
 	strcat(buff, "\n");
-	AfxMessageBox(buff, MB_OK);
+	AfxMessageBox(buff, MB_OK|MB_ICONINFORMATION);
 }
 void DisplayCallback(void)
 {g_OpenGLWin.DisplayCallback();}
@@ -582,6 +582,7 @@ COpenGLWin::Close()
 
 bool COpenGLWin::FilterToggle(int nCode)
 {
+	m_pParent->UpdateData(TRUE);
 	CString sText;
 	if (nCode == -1 || (m_bFiltered && nCode != 1))
 	{
@@ -616,6 +617,14 @@ bool COpenGLWin::FilterToggle(int nCode)
 			fMask = atof(sText);
 		}
 		pFilter->setConvVector(m_pParent->m_RotVec.m_Values, m_pParent->m_PosVec.m_Values, fMask, 1.0);
+		m_pParent->m_PosLTH.GetWindowText(sText);
+		pFilter->mOffsetLTH = Point3d(atof(sText),atof(sText),atof(sText));
+		m_pParent->m_PosUTH.GetWindowText(sText);
+		pFilter->mOffsetUTH = Point3d(atof(sText),atof(sText),atof(sText));
+		m_pParent->m_RotLTH.GetWindowText(sText);
+		pFilter->mRotationLTH = Point3d(atof(sText),atof(sText),atof(sText));
+		m_pParent->m_RotUTH.GetWindowText(sText);
+		pFilter->mRotationUTH = Point3d(atof(sText),atof(sText),atof(sText));
 		g_articulatedFigure.applyFilter(pFilter);
 	}
 	glutPostRedisplay();

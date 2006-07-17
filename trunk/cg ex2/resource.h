@@ -35,6 +35,10 @@
 #define IDB_OPENFILE                    1021
 #define IDC_V_APPLY                     1022
 #define IDC_V_REMOVE                    1023
+#define IDC_POS_UTH                     1024
+#define IDC_ROT_UTH                     1025
+#define IDC_POS_LTH                     1026
+#define IDC_ROT_LTH                     1027
 
 // Next default values for new objects
 // 

@@ -16,6 +16,16 @@ void usage();
 
 // CAboutDlg dialog used for App About
 
+#define FIX_FLOAT_TEXT(text)\
+		while (text[text.GetLength()-1] == '0')\
+		{\
+			text = text.Left(text.GetLength()-1);\
+			if (text[text.GetLength()-1] == '.')\
+			{\
+				text = text.Left(text.GetLength()-1);\
+				break;\
+			}\
+		}
 
 class CAboutDlg : public CDialog
 {
@@ -55,6 +65,115 @@ CEx2MFCDlg::CEx2MFCDlg(CWnd* pParent /*=NULL*/)
 {
 	m_bCreated = false;
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+	CConvMetadata filter;
+	m_Convs.push_back(filter);
+	m_Convs[0].m_sName = "-- Unity (No effect) --";
+	m_Convs[0].m_fMask = 0.0;
+	m_Convs[0].m_fPosUTH = 1000;
+	m_Convs[0].m_fPosLTH = 0;
+	m_Convs[0].m_fRotUTH = 359;
+	m_Convs[0].m_fRotLTH = 0;
+	m_Convs[0].m_Positions.push_back(Point3d(1.0,1.0,1.0));
+	//
+	m_Convs[0].m_Rotations.push_back(Point3d(1.0,1.0,1.0));
+
+	m_Convs.push_back(filter);
+	m_Convs[1].m_sName = "Unsharp Mask (wiggle)";
+	m_Convs[1].m_fMask = 5.0;
+	m_Convs[1].m_fPosUTH = 1000;
+	m_Convs[1].m_fPosLTH = 0;
+	m_Convs[1].m_fRotUTH = 359;
+	m_Convs[1].m_fRotLTH = 0;
+	m_Convs[1].m_Positions.push_back(Point3d(1.0,1.0,1.0));
+	m_Convs[1].m_Positions.push_back(Point3d(2.0,2.0,2.0));
+	m_Convs[1].m_Positions.push_back(Point3d(1.0,1.0,1.0));
+	//
+	m_Convs[1].m_Rotations.push_back(Point3d(1.0,1.0,1.0));
+	m_Convs[1].m_Rotations.push_back(Point3d(3.0,3.0,3.0));
+	m_Convs[1].m_Rotations.push_back(Point3d(4.0,4.0,4.0));
+	m_Convs[1].m_Rotations.push_back(Point3d(3.0,3.0,3.0));
+	m_Convs[1].m_Rotations.push_back(Point3d(1.0,1.0,1.0));
+
+
+	m_Convs.push_back(filter);
+	m_Convs[2].m_sName = "Heavy Unsharp Mask (really wiggle)";
+	m_Convs[2].m_fMask = 8.0;
+	m_Convs[2].m_fPosUTH = 2;
+	m_Convs[2].m_fPosLTH = 0;
+	m_Convs[2].m_fRotUTH = 15;
+	m_Convs[2].m_fRotLTH = 0;
+	m_Convs[2].m_Positions.push_back(Point3d(1.0,1.0,1.0));
+	m_Convs[2].m_Positions.push_back(Point3d(3.2,3.2,3.2));
+	m_Convs[2].m_Positions.push_back(Point3d(4.0,4.0,4.0));
+	m_Convs[2].m_Positions.push_back(Point3d(3.2,3.2,3.2));
+	m_Convs[2].m_Positions.push_back(Point3d(1.0,1.0,1.0));
+	//
+	m_Convs[2].m_Rotations.push_back(Point3d(0.3,0.3,0.3));
+	m_Convs[2].m_Rotations.push_back(Point3d(2.2,2.2,2.2));
+	m_Convs[2].m_Rotations.push_back(Point3d(3.5,3.5,3.5));
+	m_Convs[2].m_Rotations.push_back(Point3d(5.5,5.5,5.5));
+	m_Convs[2].m_Rotations.push_back(Point3d(6.0,6.0,6.0));
+	m_Convs[2].m_Rotations.push_back(Point3d(5.5,5.5,5.5));
+	m_Convs[2].m_Rotations.push_back(Point3d(3.5,3.5,3.5));
+	m_Convs[2].m_Rotations.push_back(Point3d(2.2,2.2,2.2));
+	m_Convs[2].m_Rotations.push_back(Point3d(1.0,1.0,1.0));
+	m_Convs[2].m_Rotations.push_back(Point3d(0.3,0.3,0.3));
+
+	m_Convs.push_back(filter);
+	m_Convs[3].m_sName = "Blur (Smooth motion)";
+	m_Convs[3].m_fMask = 0.0;
+	m_Convs[3].m_fPosUTH = 0.8;
+	m_Convs[3].m_fPosLTH = 0;
+	m_Convs[3].m_fRotUTH = 44;
+	m_Convs[3].m_fRotLTH = 0;
+	m_Convs[3].m_Positions.push_back(Point3d(1.0,1.0,1.0));
+	m_Convs[3].m_Positions.push_back(Point3d(2.2,2.2,2.2));
+	m_Convs[3].m_Positions.push_back(Point3d(1.0,1.0,1.0));
+	//
+	m_Convs[3].m_Rotations.push_back(Point3d(1.0,1.0,1.0));
+	m_Convs[3].m_Rotations.push_back(Point3d(3.0,3.0,3.0));
+	m_Convs[3].m_Rotations.push_back(Point3d(4.0,4.0,4.0));
+	m_Convs[3].m_Rotations.push_back(Point3d(3.0,3.0,3.0));
+	m_Convs[3].m_Rotations.push_back(Point3d(1.0,1.0,1.0));
+
+	m_Convs.push_back(filter);
+	m_Convs[4].m_sName = "Heavy Blur (Smoother motion)";
+	m_Convs[4].m_fMask = 0.0;
+	m_Convs[4].m_fPosUTH = 0.6;
+	m_Convs[4].m_fPosLTH = 0;
+	m_Convs[4].m_fRotUTH = 15;
+	m_Convs[4].m_fRotLTH = 0;
+	m_Convs[4].m_Positions.push_back(Point3d(1.0,1.0,1.0));
+	m_Convs[4].m_Positions.push_back(Point3d(3.2,3.2,3.2));
+	m_Convs[4].m_Positions.push_back(Point3d(4.0,4.0,4.0));
+	m_Convs[4].m_Positions.push_back(Point3d(3.2,3.2,3.2));
+	m_Convs[4].m_Positions.push_back(Point3d(1.0,1.0,1.0));
+	//
+	m_Convs[4].m_Rotations.push_back(Point3d(0.3,0.3,0.3));
+	m_Convs[4].m_Rotations.push_back(Point3d(2.2,2.2,2.2));
+	m_Convs[4].m_Rotations.push_back(Point3d(3.5,3.5,3.5));
+	m_Convs[4].m_Rotations.push_back(Point3d(5.5,5.5,5.5));
+	m_Convs[4].m_Rotations.push_back(Point3d(6.0,6.0,6.0));
+	m_Convs[4].m_Rotations.push_back(Point3d(5.5,5.5,5.5));
+	m_Convs[4].m_Rotations.push_back(Point3d(3.5,3.5,3.5));
+	m_Convs[4].m_Rotations.push_back(Point3d(2.2,2.2,2.2));
+	m_Convs[4].m_Rotations.push_back(Point3d(1.0,1.0,1.0));
+	m_Convs[4].m_Rotations.push_back(Point3d(0.3,0.3,0.3));
+
+	m_Convs.push_back(filter);
+	m_Convs[5].m_sName = "Sharpen (Shake it)";
+	m_Convs[5].m_fMask = 0.0;
+	m_Convs[5].m_fPosUTH = 1000;
+	m_Convs[5].m_fPosLTH = 0;
+	m_Convs[5].m_fRotUTH = 359;
+	m_Convs[5].m_fRotLTH = 0;
+	m_Convs[5].m_Positions.push_back(Point3d(-3.5,-3.5,-3.5));
+	m_Convs[5].m_Positions.push_back(Point3d(1.0,1.0,1.0));
+	m_Convs[5].m_Positions.push_back(Point3d(3.5,3.5,3.5));
+	//
+	m_Convs[5].m_Rotations.push_back(Point3d(-3.5,-3.5,-3.5));
+	m_Convs[5].m_Rotations.push_back(Point3d(1.0,1.0,1.0));
+	m_Convs[5].m_Rotations.push_back(Point3d(3.5,3.5,3.5));
 }
 
 void CEx2MFCDlg::DoDataExchange(CDataExchange* pDX)
@@ -72,6 +191,10 @@ void CEx2MFCDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_APPLY_CONV, m_ApplyConv);
 	DDX_Control(pDX, IDC_V_REMOVE, m_VRemove);
 	DDX_Control(pDX, IDC_V_APPLY, m_VApply);
+	DDX_Control(pDX, IDC_POS_UTH, m_PosUTH);
+	DDX_Control(pDX, IDC_ROT_UTH, m_RotUTH);
+	DDX_Control(pDX, IDC_POS_LTH, m_PosLTH);
+	DDX_Control(pDX, IDC_ROT_LTH, m_RotLTH);
 }
 
 BEGIN_MESSAGE_MAP(CEx2MFCDlg, CDialog)
@@ -99,6 +222,7 @@ BEGIN_MESSAGE_MAP(CEx2MFCDlg, CDialog)
 	ON_WM_CHAR()
 	ON_BN_CLICKED(IDB_OPENFILE, OnBnClickedOpenfile)
 	ON_BN_CLICKED(IDC_REMOVE_CONV, OnBnClickedRemoveConv)
+	ON_BN_CLICKED(ID_HELP, OnBnClickedHelp)
 END_MESSAGE_MAP()
 
 
@@ -166,6 +290,10 @@ BOOL CEx2MFCDlg::OnInitDialog()
 	m_RotVec.SetWindowPos(NULL, rec.left, rec.top, rec.Width()-8, rec.Height(), SWP_NOZORDER);
 	m_bCreated = true;
 
+	for (unsigned int i=0; i<m_Convs.size(); i++)
+	{
+		m_Presets.AddString(m_Convs[i].m_sName);
+	}
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
@@ -362,6 +490,62 @@ void CEx2MFCDlg::OnEnChangeMaskFactor()
 
 void CEx2MFCDlg::OnCbnSelchangePresets()
 {
+	int nIndex = m_Presets.GetCurSel();
+	if (nIndex == LB_ERR || nIndex >= (int)m_Convs.size())
+		return;
+	SetRedraw(FALSE);
+	CString text;
+	UpdateData(TRUE);
+
+	text.Format("%d", (int)(m_Convs[nIndex].m_Rotations.size()));
+	m_RotConvSize.SetWindowText(text);
+
+	text.Format("%d", (int)(m_Convs[nIndex].m_Positions.size()));
+	m_PosConvSize.SetWindowText(text);
+
+	if (m_Convs[nIndex].m_fMask == 0)
+	{
+		text.Format("%.3f", m_Convs[nIndex].m_fMask);
+		FIX_FLOAT_TEXT(text);
+		m_MaskFactor.SetWindowText(text);
+		m_Mask.SetCheck(BST_CHECKED);
+	}
+	else
+	{
+		m_MaskFactor.SetWindowText("");
+		m_Mask.SetCheck(BST_UNCHECKED);
+	}
+
+	text.Format("%.3f", m_Convs[nIndex].m_fPosLTH);
+	FIX_FLOAT_TEXT(text);
+	m_PosLTH.SetWindowText(text);
+
+	text.Format("%.3f", m_Convs[nIndex].m_fPosUTH);
+	FIX_FLOAT_TEXT(text);
+	m_PosUTH.SetWindowText(text);
+
+	text.Format("%.3f", m_Convs[nIndex].m_fRotLTH);
+	FIX_FLOAT_TEXT(text);
+	m_RotLTH.SetWindowText(text);
+
+	text.Format("%.3f", m_Convs[nIndex].m_fRotUTH);
+	FIX_FLOAT_TEXT(text);
+	m_RotUTH.SetWindowText(text);
+
+	UpdateData(FALSE);
+	SetRedraw(TRUE);
+	RedrawWindow();
+	SetRedraw(FALSE);
+	for (unsigned int i=0; i<m_Convs[nIndex].m_Rotations.size(); i++)
+	{
+		m_RotVec.m_Values[i] = m_Convs[nIndex].m_Rotations[i];
+	}
+	for (unsigned int i=0; i<m_Convs[nIndex].m_Positions.size(); i++)
+	{
+		m_PosVec.m_Values[i] = m_Convs[nIndex].m_Positions[i];
+	}
+	SetRedraw(TRUE);
+	RedrawWindow();
 }
 
 BOOL CEx2MFCDlg::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult)
@@ -520,15 +704,7 @@ void CGrid::OnLvnGetdispinfo(NMHDR *pNMHDR, LRESULT *pResult)
 		if (nCol > 0 && nCol < (int)(m_Values.size()+1))
 		{
 			text.Format("%.3f", m_Values[nCol-1][nRow]);
-			while (text[text.GetLength()-1] == '0')
-			{
-				text = text.Left(text.GetLength()-1);
-				if (text[text.GetLength()-1] == '.')
-				{
-					text = text.Left(text.GetLength()-1);
-					break;
-				}
-			}
+			FIX_FLOAT_TEXT(text);
 		}
 		else
 		{
@@ -603,15 +779,7 @@ void CGrid::OnNMClick(NMHDR *pNMHDR, LRESULT *pResult)
 
 	CString text;
 	text.Format("%.3f",m_Values[nIndex][hti.iItem]);
-	while (text[text.GetLength()-1] == '0')
-	{
-		text = text.Left(text.GetLength()-1);
-		if (text[text.GetLength()-1] == '.')
-		{
-			text = text.Left(text.GetLength()-1);
-			break;
-		}
-	}
+	FIX_FLOAT_TEXT(text);
 	if (m_pQuickEdit == NULL)
 	{
 		m_pQuickEdit = new CQuickEdit(this, CPoint(nIndex, hti.iItem));
@@ -746,4 +914,24 @@ void CEx2MFCDlg::OnBnClickedOpenfile()
 	m_PlayBtn.SetWindowText("||");
 	UpdateData(FALSE);
 	g_OpenGLWin.Run(file.GetFileName());
+}
+
+void CEx2MFCDlg::OnBnClickedHelp()
+{
+
+	char buff [1500];
+	strcpy(buff, "Ex2 in Advanced topics in computer graphics\n");
+	strcat(buff, "By: Jeremy Moskovich, Dagan Eshar & Itai Basel\n");
+	strcat(buff, "\n");
+	strcat(buff, "Open a file with the open button\n");
+	strcat(buff, "\n");
+	strcat(buff, "Choose the desired filter or modify convolution parameters to create your own\n");
+	strcat(buff, "\n");
+	strcat(buff, "When OpenGL Window is focused, press 'h' to list more options\n");
+	strcat(buff, "like controlling the speed, turning filter coupling on and of, and more.\n");
+	strcat(buff, "\n");
+	strcat(buff, "If you don't close the file before you open another,\n");
+	strcat(buff, "the clip length will be truncated to the shorter of the loaded clips\n");
+	strcat(buff, "and both clips will show simultaniously, on the same scal (scaling by the last loaded file)\n");
+	AfxMessageBox(buff, MB_OK|MB_ICONINFORMATION);
 }

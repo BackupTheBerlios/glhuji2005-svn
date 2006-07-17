@@ -43,6 +43,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 using namespace std;
 #include <GL/glut.h>

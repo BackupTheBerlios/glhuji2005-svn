@@ -65,7 +65,13 @@ public:
 
 class CConvMetadata
 {
+public:
+	CString m_sName;
 	double m_fMask;
+	double m_fPosUTH;
+	double m_fPosLTH;
+	double m_fRotUTH;
+	double m_fRotLTH;
 	vector<Point3d> m_Rotations;
 	vector<Point3d> m_Positions;
 };
@@ -136,4 +142,9 @@ public:
 	afx_msg void OnBnClickedRemoveConv();
 	CStatic m_VRemove;
 	CStatic m_VApply;
+	CEdit m_PosUTH;
+	CEdit m_RotUTH;
+	CEdit m_PosLTH;
+	CEdit m_RotLTH;
+	afx_msg void OnBnClickedHelp();
 };

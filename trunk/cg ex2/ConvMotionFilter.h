@@ -28,7 +28,7 @@ protected:
 	bool applyConv(const PointVec& inVector, const PointVec& inVectorDiff, bool inIsRotation, PointVec& inConvVector,
 							 PointVec& outVector);
 
-protected:
+public:
 	PointVec mOffsetVec; //Convolution Mask for Offsets
 	Point3d  mOffsetUTH; //upper threshold for offsets after filtering
 	Point3d  mOffsetLTH; //lower threshold for offsets after filtering
