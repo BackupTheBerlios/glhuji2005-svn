@@ -1,12 +1,12 @@
 #include "stdafx.h"
-#include ".\openglwin.h"
 #include "ArticulatedFigure.h"
+
 #include "BVHParser.h"
 #include "BVHWriter.h"
 #include "convMotionFilter.h"
 
 #include "Ex2MFCDlg.h"
-
+#include ".\openglwin.h"
 #include <string>
 #include <iostream>
 
@@ -18,6 +18,27 @@ static const float WINSIZE = 512;
 
 COpenGLWin g_OpenGLWin;
 
+void usage()
+{
+	char buff [1500];
+	strcpy(buff, "\n");
+	strcat(buff, " h --> help\n");
+	strcat(buff, " space --> next frame\n");
+	strcat(buff, " backspace --> previous frame\n");
+	strcat(buff, " + --> increase speed\n");
+	strcat(buff, " - --> decreanse speed\n");
+	strcat(buff, " * --> default speed\n");
+	strcat(buff, " 0 --> goto first frame\n");
+	strcat(buff, " p --> toggle pause/play\n");
+	strcat(buff, " l --> toggle line-figure/muscular-figure\n");
+	strcat(buff, " s --> toggle shading\n");
+	strcat(buff, " b --> toggle checkerboard/line ground display\n");
+	strcat(buff, " c --> toggle apply/remove filter\n");
+	//TODO:...
+	strcat(buff, " q -- quit\n");
+	strcat(buff, "\n");
+	AfxMessageBox(buff, MB_OK);
+}
 void DisplayCallback(void)
 {g_OpenGLWin.DisplayCallback();}
 
@@ -356,6 +377,9 @@ bool COpenGLWin::playPause()
 		return true;
 	g_bPause = !g_bPause;
 	m_pParent->updateFarme();
+	m_pParent->UpdateData(TRUE);
+	m_pParent->m_PlayBtn.SetWindowText(g_bPause?"|>":"||");
+	m_pParent->UpdateData(FALSE);
 	return g_bPause;
 }
 
@@ -394,23 +418,19 @@ void COpenGLWin::keypress(unsigned char key, int x, int y)
 			break;
 		gotoPrevFrame();
 		return;
-	case 's':
-		pFilter = new ConvMotionFilter();
-		g_articulatedFigure.applyFilter(pFilter);
-		break;
-	case 'r':
-		g_articulatedFigure.applyFilter(NULL);
+	case 'c':
+		FilterToggle();
 		break;
 	case 'l':
 		g_bLinesOnly = !g_bLinesOnly;
 		break;
-	case 'L': //toggle lighting
+	case 's': //toggle lighting
 		if (g_bLighting)
 			glDisable(GL_LIGHTING);
 		else
 			glEnable(GL_LIGHTING);
 		g_bLighting = !g_bLighting;
-
+		break;
     case 'b': //toggle checkerboard/line ground display
         gLineBackground = !gLineBackground;
         break;
@@ -430,22 +450,9 @@ void COpenGLWin::keypress(unsigned char key, int x, int y)
 		playPause();
 		break;
 	case 'h':           // lists commands
-		printf("\n");
-		printf(" h --> help\n");
-		printf(" space --> next frame\n");
-		printf(" backspace --> previous frame\n");
-		printf(" + --> increase speed\n");
-		printf(" - --> decreanse speed\n");
-		printf(" * --> default speed\n");
-		printf(" 0 --> goto first frame\n");
-		printf(" p --> toggle pause/play\n");
-		printf(" l --> toggle line-figure/muscular-figure\n");
-        printf(" b --> toggle checkerboard/line ground display\n");
-		printf(" s --> smooth filter\n");
-		printf(" r --> remove filter\n");
-		//TODO:...
-		printf(" q -- quit\n");
-		printf("\n");
+		{
+			usage();
+		}
 	}
 	if (pFilter!=NULL){
 		delete pFilter;
@@ -476,6 +483,7 @@ COpenGLWin::COpenGLWin(void)
 	m_bLoaded = false;
 	m_bCreated = false;
 	m_pParent = NULL;
+	m_bFiltered = false;
 }
 
 COpenGLWin::~COpenGLWin(void)
@@ -556,7 +564,56 @@ void
 COpenGLWin::Close()
 {
 	g_articulatedFigure = ArticulatedFigure();
-	m_bLoaded = false;
+	if (m_bLoaded)
+	{
+		m_bLoaded = false;
+		glutPostRedisplay();
+		m_pParent->updateFarme();
+	}
+}
+
+bool COpenGLWin::FilterToggle(int nCode)
+{
+	CString sText;
+	if (nCode == -1 || (m_bFiltered && nCode != 1))
+	{
+		g_articulatedFigure.applyFilter(NULL);
+		m_bFiltered = false;
+	}
+	else
+	{
+		if (m_pParent->m_RotVec.m_Values.size() == 0 || m_pParent->m_PosVec.m_Values.size() == 0)
+		{
+			AfxMessageBox("Invalid convolution!\nBoth rotation and Offset vector sizes must be greater then zero.", MB_OK);
+			g_articulatedFigure.applyFilter(NULL);
+			m_bFiltered = false;
+			glutPostRedisplay();
+			m_pParent->UpdateData(TRUE);
+			m_pParent->m_VApply.ShowWindow(SW_HIDE);
+			m_pParent->m_VRemove.ShowWindow(SW_SHOW);
+			m_pParent->UpdateData(FALSE);
+			return false;
+		}
+		if (m_bFiltered)
+		{
+			g_articulatedFigure.applyFilter(NULL);
+			m_bFiltered = false;
+		}
+		m_bFiltered = true;
+		ConvMotionFilter* pFilter = new ConvMotionFilter();
+		float fMask = 0.0;
+		if (m_pParent->m_Mask.GetState() & 0x0003)
+		{
+			m_pParent->m_MaskFactor.GetWindowText(sText);
+			fMask = atof(sText);
+		}
+		pFilter->setConvVector(m_pParent->m_RotVec.m_Values, m_pParent->m_PosVec.m_Values, fMask, 1.0);
+		g_articulatedFigure.applyFilter(pFilter);
+	}
 	glutPostRedisplay();
-	m_pParent->updateFarme();
+	m_pParent->UpdateData(TRUE);
+	m_pParent->m_VApply.ShowWindow(m_bFiltered?SW_SHOW:SW_HIDE);
+	m_pParent->m_VRemove.ShowWindow(m_bFiltered?SW_HIDE:SW_SHOW);
+	m_pParent->UpdateData(FALSE);
+	return m_bFiltered;
 }

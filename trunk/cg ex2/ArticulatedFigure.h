@@ -1,7 +1,6 @@
 #ifndef __ARTICULATED_FIGURE_H__
 #define __ARTICULATED_FIGURE_H__
 
-#include "MyTypes.h"
 
 class ConvMotionFilter;
 

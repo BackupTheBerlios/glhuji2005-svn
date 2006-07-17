@@ -46,3 +46,4 @@
 
 using namespace std;
 #include <GL/glut.h>
+#include "MyTypes.h"

@@ -7,6 +7,7 @@ class COpenGLWin
 {
 	bool m_bLoaded;
 	bool m_bCreated;
+	bool m_bFiltered;
 	CString m_Filename;
 public:
 	CEx2MFCDlg* m_pParent;
@@ -14,6 +15,7 @@ public:
 	COpenGLWin(void);
 	~COpenGLWin(void);
 	void Run(CString filename);
+	bool FilterToggle(int nCode = 0);
 	void Close();
 	void Save(CString filename);
 	void Resize(int width, int height);

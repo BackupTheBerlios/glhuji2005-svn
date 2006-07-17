@@ -10,9 +10,12 @@ ConvMotionFilter::ConvMotionFilter(void)
 	mIntensity  = 0;
 	mMaskFactor = 0;
 
+	mRotationVec.push_back(Point3d(1.0,1.0,1.0));
+	mOffsetVec.push_back(Point3d(1.0,1.0,1.0));
+
 	mOffsetUTH   = Point3d(10001000,10001000,10001000);	//big - allow free movement
 	mOffsetLTH   = Point3d(0,0,0);      //zero threshold - always filter
-	mRotationUTH = Point3d(44,44,44); //Do not allow more then 12 degrees rotation per DOF per joint pre frame
+	mRotationUTH = Point3d(359,359,359); //Do not allow more then 12 degrees rotation per DOF per joint pre frame
 	mRotationLTH = Point3d(0,0,0);    //zero threshold - always filter
 }
 

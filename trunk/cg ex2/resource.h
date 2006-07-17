@@ -27,9 +27,14 @@
 #define IDC_P2                          1013
 #define IDC_PLAY                        1015
 #define IDC_CHECK1                      1016
+#define IDC_REMOVE_CONV                 1016
 #define IDC_MASK_CHECK                  1017
 #define IDC_MASK_FACTOR                 1018
 #define IDC_STATIC_FRM                  1019
+#define IDC_APPLY_CONV                  1020
+#define IDB_OPENFILE                    1021
+#define IDC_V_APPLY                     1022
+#define IDC_V_REMOVE                    1023
 
 // Next default values for new objects
 // 
@@ -37,7 +42,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        130
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1020
+#define _APS_NEXT_CONTROL_VALUE         1023
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
