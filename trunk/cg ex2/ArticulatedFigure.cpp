@@ -11,6 +11,9 @@ using namespace std;
 #define DEG2RAD 0.0174532925
 #define RAD2DEG 57.2957795
 
+extern GLfloat mat_diffuse[];
+extern GLfloat mat_diffuse_tr[];
+
 ArticulatedFigure::Node::Node( string &inName, Point3d &inPos ) : 
 pNodeName(inName),
 pNumChannels(0),
@@ -42,6 +45,7 @@ ArticulatedFigure::ArticulatedFigure(void)
     mFrameTime  = -1;
     mNumFrames	= -1;
 	mIsFiltered	= false;
+	mIsCoupled = true;
 
 	mMaxOffset[0] = mMaxOffset[1] = mMaxOffset[2] = 0;
 	mMinOffset[0] = mMinOffset[1] = mMinOffset[2] = 100;
@@ -73,8 +77,22 @@ ArticulatedFigure::setRuntimeParamters( int inNumFrames, double inFrameTime )
 void 
 ArticulatedFigure::draw(int frameNum, bool lineFigure)
 {
+	double jointRadius = getJointRadius();
 	for (unsigned int i=0; i<mRootNodes.size(); i++){
-		mRootNodes[i]->draw(frameNum, lineFigure, mIsFiltered, getJointRadius());
+		if (mIsFiltered){
+			// the filtered motion is opaque
+			glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_diffuse);
+			mRootNodes[i]->draw(frameNum, lineFigure, true, false, jointRadius);
+			if (mIsCoupled){
+				// while the original is semi transparent
+				glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_diffuse_tr);
+				mRootNodes[i]->draw(frameNum, lineFigure, false, true, jointRadius);
+			}
+			glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_diffuse);
+		}
+		else{
+			mRootNodes[i]->draw(frameNum, lineFigure, false, false, jointRadius);
+		}
 	}
 }
 
@@ -120,7 +138,8 @@ Point3d ArticulatedFigure::getBodyCenter()
 // PROC:   JOINT::draw()
 // DOES:   recursively draws joints
 //////////////////////////////////////////////////
-void ArticulatedFigure::Node::draw(int frameNum, bool lineFigure, bool isFiltered, double jointRadius)
+void ArticulatedFigure::Node::draw(int frameNum, bool lineFigure, 
+								   bool isFiltered, bool isCoupled, double jointRadius)
 {
 	glPushMatrix();
 	int nc = 0;       // number of channels already processed
@@ -216,7 +235,7 @@ void ArticulatedFigure::Node::draw(int frameNum, bool lineFigure, bool isFiltere
 
 	  // recursively draw all child joints
 	for (unsigned int n=0; n<pChildren.size(); n++)
-		pChildren[n]->draw(frameNum, lineFigure, isFiltered, jointRadius);
+		pChildren[n]->draw(frameNum, lineFigure, isFiltered, isCoupled, jointRadius);
 	glPopMatrix();
 }
 

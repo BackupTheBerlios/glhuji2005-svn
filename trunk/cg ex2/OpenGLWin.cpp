@@ -33,7 +33,8 @@ void usage()
 	strcat(buff, " l --> toggle line-figure/muscular-figure\n");
 	strcat(buff, " s --> toggle shading\n");
 	strcat(buff, " b --> toggle checkerboard/line ground display\n");
-	strcat(buff, " c --> toggle apply/remove filter\n");
+	strcat(buff, " f --> toggle apply/remove filter\n");
+	strcat(buff, " c --> toggle coupling (display both filtered and original)\n");
 	//TODO:...
 	strcat(buff, " q -- quit\n");
 	strcat(buff, "\n");
@@ -93,15 +94,16 @@ GLfloat g_xRotated = 0.0f;	//15.0f;
 GLfloat g_yRotated = 0.0f;	//10.0f;
 GLfloat g_zRotated = 0.0f;
 
-   // Default values for material and light properties.
-   GLfloat mat_ambient[] = { 0.3f, 0.3f, 0.6f, 1.0 };
-   GLfloat mat_diffuse[] = { 0.5f,0.5f,0.8f, 1.0 };
-   GLfloat mat_specular[] = { 0,0,10, 1.0 };
-   GLfloat mat_shininess[] = { 80.0 };
-   GLfloat light_ambient[] = { 1, 1, 1, 1.0 };
-   GLfloat light_diffuse[] = { 1, 1, 1, 1.0 };
-   GLfloat light_specular[] = { 10.0, 10.0, 10.0, 1.0 };
-   GLfloat light_position1[]= { -14.0f, 50.0f, -4.0f, 1.0f };//DE
+// Default values for material and light properties.
+GLfloat mat_ambient[] = { 0.3f, 0.3f, 0.6f, 0.5 };
+GLfloat mat_diffuse[] = { 0.0f,0.0f,1.0f, 1.0 };
+GLfloat mat_diffuse_tr[] = { 1.0f,0.0f,0.0f, 0.5 };
+GLfloat mat_specular[] = { 0,0,10, 0.5 };
+GLfloat mat_shininess[] = { 80.0 };
+GLfloat light_ambient[] = { 1, 1, 1, 1.0 };
+GLfloat light_diffuse[] = { 1, 1, 1, 1.0 };
+GLfloat light_specular[] = { 10.0, 10.0, 10.0, 1.0 };
+GLfloat light_position1[]= { -14.0f, 50.0f, -4.0f, 1.0f };//DE
 
 
 void 
@@ -203,6 +205,9 @@ void COpenGLWin::Initialize()
    glShadeModel (GL_SMOOTH);
 
 //   glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+   glEnable(GL_BLEND);                                      /**/
+   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);       /**/
+
    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_diffuse);
    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular);
@@ -418,7 +423,7 @@ void COpenGLWin::keypress(unsigned char key, int x, int y)
 			break;
 		gotoPrevFrame();
 		return;
-	case 'c':
+	case 'f':
 		FilterToggle();
 		break;
 	case 'l':
@@ -430,6 +435,9 @@ void COpenGLWin::keypress(unsigned char key, int x, int y)
 		else
 			glEnable(GL_LIGHTING);
 		g_bLighting = !g_bLighting;
+		break;
+	case 'c': //toggle coupling (display both filtered and original motion)
+		g_articulatedFigure.toggleCoupled();
 		break;
     case 'b': //toggle checkerboard/line ground display
         gLineBackground = !gLineBackground;

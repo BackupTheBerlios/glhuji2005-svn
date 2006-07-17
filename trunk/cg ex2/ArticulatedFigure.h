@@ -33,7 +33,7 @@ public:
         Node( const Node &inNode );
 
         void setNumChannels( int inNumChannels ){ pNumChannels = inNumChannels; }
-		void draw(int frameNum, bool lineFigure, bool isFiltered, double jointRadius);
+		void draw(int frameNum, bool lineFigure, bool isFiltered, bool isCoupled, double jointRadius);
 		void applyFilter(ConvMotionFilter* pFilter);
 
     public:
@@ -74,6 +74,8 @@ public:
 	int getNumOfFrames(){ return mNumFrames; }
 	bool isFiltered(){ return mIsFiltered; }
 	double getFrameTime(){ return mFrameTime; }
+	void toggleCoupled(){ mIsCoupled = !mIsCoupled; }
+	bool getCoupled(){ return mIsCoupled; }
 
 //--------------- Storage -----------
 protected:
@@ -81,6 +83,7 @@ protected:
     int         mNumFrames;
     double      mFrameTime;
 	bool		mIsFiltered;
+	bool		mIsCoupled;
 
 	Point3d		mMaxOffset;
 	Point3d		mMinOffset;
