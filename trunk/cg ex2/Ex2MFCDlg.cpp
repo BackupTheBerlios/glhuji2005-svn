@@ -5,6 +5,7 @@
 #include "Ex2MFC.h"
 #include "Ex2MFCDlg.h"
 #include ".\ex2mfcdlg.h"
+#include "ArticulatedFigure.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -12,6 +13,7 @@
 
 #include "OpenGLWin.h"
 extern COpenGLWin g_OpenGLWin;
+extern ArticulatedFigure g_articulatedFigure;
 void usage();
 
 // CAboutDlg dialog used for App About
@@ -386,6 +388,16 @@ void CEx2MFCDlg::OnBnClickedRew()
 
 void CEx2MFCDlg::OnBnClickedWrite()
 {
+	if (g_articulatedFigure.mRootNodes.size() == 0)
+	{
+		AfxMessageBox("Can't save - no file loaded", MB_OK);
+		return;
+	}
+	if (g_articulatedFigure.mRootNodes.size() > 1)
+	{
+		AfxMessageBox("Can't save\nSave is possible only when a single file is loaded", MB_OK);
+		return;
+	}
 	static char BASED_CODE szFilter[] = "BVH Files (*.bvh)|*.bvh|All Files (*.*)|*.*||";
 	char filename [520];
 	filename[0] = '\0';	//ToDO: use current filename

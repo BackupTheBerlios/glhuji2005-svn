@@ -78,8 +78,8 @@ public:
 	bool getCoupled(){ return mIsCoupled; }
 
 //--------------- Storage -----------
-protected:
     NodePtrList mRootNodes; //can be more than one root node!
+protected:
     int         mNumFrames;
     double      mFrameTime;
 	bool		mIsFiltered;
