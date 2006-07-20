@@ -91,16 +91,16 @@ GLfloat gOriginX = 0.0f;
 GLfloat gOriginY = 0.0f;
 GLfloat gOriginZ = -163.0f;
 GLfloat g_xRotated = 0.0f;	//15.0f;
-GLfloat g_yRotated = 0.0f;	//10.0f;
+GLfloat g_yRotated = 40.0f;	//10.0f;
 GLfloat g_zRotated = 0.0f;
 
 // Default values for material and light properties.
-GLfloat mat_ambient[] = { 0.3f, 0.3f, 0.6f, 0.5 };
+GLfloat mat_ambient[] = { 0.7f, 0.7f, 0.7f, 0.5 };
 GLfloat mat_diffuse[] = { 0.0f,0.0f,1.0f, 1.0 };
-GLfloat mat_diffuse_tr[] = { 1.0f,0.0f,0.0f, 0.5 };
-GLfloat mat_specular[] = { 0,0,10, 0.5 };
+GLfloat mat_diffuse_tr[] = { 0.6f,0.6f,0.6f, 0.5 };
+GLfloat mat_specular[] = { 0.1,0.1,0.1, 0.4 };
 GLfloat mat_shininess[] = { 80.0 };
-GLfloat light_ambient[] = { 1, 1, 1, 1.0 };
+GLfloat light_ambient[] = { 0.5, 0.5, 0.5, 0.5 };
 GLfloat light_diffuse[] = { 1, 1, 1, 1.0 };
 GLfloat light_specular[] = { 10.0, 10.0, 10.0, 1.0 };
 GLfloat light_position1[]= { -14.0f, 50.0f, -4.0f, 1.0f };//DE
@@ -221,7 +221,7 @@ void COpenGLWin::Initialize()
 
    //glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
 	//attenuate
-	glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 0.05);
+	glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 0.5);
 	glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.05);
 	glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.0);
 
@@ -260,8 +260,8 @@ void COpenGLWin::drawGround()
     // draw grid lines in xz-plane, parallel to z axis
     glPushMatrix();
     double sf = g_articulatedFigure.getMaxOffsetDistance();
-	float minY = (g_articulatedFigure.getMinY());
-    glScaled(sf,0,sf);
+	float minY = g_articulatedFigure.getMinY();
+    glScaled(sf,1,sf);
 
     if( !gLineBackground )
     {

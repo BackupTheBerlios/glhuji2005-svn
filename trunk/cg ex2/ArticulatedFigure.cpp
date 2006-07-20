@@ -69,7 +69,8 @@ ArticulatedFigure::setRuntimeParamters( int inNumFrames, double inFrameTime )
 {
     mFrameTime = inFrameTime;
 	if (mNumFrames > 0)
-		mNumFrames = min(mNumFrames,inNumFrames);
+		//mNumFrames = min(mNumFrames,inNumFrames);
+		mNumFrames = max(mNumFrames,inNumFrames);
 	else
 		mNumFrames = inNumFrames;
 }
@@ -78,20 +79,22 @@ void
 ArticulatedFigure::draw(int frameNum, bool lineFigure)
 {
 	double jointRadius = getJointRadius();
+	int modFrameNum = 0;
 	for (unsigned int i=0; i<mRootNodes.size(); i++){
+		modFrameNum = ((frameNum-1) % mRootNodes[i]->pRotations.size()) + 1;
 		if (mIsFiltered){
 			// the filtered motion is opaque
 			glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_diffuse);
-			mRootNodes[i]->draw(frameNum, lineFigure, true, false, jointRadius);
+			mRootNodes[i]->draw(modFrameNum, lineFigure, true, false, jointRadius);
 			if (mIsCoupled){
 				// while the original is semi transparent
 				glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_diffuse_tr);
-				mRootNodes[i]->draw(frameNum, lineFigure, false, true, jointRadius);
+				mRootNodes[i]->draw(modFrameNum, lineFigure, false, true, jointRadius);
 			}
 			glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_diffuse);
 		}
 		else{
-			mRootNodes[i]->draw(frameNum, lineFigure, false, false, jointRadius);
+			mRootNodes[i]->draw(modFrameNum, lineFigure, false, false, jointRadius);
 		}
 	}
 }
