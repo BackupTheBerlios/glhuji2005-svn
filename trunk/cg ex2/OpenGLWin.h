@@ -7,9 +7,9 @@ class COpenGLWin
 {
 	bool m_bLoaded;
 	bool m_bCreated;
+public:
 	bool m_bFiltered;
 	CString m_Filename;
-public:
 	CEx2MFCDlg* m_pParent;
 	CString getFileName(){return m_Filename;}
 	COpenGLWin(void);

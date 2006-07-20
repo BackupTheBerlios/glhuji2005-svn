@@ -81,7 +81,7 @@ ArticulatedFigure::draw(int frameNum, bool lineFigure)
 	double jointRadius = getJointRadius();
 	int modFrameNum = 0;
 	for (unsigned int i=0; i<mRootNodes.size(); i++){
-		modFrameNum = ((frameNum-1) % mRootNodes[i]->pRotations.size()) + 1;
+		modFrameNum = ((frameNum-1) % (int)(mRootNodes[i]->pRotations.size())) + 1;
 		if (mIsFiltered){
 			// the filtered motion is opaque
 			glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_diffuse);

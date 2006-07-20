@@ -292,6 +292,7 @@ BOOL CEx2MFCDlg::OnInitDialog()
 	m_RotVec.SetWindowPos(NULL, rec.left, rec.top, rec.Width()-8, rec.Height(), SWP_NOZORDER);
 	m_bCreated = true;
 
+	m_Presets.AddString("");
 	for (unsigned int i=0; i<m_Convs.size(); i++)
 	{
 		m_Presets.AddString(m_Convs[i].m_sName);
@@ -503,8 +504,9 @@ void CEx2MFCDlg::OnEnChangeMaskFactor()
 void CEx2MFCDlg::OnCbnSelchangePresets()
 {
 	int nIndex = m_Presets.GetCurSel();
-	if (nIndex == LB_ERR || nIndex >= (int)m_Convs.size())
+	if (nIndex == LB_ERR || nIndex == 0 || nIndex > (int)m_Convs.size())
 		return;
+	nIndex--;
 	SetRedraw(FALSE);
 	CString text;
 	UpdateData(TRUE);
@@ -517,15 +519,15 @@ void CEx2MFCDlg::OnCbnSelchangePresets()
 
 	if (m_Convs[nIndex].m_fMask == 0)
 	{
+		m_MaskFactor.SetWindowText("");
+		m_Mask.SetCheck(BST_UNCHECKED);
+	}
+	else
+	{
 		text.Format("%.3f", m_Convs[nIndex].m_fMask);
 		FIX_FLOAT_TEXT(text);
 		m_MaskFactor.SetWindowText(text);
 		m_Mask.SetCheck(BST_CHECKED);
-	}
-	else
-	{
-		m_MaskFactor.SetWindowText("");
-		m_Mask.SetCheck(BST_UNCHECKED);
 	}
 
 	text.Format("%.3f", m_Convs[nIndex].m_fPosLTH);
@@ -556,6 +558,7 @@ void CEx2MFCDlg::OnCbnSelchangePresets()
 	{
 		m_PosVec.m_Values[i] = m_Convs[nIndex].m_Positions[i];
 	}
+	m_Presets.SetCurSel(0);
 	SetRedraw(TRUE);
 	RedrawWindow();
 }
@@ -922,10 +925,16 @@ void CEx2MFCDlg::OnBnClickedOpenfile()
 	if (file.DoModal() != IDOK)
 		return;
 
+	bool bFiltered = g_OpenGLWin.m_bFiltered;
+	if (bFiltered)
+		g_OpenGLWin.FilterToggle(-1);
+	g_OpenGLWin.gotoFrame(0);
 	UpdateData(TRUE);
 	m_PlayBtn.SetWindowText("||");
 	UpdateData(FALSE);
 	g_OpenGLWin.Run(file.GetFileName());
+	if (bFiltered)
+		g_OpenGLWin.FilterToggle(1);
 }
 
 void CEx2MFCDlg::OnBnClickedHelp()
