@@ -1,9 +1,9 @@
 Advanced Graphics Ex 2
 
 By:
-Itai Basel                     T.Z. 035781848
+Itai Basel			T.Z. 035781848
 Jeremy Moskovich    T.Z. 036382489
-Dagan Eshar              T.Z. 038381620
+Dagan Eshar			T.Z. 038381620
 
 Description:
 
@@ -11,7 +11,8 @@ Description:
  MFC based GUI.
 
 	Our implementation allows for the display of BVH files using either
-a nice ellipsoid or line display.
+a nice ellipsoid or line display. The implementation supports multiple BVH
+files simultaneously.
 
 	We allow for arbitrary convolutions to be performed on the figure, and
 for saving of the resulting filtered file as a new BVH.
@@ -25,15 +26,30 @@ zero value performs the following operation:
 
 Anew = A+(A-B)*mask
 
-where A is the original motion (or rotation)vector, and B is the convoluted vector.
+where A is the original motion (or rotation) vector, and B is the convoluted vector.
 
 	Thus convoluting with a gaussian kernel to get B, A-B gives us the high frequencies
-of the original motion and mask allows us to vary how much of this is added back.
+of the original motion and the mask allows us to vary how much of this is added back.
 
 	When performing convolution on angles, we switch them to polar
 coordinates, convolute, and then convert back to angles.
 
-
+	In addition to the dialog options, the BVH viewer window supports the following 
+keyboard options:
+	space 		--> next frame
+	backspace 	--> previous frame
+	+ 			--> increase speed
+	-			--> decrease speed
+	* 			--> default speed
+	0 			--> goto first frame
+	p 			--> toggle pause/play
+	l 			--> toggle line-figure/muscular-figure
+	s 			--> toggle shading
+	b 			--> toggle checkerboard/line ground display
+	f 			--> toggle apply/remove filter
+	c 			--> toggle coupling (display both filtered and original figures)
+	q 			--> quit
+	
 Files support:
 	We only support the BVH files we included.
 	
