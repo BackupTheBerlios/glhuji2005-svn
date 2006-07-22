@@ -388,6 +388,22 @@ bool COpenGLWin::playPause()
 	return g_bPause;
 }
 
+bool COpenGLWin::toggleCoupled(int nSet)
+{
+	if (nSet == 0)
+		g_articulatedFigure.toggleCoupled();
+	else if (g_articulatedFigure.getCoupled() && nSet == -1)
+		g_articulatedFigure.toggleCoupled();
+	else if (!g_articulatedFigure.getCoupled() && nSet == 1)
+		g_articulatedFigure.toggleCoupled();
+	else
+		return g_articulatedFigure.getCoupled();
+	m_pParent->UpdateData(TRUE);
+	m_pParent->m_Coupling.SetCheck(g_articulatedFigure.getCoupled()?BST_CHECKED:BST_UNCHECKED);
+	m_pParent->UpdateData(FALSE);
+	return g_articulatedFigure.getCoupled();
+}
+
 int COpenGLWin::getFrameCount()
 {
 	if (!m_bLoaded)
@@ -437,7 +453,7 @@ void COpenGLWin::keypress(unsigned char key, int x, int y)
 		g_bLighting = !g_bLighting;
 		break;
 	case 'c': //toggle coupling (display both filtered and original motion)
-		g_articulatedFigure.toggleCoupled();
+		toggleCoupled();
 		break;
     case 'b': //toggle checkerboard/line ground display
         gLineBackground = !gLineBackground;

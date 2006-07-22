@@ -74,7 +74,7 @@ public:
 	int getNumOfFrames(){ return mNumFrames; }
 	bool isFiltered(){ return mIsFiltered; }
 	double getFrameTime(){ return mFrameTime; }
-	void toggleCoupled(){ mIsCoupled = !mIsCoupled; }
+	void toggleCoupled();
 	bool getCoupled(){ return mIsCoupled; }
 
 //--------------- Storage -----------

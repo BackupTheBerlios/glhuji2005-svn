@@ -147,4 +147,6 @@ public:
 	CEdit m_PosLTH;
 	CEdit m_RotLTH;
 	afx_msg void OnBnClickedHelp();
+	afx_msg void OnBnClickedCheck2();
+	CButton m_Coupling;
 };

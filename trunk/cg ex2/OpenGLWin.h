@@ -33,4 +33,5 @@ public:
 	int getCurFrame();
 	void drawGround();
 	bool isPaused();
+	bool toggleCoupled(int nSet = 0);
 };

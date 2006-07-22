@@ -197,6 +197,7 @@ void CEx2MFCDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_ROT_UTH, m_RotUTH);
 	DDX_Control(pDX, IDC_POS_LTH, m_PosLTH);
 	DDX_Control(pDX, IDC_ROT_LTH, m_RotLTH);
+	DDX_Control(pDX, IDC_CHECK2, m_Coupling);
 }
 
 BEGIN_MESSAGE_MAP(CEx2MFCDlg, CDialog)
@@ -225,6 +226,7 @@ BEGIN_MESSAGE_MAP(CEx2MFCDlg, CDialog)
 	ON_BN_CLICKED(IDB_OPENFILE, OnBnClickedOpenfile)
 	ON_BN_CLICKED(IDC_REMOVE_CONV, OnBnClickedRemoveConv)
 	ON_BN_CLICKED(ID_HELP, OnBnClickedHelp)
+	ON_BN_CLICKED(IDC_CHECK2, OnBnClickedCheck2)
 END_MESSAGE_MAP()
 
 
@@ -297,6 +299,7 @@ BOOL CEx2MFCDlg::OnInitDialog()
 	{
 		m_Presets.AddString(m_Convs[i].m_sName);
 	}
+	g_OpenGLWin.toggleCoupled(1);
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
@@ -955,4 +958,18 @@ void CEx2MFCDlg::OnBnClickedHelp()
 	strcat(buff, "the clip length will be truncated to the shorter of the loaded clips\n");
 	strcat(buff, "and both clips will show simultaniously, on the same scal (scaling by the last loaded file)\n");
 	AfxMessageBox(buff, MB_OK|MB_ICONINFORMATION);
+}
+
+void CEx2MFCDlg::OnBnClickedCheck2()
+{
+	static bool OnBnClickedCheck2Setting = false;
+	if (OnBnClickedCheck2Setting)
+		return;
+	OnBnClickedCheck2Setting = true;
+	UpdateData(TRUE);
+	if (m_Coupling.GetCheck() == BST_CHECKED)
+		g_OpenGLWin.toggleCoupled(1);
+	else
+		g_OpenGLWin.toggleCoupled(0);
+	OnBnClickedCheck2Setting = false;
 }

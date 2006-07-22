@@ -45,7 +45,7 @@ ArticulatedFigure::ArticulatedFigure(void)
     mFrameTime  = -1;
     mNumFrames	= -1;
 	mIsFiltered	= false;
-	mIsCoupled = true;
+	mIsCoupled = false;
 
 	mMaxOffset[0] = mMaxOffset[1] = mMaxOffset[2] = 0;
 	mMinOffset[0] = mMinOffset[1] = mMinOffset[2] = 100;
@@ -345,4 +345,9 @@ void ArticulatedFigure::Node::applyFilter(ConvMotionFilter* pFilter)
 	for (unsigned int n=0; n<pChildren.size(); n++)
 		pChildren[n]->applyFilter(pFilter);
 
+}
+
+void ArticulatedFigure::toggleCoupled()
+{
+	mIsCoupled = !mIsCoupled;
 }
