@@ -5,14 +5,36 @@ Itai Basel			T.Z. 035781848
 Jeremy Moskovich    T.Z. 036382489
 Dagan Eshar			T.Z. 038381620
 
-Description:
+Short Description:
+    We implemented the loading, display and saving of BVH files along with the
+application of arbitrary (preset or user-defined) convolutions to the data.  We
+display the animation using a nice ellipsoid model, and when applying
+convolution we display both the convoluted data and a "ghost" version of the
+original data for comparison.
+
+Usage Notes:
+1)Press the "Open File..." button to open a BVH Files (more than one BVH files
+  can be open at once - see above for limitations)
+2)Select a filter from the Conv. Presets pop-up, or craft your own with the
+  supplied controls.
+3)Press the "Apply Convolution" button.
+4)Marvel at how we display both the convoluted motion and the original motion
+    (to display the convoluted motion only - uncheck the "Coupling" checkbox).
+5)Play around with convolutions some more.
+6)Press "Save File..." to save your creation.
+
+* Some of our functionality is not accessible through the GUI due to time
+  constraints, to access it - select the Animation window and then use
+  the keyboard commands listed bellow.
+
+Long Description:
 
     We implemented the exercise in Visual Studio under Windows, using an
  MFC based GUI.
 
 	Our implementation allows for the display of BVH files using either
-a nice ellipsoid or line display. The implementation supports multiple BVH
-files simultaneously.
+a nice ellipsoid or line display. The implementation supports display of multiple 
+BVH files simultaneously (makes for some nice effects).
 
 	We allow for arbitrary convolutions to be performed on the figure, and
 for saving of the resulting filtered file as a new BVH.
@@ -80,5 +102,6 @@ Implementation Notes:
  
  	We make use of OpenMesh solely for it's vector class.
     
+
 Thank you,
 Itai, Dagan, & Jeremy
