@@ -18,6 +18,7 @@ public:
 		persistance(1.0)
 	{
 	}
+
 	//The following 3 are autofilling on Add
 	bool m_bAlive;
 	double age;	//[sec]
@@ -45,6 +46,17 @@ protected:
 	vector<CParticle> m_ParticlesB;
 	vector<CParticle>* m_pCurSystem;
 	vector<CParticle>* m_pNewSystem;
+
+	// particle defaults
+public: //TODO: fix this
+	int m_nParticlesPerFrame;
+	double m_dDefaultMass; //[Kg]
+	double m_dDefaultRadius; //[m]
+	double m_dDefaultSpan; //[m]
+
+	double m_dDefaultLifespan; //[sec]
+	double m_dDefaultPersistance; //0.0-1.0 - the chance of dying (per frame)
+
 public:
 	void AddParticle(CParticle particle)
 	{

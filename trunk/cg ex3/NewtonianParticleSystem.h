@@ -6,6 +6,10 @@ class CNewtonianParticleSystem :
 {
 public:
 	Point3d m_Gravity;
+	Point3d m_Origin;
+	double m_dHeading;
+	double m_dHeadingStep;
+
 	CNewtonianParticleSystem(void);
 	virtual ~CNewtonianParticleSystem(void);
 	virtual bool calcNextFrame();

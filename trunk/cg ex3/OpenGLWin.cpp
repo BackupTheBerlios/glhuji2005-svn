@@ -7,13 +7,16 @@
 #include <math.h>
 #include "ParticleSystem.h"
 #include "NewtonianParticleSystem.h"
+#include "SimulationsParams.h"
+#include "ParticleSystemLoader.h"
 
 using namespace std;
 
 static const float WINSIZE = 512;
 
 COpenGLWin g_OpenGLWin;
-CNewtonianParticleSystem g_ParticleSystem;
+//CNewtonianParticleSystem g_ParticleSystem;
+CSimulationsParams g_simulationParams;
 
 void usage()
 {
@@ -234,7 +237,7 @@ void COpenGLWin::Initialize()
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, gCheckImageWidth, gCheckImageHeight,
        0, GL_RGBA, GL_UNSIGNED_BYTE, gCheckImage);
-   g_ParticleSystem.init();
+   g_simulationParams.m_particleSystem->init();
 }
 
 /////////////////////////////////////////////////////
@@ -272,7 +275,7 @@ void COpenGLWin::DisplayCallback()
 		nShading += 1;
 	if (g_bLighting)
 		nShading += 2;
-	g_ParticleSystem.display(g_nFrameNum, nShading);
+	g_simulationParams.m_particleSystem->display(g_nFrameNum, nShading);
 
 	glPopMatrix();
 	glutSwapBuffers();
@@ -284,14 +287,14 @@ void COpenGLWin::gotoNextFrame()
 	if (!m_bLoaded)
 		return;
 	g_nFrameNum++;
-	g_ParticleSystem.calcNextFrame();
+	g_simulationParams.m_particleSystem->calcNextFrame();
 	glutPostRedisplay();
 }
 void COpenGLWin::gotoPrevFrame()
 {
 	if (!m_bLoaded)
 		return;
-	g_ParticleSystem.prevFrame();
+	g_simulationParams.m_particleSystem->prevFrame();
 	return;
 }
 void COpenGLWin::gotoFrame(int nFrame)
@@ -304,7 +307,7 @@ void COpenGLWin::gotoFrame(int nFrame)
 	{
 		g_nFrameNum = 0;
 	}
-	if (g_ParticleSystem.gotoFrame(nFrame))
+	if (g_simulationParams.m_particleSystem->gotoFrame(nFrame))
 		m_pParent->updateFarme();
 	else
 		g_nFrameNum = nTmp;
@@ -456,26 +459,36 @@ void COpenGLWin::Run(CString sFilename)
 	int ac = 1;
 	char v = '\0';
 	char* av = &v;
-	if (!m_bCreated)
+
+	CParticleSystemLoader psLoader;
+	if (psLoader.Load(g_simulationParams, m_sFilename.GetBuffer()))
 	{
-		glutInit( &ac, &av );
-		glutInitDisplayMode( GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH );
-		glutInitWindowSize( WINSIZE, WINSIZE );
-		glutCreateWindow( "BVH Player" );
-		glutDisplayFunc( ::DisplayCallback );
-		glutIdleFunc( ::idleFunc );
-		glutMouseFunc( ::mousePressedCallback );
-		glutMotionFunc( ::mouseMovedCallback );
-		glutKeyboardFunc(::keypress);
-		m_bCreated = true;
+		if (!m_bCreated)
+		{
+			glutInit( &ac, &av );
+			glutInitDisplayMode( GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH );
+			glutInitWindowSize( WINSIZE, WINSIZE );
+			glutCreateWindow( "BVH Player" );
+			glutDisplayFunc( ::DisplayCallback );
+			glutIdleFunc( ::idleFunc );
+			glutMouseFunc( ::mousePressedCallback );
+			glutMotionFunc( ::mouseMovedCallback );
+			glutKeyboardFunc(::keypress);
+			m_bCreated = true;
+		}
+
+		Initialize();//TODO: get params from ini
+
+		m_bLoaded = true;
+		//g_fFrameTime = 0.33;	//Initialize to loaded value
+		GetSystemTime(&gLastFrameTime);	//Set initial 'last frame time'
+		glutMainLoop();
 	}
-
-    Initialize();
-
-	m_bLoaded = true;
-	//g_fFrameTime = 0.33;	//Initialize to loaded value
-	GetSystemTime(&gLastFrameTime);	//Set initial 'last frame time'
-    glutMainLoop();
+	else
+	{
+		AfxMessageBox("Failed to load the ini file!", MB_OK|MB_ICONINFORMATION);
+	}
+	m_sFilename.ReleaseBuffer();
     return;           // never reached
 }
 

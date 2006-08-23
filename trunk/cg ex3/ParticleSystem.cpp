@@ -5,6 +5,7 @@ CParticleSystem::CParticleSystem(void)
 {
 	m_dt = 0.033;
 	m_bUsingA = true;
+	m_nParticlesPerFrame = 10;
 	m_pCurSystem = &m_ParticlesA;
 	m_pNewSystem = &m_ParticlesB;
 }

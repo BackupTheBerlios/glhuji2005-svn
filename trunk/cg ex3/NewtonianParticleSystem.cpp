@@ -2,7 +2,12 @@
 #include ".\newtonianparticlesystem.h"
 
 inline double frand();
-CNewtonianParticleSystem::CNewtonianParticleSystem(void) : CParticleSystem(), m_Gravity(0.0,-9.8,0.0)
+CNewtonianParticleSystem::CNewtonianParticleSystem(void) : 
+CParticleSystem(), 
+m_Origin(0.0, 5.0, 0.0),
+m_Gravity(0.0,-9.8,0.0),
+m_dHeading(0.0),
+m_dHeadingStep(0.03)
 {
 	
 }
@@ -90,18 +95,17 @@ bool CNewtonianParticleSystem::gotoFrame(int nFrame)
 bool CNewtonianParticleSystem::InitFrame()
 {
 	CParticle p;
-	p.X = Point3d(0.0,5.0,0.0);
-	p.span = 20;
-	p.lifepan = 200;
-	p.mass = 0.2;
-	p.persistance = 1.0;
-	static Point3d az(2.0,2.0,2.0);
-	static double heading = 0.0;
-	for (int i=0; i<10; i++)
+	p.X = m_Origin;
+	p.span = m_dDefaultSpan;
+	p.lifepan = m_dDefaultLifespan;
+	p.mass = m_dDefaultMass;
+	p.persistance = m_dDefaultPersistance;
+	static Point3d az(2.0,2.0,2.0);	
+	for (int i=0; i<m_nParticlesPerFrame; i++)
 	{
-		p.V = Point3d(sin(heading)*3.0, 3.0, cos(heading)*3.0);
+		p.V = Point3d(sin(m_dHeading)*3.0, 3.0, cos(m_dHeading)*3.0);
 		p.V += Point3d(frand()*2.0 - 1.0,frand()*2.0,frand()*2.0 - 1.0);
-		heading += 0.03;
+		m_dHeading += m_dHeadingStep;
 		AddParticle(p);
 	}
 	return true;

@@ -135,6 +135,9 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
+				RelativePath=".\CLoadIni.cpp">
+			</File>
+			<File
 				RelativePath=".\Ex3MFC.cpp">
 			</File>
 			<File
@@ -148,6 +151,12 @@
 			</File>
 			<File
 				RelativePath=".\ParticleSystem.cpp">
+			</File>
+			<File
+				RelativePath=".\ParticleSystemLoader.cpp">
+			</File>
+			<File
+				RelativePath=".\SimulationsParams.cpp">
 			</File>
 			<File
 				RelativePath=".\stdafx.cpp">
@@ -170,6 +179,12 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
 			<File
+				RelativePath=".\CLoadIni.h">
+			</File>
+			<File
+				RelativePath=".\constants.h">
+			</File>
+			<File
 				RelativePath=".\Ex3MFC.h">
 			</File>
 			<File
@@ -188,7 +203,13 @@
 				RelativePath=".\ParticleSystem.h">
 			</File>
 			<File
+				RelativePath=".\ParticleSystemLoader.h">
+			</File>
+			<File
 				RelativePath=".\Resource.h">
+			</File>
+			<File
+				RelativePath=".\SimulationsParams.h">
 			</File>
 			<File
 				RelativePath=".\stdafx.h">

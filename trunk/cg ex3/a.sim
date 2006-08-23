@@ -1,0 +1,28 @@
+# Particle system ini file
+# Camera details
+CameraPos	=	0,0,0
+CameraDir	=	0,0,0
+CameraUp	=	0,0,0
+CameraFrust	=	0.0
+FovY		=	30
+Aspect		=	1
+ZNear		=	1
+ZFar		=	20000
+
+TimeDelta	=	0.033
+
+# Single particle's defaults
+DefaultSpan			=	20
+DefaultLifeSpan		=	200
+DefaultMass			=	0.2
+DefaultRadius		=	1
+DefaultPersistance	= 1.0;
+
+ParticlesPerFrame	=	10
+ParticleSystemType	=	1	# 1 - Mewtonian
+
+# specific ParticleSystem details:
+# note: this section might be different for each particle-system type
+ParticlesOrigin		=	0.0,5.0,0.0
+HeadingStep			=	0.03
+Gravity				=	0.0,-9.8,0.0
