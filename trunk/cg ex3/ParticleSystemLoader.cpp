@@ -101,10 +101,21 @@ CParticleSystemLoader::readGlobalConstants( CSimulationsParams &inParams, CLoadI
     bool     ret                  = false;
     string   val;
 	double*  arr = NULL;
+	Point3d color;
 
     do {
-        // read camera stuff
-		// read time-step
+        //TODO: read camera stuff
+		//TODO: read time-step
+		// clear-color
+		if (inLoader.GetField( C_CLEAR_COLOR_TAG, val ) == 0 ){
+			if (inLoader.GetPoint3d(val, color) == 0){
+				inParams.m_clearColor = color;
+			}
+			else{
+				cerr << "Failed loading clear-color value: " << val << endl;
+				break;
+			}
+		}
 		/*
         LOAD_L( C_MESH_WIDTH_TAG, "ERROR: meshwidth field is missing ", outMeshWidth );
 
@@ -201,6 +212,9 @@ CParticleSystemLoader::readParticleDefaults( CSimulationsParams &inParams, CLoad
 {
     bool ret = false;
 	string val;
+	int iVal;
+	double dVal;
+	Point3d size, color;
 
     do {
 
@@ -216,6 +230,40 @@ CParticleSystemLoader::readParticleDefaults( CSimulationsParams &inParams, CLoad
 	LOAD_F( C_DEFAULT_SPAN_TAG, "ERROR: defaultSpan field is missing ", inParams.m_particleSystem->m_dDefaultSpan);
 	LOAD_F( C_DEFAULT_RADIUS_TAG, "ERROR: defaultRadius field is missing ", inParams.m_particleSystem->m_dDefaultRadius );
 
+	// particle shape
+	if (inLoader.GetField(C_PARTICLE_SHAPE_TAG, val) == 0){
+		iVal = atoi(val.c_str());
+		if (iVal <= 0 || iVal >= C_PARTICLESHAPE_NUM){
+			cout << "Illegal ParticleShape value" << val << endl;
+			break;
+		}
+		inParams.m_particleSystem->m_particleShape = (ParticleShapeType)iVal;
+	}
+	// particle size
+	if (inLoader.GetField( C_PARTICLE_SIZE_TAG, val ) == 0 ){
+		if (inLoader.GetPoint3d(val, size) == 0){
+			inParams.m_particleSystem->m_pParticleSize = size;
+		}
+		else{
+			cerr << "Failed loading size value: " << val << endl;
+			break;
+		}
+	}
+	// particle color
+	if (inLoader.GetField( C_PARTICLE_COLOR_TAG, val ) == 0 ){
+		if (inLoader.GetPoint3d(val, color) == 0){
+			inParams.m_particleSystem->m_pParticleColor = color;
+		}
+		else{
+			cerr << "Failed loading color value: " << val << endl;
+			break;
+		}
+	}
+	// alpha
+	if (inLoader.GetField(C_PARTICLE_ALPHA_TAG, val) == 0){
+		inParams.m_particleSystem->m_dParticleAlpha = atof(val.c_str());
+	}
+
 	ret = true;
 
 	}while(0);
@@ -227,6 +275,8 @@ CParticleSystemLoader::readNewtonianParticleSystem( CSimulationsParams &inParams
 {
     bool ret = false;
     string val;
+	Point3d gravity;
+	Point3d origin;
 
     do {
 
@@ -240,8 +290,26 @@ CParticleSystemLoader::readNewtonianParticleSystem( CSimulationsParams &inParams
 
         //Read spring constants
 		LOAD_I( C_PARTICLES_PER_FRAME_TAG, "ERROR: ParticlesPerFrame undefined", system->m_nParticlesPerFrame );
-		LOAD_F( C_HEADING_STEP_TAG, "ERROR: HeadingStep undefined",  system->m_dHeadingStep);
-		//TODO: load origin and gravity
+		LOAD_F( C_NEWTONIAN_PS_HEADING_STEP_TAG, "ERROR: HeadingStep undefined",  system->m_dHeadingStep);
+		// load gravity
+		if ((inLoader.GetField( C_NEWTONIAN_PS_GRAVITY_TAG, val ) == 0 ) &&
+			inLoader.GetPoint3d(val, gravity) == 0){
+			system->m_Gravity = gravity;
+		}
+		else{
+			cerr << "Failed loading gravity value: " << val << endl;
+			break;
+		}
+		// load origin
+		if ((inLoader.GetField( C_NEWTONIAN_PS_ORIGIN_TAG, val ) == 0 ) &&
+			inLoader.GetPoint3d(val, origin) == 0){
+			system->m_Origin = origin;
+		}
+		else{
+			cerr << "Failed loading origin value: " << val << endl;
+			break;
+		}
+
 
         ret = true;
     } while(0);

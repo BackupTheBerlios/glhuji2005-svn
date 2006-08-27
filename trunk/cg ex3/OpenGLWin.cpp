@@ -185,6 +185,8 @@ generateCheckerBoard()
 
 void COpenGLWin::Initialize()
 {
+	Point3d clearColor = g_simulationParams.m_clearColor;
+
     // initialize matrix stacks
     glMatrixMode( GL_PROJECTION );
     glLoadIdentity();									// Reset The Current Modelview Matrix
@@ -195,7 +197,7 @@ void COpenGLWin::Initialize()
 	gluLookAt(0,0,-150,  0,0,0,  0,1,0);
     glViewport( 0, 0, WINSIZE, WINSIZE );
     glEnable( GL_DEPTH_TEST );
-	glClearColor(0.8f,0.8f,1.0f,0);
+	glClearColor(clearColor[0],clearColor[1],clearColor[2],0);
 
    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
    glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
@@ -246,7 +248,8 @@ void COpenGLWin::Initialize()
 /////////////////////////////////////////////////////
 void COpenGLWin::DisplayCallback()
 {
-	glClearColor(1.0f,1.0f,1.0f,0);
+	Point3d clearColor = g_simulationParams.m_clearColor;
+	glClearColor(clearColor[0],clearColor[1],clearColor[2],0);
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
 	double maxOffset = 1;//ToDo: Get max offset for camera positioning

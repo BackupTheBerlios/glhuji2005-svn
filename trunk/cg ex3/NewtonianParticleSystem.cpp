@@ -100,6 +100,10 @@ bool CNewtonianParticleSystem::InitFrame()
 	p.lifepan = m_dDefaultLifespan;
 	p.mass = m_dDefaultMass;
 	p.persistance = m_dDefaultPersistance;
+	p.alpha = m_dParticleAlpha;
+	p.color = m_pParticleColor;
+	p.shape = m_particleShape;
+	p.size = m_pParticleSize;
 	static Point3d az(2.0,2.0,2.0);	
 	for (int i=0; i<m_nParticlesPerFrame; i++)
 	{

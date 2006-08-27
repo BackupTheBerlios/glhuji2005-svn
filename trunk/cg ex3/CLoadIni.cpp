@@ -329,3 +329,40 @@ void CLoadIni::GetDblArray (const std::string& str, double* &pArray, int* pX, in
 	pArray[y*nMaxY+x] = atof(buff.c_str());
 }
 
+int CLoadIni::GetPoint3d (const std::string& str, Point3d &pointNew)
+{
+	int index = 0;
+	char * pStr = strdup(str.c_str());
+	if (pStr != NULL)
+	{
+		try
+		{
+			char * pch = strtok (pStr, ", ;\n");//TODO: define that
+			while (pch != NULL)
+			{	
+				if (index > 2){
+					delete pStr;
+					return -2;
+				}
+				pointNew[index] = atof(pch);
+				
+				index++;
+				pch = strtok (NULL, ", ;\n");
+			}
+
+			if (index != 3){
+				delete pStr;
+				return -2;
+			}
+		}
+		catch(...){		
+			delete pStr;
+			return -2;
+		}
+	}
+	else{
+		return -2;
+	}
+	return 0;
+}
+

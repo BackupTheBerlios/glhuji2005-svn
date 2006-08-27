@@ -8,25 +8,26 @@ FovY		=	30
 Aspect		=	1
 ZNear		=	1
 ZFar		=	20000
+ClearColor	=	1.0,1.0,1.0
 
 TimeDelta	=	0.033
 
 # Single particle's details
 DefaultSpan			=	20
-DefaultLifeSpan		=	7
-DefaultMass			=	0.1
+DefaultLifeSpan		=	12
+DefaultMass			=	1
 DefaultRadius		=	1
 DefaultPersistance	=	1.0;
-ParticleShape		=	1	# 1 - dot, 2 - sphere, 3 - cube, 4 - cone
-ParticleSize		=	2,2,2
-ParticleColor		=	0.7,0.7,0.7
-ParticleAlpha		=	1
+ParticleShape		=	4	# 1 - dot, 2 - sphere, 3 - cube, 4 - cone
+ParticleSize		=	0.04,0.4,0.04
+ParticleColor		=	0.8,0.8,1.0
+ParticleAlpha		=	0.4
 
-ParticlesPerFrame	=	10
+ParticlesPerFrame	=	20
 ParticleSystemType	=	1	# 1 - Mewtonian
 
 # specific ParticleSystem details:
 # note: this section might be different for each particle-system type
-Origin				=	-0.0,5.0,0.0
-HeadingStep			=	0.13
-Gravity				=	0.0,-0.8,0.0
+Origin				=	0.0,5.0,0.0
+HeadingStep			=	0.02
+Gravity				=	0.0,-15.8,0.0

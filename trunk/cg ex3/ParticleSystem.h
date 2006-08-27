@@ -1,4 +1,5 @@
 #pragma once
+#include "constants.h"
 
 class CParticle
 {
@@ -15,7 +16,11 @@ public:
 		span(-1),
 		age(0.0),
 		lifepan(-1.0),
-		persistance(1.0)
+		persistance(1.0),
+		shape(C_PARTICLESHAPE_DOT),
+		size(1,1,1),
+		color(0,0,1),
+		alpha(1)
 	{
 	}
 
@@ -34,6 +39,11 @@ public:
 
 	double lifepan;	//[sec]
 	double persistance;	//0.0-1.0 - the chance of dying (per frame)
+
+	ParticleShapeType shape;
+	Point3d size;	//X,Y,Z dimensions
+	Point3d color;	//RGB value
+	double alpha;	//transparency
 };
 
 class CParticleSystem
@@ -56,6 +66,11 @@ public: //TODO: fix this
 
 	double m_dDefaultLifespan; //[sec]
 	double m_dDefaultPersistance; //0.0-1.0 - the chance of dying (per frame)
+
+	ParticleShapeType m_particleShape;
+	Point3d m_pParticleSize;	//X,Y,Z dimensions
+	Point3d m_pParticleColor;	//RGB value
+	double m_dParticleAlpha;	//transparency
 
 public:
 	void AddParticle(CParticle particle)

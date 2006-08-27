@@ -37,6 +37,7 @@ public:
 	}
 	static void GetIntArray (const std::string& str, int* &pArray, int* pX = NULL, int* pY = NULL);
 	static void GetDblArray (const std::string& str, double* &pArray, int* pX = NULL, int* pY = NULL);
+	static int GetPoint3d (const std::string& str, Point3d &pointNew);
 	static void rtrimstr(std::string& str)
 	{
 		char c;
