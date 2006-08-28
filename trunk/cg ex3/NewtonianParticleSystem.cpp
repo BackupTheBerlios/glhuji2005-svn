@@ -127,7 +127,8 @@ bool CNewtonianParticleSystem::getForces(int nIdx)
 
 bool CNewtonianParticleSystem::getAcceleration(int nIdx)
 {
-	(*m_pNewSystem)[nIdx].a += m_Gravity;
+	if ((*m_pNewSystem)[nIdx].mass > 0)
+		(*m_pNewSystem)[nIdx].a += m_Gravity;
 	return true;
 }
 

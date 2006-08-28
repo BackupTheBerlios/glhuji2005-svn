@@ -2,91 +2,13 @@
 #include ".\FireworksParticleSystem.h"
 
 CFireworksParticleSystem::CFireworksParticleSystem(void) : 
-CParticleSystem(), 
-m_Origin(0.0, 0.0, 0.0),
-m_Gravity(0.0,-9.8,0.0)
+CNewtonianParticleSystem()
 {
 	
 }
 
 CFireworksParticleSystem::~CFireworksParticleSystem(void)
 {
-}
-bool CFireworksParticleSystem::calcNextFrame()
-{
-	bool rc = CParticleSystem::calcNextFrame();
-	if (!rc)
-		return false;
-	rc = InitFrame();
-	if (!rc)
-		return false;
-	
-	m_pNewSystem->clear();
-	int nCurParticle = 0;
-	for (unsigned int i=0; i<m_pCurSystem->size(); i++)
-	{
-		m_pNewSystem->push_back((*m_pCurSystem)[i]);
-		nCurParticle = (int)m_pNewSystem->size()-1;
-		CParticle &particle = (*m_pNewSystem)[nCurParticle];
-		if (isParticleDead(nCurParticle))
-		{
-			killParticle(nCurParticle);
-			continue;
-		}
-		updateParticle(nCurParticle);		//Allows a chance to change particle mass, radius etc.
-
-		particle.F = Point3d(0.0,0.0,0.0);
-		getForces(nCurParticle);			//Get forces currently operating on the object
-
-		particle.a = Point3d(0.0,0.0,0.0);
-		getAcceleration(nCurParticle);		//Get any acceleration not dependant on mass
-
-		calculateVelocity(nCurParticle);	//Calculate velocity (using acceleration and forces)
-
-		calculatePosition(nCurParticle);	//Use velocity to calculate position
-	}
-
-	return true;
-}
-
-bool CFireworksParticleSystem::prevFrame()
-{
-	return false;
-}
-
-bool CFireworksParticleSystem::display(int nFrameNum, int nShading)
-{
-	return CParticleSystem::display(nFrameNum, nShading);
-}
-
-bool CFireworksParticleSystem::init()
-{
-	return true;
-}
-
-bool CFireworksParticleSystem::gotoFrame(int nFrame)
-{
-	if (nFrame == 0)
-	{
-		//ToDo: Restart simulation
-	}
-	else if (nFrame == m_nCurFrame)
-	{
-		return true;
-	}
-	else if (nFrame == m_nCurFrame+1)
-	{
-		return calcNextFrame();
-	}
-	else if (nFrame == m_nCurFrame-1)
-	{
-		return prevFrame();
-	}
-	else
-	{
-		//ToDo: Jump (if allowed)
-	}
-	return false;
 }
 
 //This is where little baby particles are made
@@ -128,30 +50,6 @@ bool CFireworksParticleSystem::updateParticle(int nIdx)
 		p.alpha = p.energy;
 		p.energy *= 0.90;
 	}
-	return true;
-}
-
-bool CFireworksParticleSystem::getForces(int nIdx)
-{
-	return true;
-}
-
-bool CFireworksParticleSystem::getAcceleration(int nIdx)
-{
-	if ((*m_pNewSystem)[nIdx].mass > 0)
-		(*m_pNewSystem)[nIdx].a += m_Gravity;
-	return true;
-}
-
-bool CFireworksParticleSystem::calculateVelocity(int nIdx)
-{
-	(*m_pNewSystem)[nIdx].V += ((*m_pNewSystem)[nIdx].a + (*m_pNewSystem)[nIdx].F*(*m_pNewSystem)[nIdx].mass)*m_dt;
-	return true;
-}
-
-bool CFireworksParticleSystem::calculatePosition(int nIdx)
-{
-	(*m_pNewSystem)[nIdx].X += (*m_pNewSystem)[nIdx].V * m_dt;
 	return true;
 }
 
