@@ -7,6 +7,7 @@ public:
 	CParticle() : 
 	    m_bAlive(true),
 		birthplace(0.0,0.0,0.0),
+		type(0),
 		X(0.0,0.0,0.0),
 		a(0.0,0.0,0.0),
 		V(0.0,0.0,0.0),
@@ -17,6 +18,8 @@ public:
 		age(0.0),
 		lifepan(-1.0),
 		persistance(1.0),
+		elasticity(1.0),
+		energy(0.0),
 		shape(C_PARTICLESHAPE_DOT),
 		size(1,1,1),
 		color(0,0,1),
@@ -28,6 +31,7 @@ public:
 	bool m_bAlive;
 	double age;	//[sec]
 	Point3d birthplace;	//X at birth
+	int type; //Can mean anything - inside a specific system. defaults to 0
 
 	Point3d X;	//position
 	Point3d a;	//acceleration
@@ -39,6 +43,9 @@ public:
 
 	double lifepan;	//[sec]
 	double persistance;	//0.0-1.0 - the chance of dying (per frame)
+	double elasticity; //how much of the velocity is preserved when hitting a surface [0.0 - stop when hit anything, 1.0 - full elasticity]
+
+	double energy; //how much internal energy does the particle have - isn't used - may be used by each system as needed
 
 	ParticleShapeType shape;
 	Point3d size;	//X,Y,Z dimensions
@@ -67,6 +74,7 @@ public: //TODO: fix this
 	double m_dDefaultLifespan; //[sec]
 	double m_dDefaultPersistance; //0.0-1.0 - the chance of dying (per frame)
 
+	Point3d m_dDefaultOrigin;
 	ParticleShapeType m_particleShape;
 	Point3d m_pParticleSize;	//X,Y,Z dimensions
 	Point3d m_pParticleColor;	//RGB value

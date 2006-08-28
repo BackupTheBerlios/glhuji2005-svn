@@ -2,6 +2,7 @@
 #include "SimulationsParams.h"
 #include "ParticleSystem.h"
 #include "NewtonianParticleSystem.h"
+#include "FireworksParticleSystem.h"
 #include "ParticleSystemLoader.h"
 #include "CLoadIni.h"
 #include "constants.h"
@@ -11,16 +12,19 @@
 
 //Useful macros
 #define LOAD_L( field_x, err_x, store_x ) if( inLoader.GetField( (field_x), val ) != 0 )\
-                                            { cout << (err_x) << endl; break;} \
+                                            { cout << (err_x) << endl;} \
                                             else store_x = atol(val.c_str());
 
 #define LOAD_F( field_x, err_x, store_x ) if( inLoader.GetField( (field_x), val ) != 0 )\
-                                            { cout << (err_x) << endl; break;} \
+                                            { cout << (err_x) << endl;} \
                                             else store_x = atof(val.c_str());
 
 #define LOAD_I( field_x, err_x, store_x ) if( inLoader.GetField( (field_x), val ) != 0 )\
-                                            { cout << (err_x) << endl; break;} \
+                                            { cout << (err_x) << endl;} \
                                             else store_x = atoi(val.c_str());
+#define LOAD_P3d( field_x, err_x, store_x ) if( inLoader.GetField( (field_x), val ) != 0 )\
+                                            { cout << (err_x) << endl;} \
+                                            inLoader.GetPoint3d(val.c_str(), store_x);
 
 
 //This function loads the ParticleSystem mesh, and initialises the particle system with it
@@ -85,11 +89,17 @@ CParticleSystemLoader::createParticleSystem( CSimulationsParams &inParams, CLoad
         cout << "using newtonian system" << endl;
         inParams.m_particleSystem = new CNewtonianParticleSystem();
 		ret = readNewtonianParticleSystem( inParams, inLoader );
-
+		break;
+    case C_FIREWORKS_SYSTEM:
+        cout << "using fireworks system" << endl;
+        inParams.m_particleSystem = new CFireworksParticleSystem();
+		ret = readNewtonianParticleSystem( inParams, inLoader );
+		break;
     default:
         cout << "ERROR: unknown system type: " << val.c_str() << " - using newtonian system" << endl;
         inParams.m_particleSystem = new CNewtonianParticleSystem();
 		ret = readNewtonianParticleSystem( inParams, inLoader );
+		break;
     }
 
 	return ret;
@@ -104,8 +114,11 @@ CParticleSystemLoader::readGlobalConstants( CSimulationsParams &inParams, CLoadI
 	Point3d color;
 
     do {
+		LOAD_P3d( C_CAMERA_POS_TAG, "ERROR: CameraPos field is missing ", inParams.m_cameraPos );
+		LOAD_P3d( C_CAMERA_DIR_TAG, "ERROR: CameraDir field is missing ", inParams.m_cameraDir );
         //TODO: read camera stuff
 		//TODO: read time-step
+
 		// clear-color
 		if (inLoader.GetField( C_CLEAR_COLOR_TAG, val ) == 0 ){
 			if (inLoader.GetPoint3d(val, color) == 0){
@@ -113,93 +126,8 @@ CParticleSystemLoader::readGlobalConstants( CSimulationsParams &inParams, CLoadI
 			}
 			else{
 				cerr << "Failed loading clear-color value: " << val << endl;
-				break;
 			}
 		}
-		/*
-        LOAD_L( C_MESH_WIDTH_TAG, "ERROR: meshwidth field is missing ", outMeshWidth );
-
-        if( outMeshWidth <= 0 )
-        {
-            cout << "ERROR: meshwidth must be positive (" << outMeshWidth << ")" << endl;
-            break;
-        }
-
-        //load ParticleSystem height
-        LOAD_L( C_MESH_HEIGHT_TAG, "ERROR: meshheight field is missing ", outMeshHeight );
-
-        if( outMeshHeight <= 0 )
-        {
-            cout << "ERROR: meshheight must be positive (" << outMeshHeight << ")" << endl;
-            break;
-        }
-
-        inSystem.setDimensions( outMeshWidth, outMeshHeight );
-
-        LOAD_I( C_AIR_RESISTANCE_TAG, "ERROR: air resistance field is missing ", airResistancePercent );
-
-        if( airResistancePercent < 0 || airResistancePercent > 100 )
-        {
-            cout << "ERROR: air resistance is specified in percent (0<=a<100):" << airResistancePercent << endl;
-            break;
-        }
-
-        inSystem.setAirResistance( airResistancePercent );
-
-        //4. Load Forces
-        LOAD_F( C_GRAVITY_TAG, "ERROR: gravity field is missing ", gravity );
-        inSystem.setGravity( gravity );
-
-        //load step size
-        LOAD_F( C_STEP_SIZE_TAG, "ERROR: step size not specified", stepSize );
-
-        if( stepSize <= 0 )
-        {
-            cout << "ERROR: illegal stepsize, must be >= 0 " << endl;
-            break;
-        }
-        inSystem.setStepSize( stepSize );
-
-		//------------------------ Set wind parameters ---------------------------
-		Vector3d         WindDirection;
-		Vector3d         Wind;
-		double	         WindLen = 0;
-		double	         WindMinFactor = 1;
-		double	         WindMaxFactor = 1;
-		double	         WindMaxChange = 0;
-		if( inLoader.GetField( C_WIND_TAG, val ) == 0 )
-		{
-			int xDim, yDim;
-			inLoader.GetDblArray( val, arr, &xDim, &yDim );
-			
-			if( yDim != 1 || xDim != 3 )
-            {
-				cout << "ERROR: dimensions of wind vector are wrong" << endl;
-                break;
-            }
-			else
-			{
-				Wind = Vector3d(arr[0], arr[1], arr[2]);
-				WindDirection = Wind;
-				WindDirection.normalize();
-				WindLen = Wind.length();
-			}
-			SAFE_DELETE_ARR( arr );
-		}
-		if( inLoader.GetField( C_WIND_MIN_FACTOR_TAG, val ) == 0 )
-		{
-			WindMinFactor = atof(val.c_str());
-		}
-		if( inLoader.GetField( C_WIND_MAX_FACTOR_TAG, val ) == 0 )
-		{
-			WindMaxFactor = atof(val.c_str());
-		}
-		if( inLoader.GetField( C_WIND_MAX_CHANGE_TAG, val ) == 0 )
-		{
-			WindMaxChange = atof(val.c_str());
-		}
-		inSystem.setWind (WindDirection, Wind, WindMinFactor*WindLen, WindMaxFactor*WindLen, WindMaxChange);
-		*/
 
 		ret = true;
     } while( 0 );
@@ -213,7 +141,6 @@ CParticleSystemLoader::readParticleDefaults( CSimulationsParams &inParams, CLoad
     bool ret = false;
 	string val;
 	int iVal;
-	double dVal;
 	Point3d size, color;
 
     do {
@@ -229,7 +156,7 @@ CParticleSystemLoader::readParticleDefaults( CSimulationsParams &inParams, CLoad
 	LOAD_F( C_DEFAULT_PERSISTANCE_TAG, "ERROR: defaultPersistance field is missing ", inParams.m_particleSystem->m_dDefaultPersistance);
 	LOAD_F( C_DEFAULT_SPAN_TAG, "ERROR: defaultSpan field is missing ", inParams.m_particleSystem->m_dDefaultSpan);
 	LOAD_F( C_DEFAULT_RADIUS_TAG, "ERROR: defaultRadius field is missing ", inParams.m_particleSystem->m_dDefaultRadius );
-
+	LOAD_P3d( C_PARTICLES_ORIGIN_TAG, "ERROR: ParticlesOrigin field is missing ", inParams.m_particleSystem->m_dDefaultOrigin );
 	// particle shape
 	if (inLoader.GetField(C_PARTICLE_SHAPE_TAG, val) == 0){
 		iVal = atoi(val.c_str());
@@ -290,7 +217,6 @@ CParticleSystemLoader::readNewtonianParticleSystem( CSimulationsParams &inParams
 
         //Read spring constants
 		LOAD_I( C_PARTICLES_PER_FRAME_TAG, "ERROR: ParticlesPerFrame undefined", system->m_nParticlesPerFrame );
-		LOAD_F( C_NEWTONIAN_PS_HEADING_STEP_TAG, "ERROR: HeadingStep undefined",  system->m_dHeadingStep);
 		// load gravity
 		if ((inLoader.GetField( C_NEWTONIAN_PS_GRAVITY_TAG, val ) == 0 ) &&
 			inLoader.GetPoint3d(val, gravity) == 0){
@@ -307,7 +233,7 @@ CParticleSystemLoader::readNewtonianParticleSystem( CSimulationsParams &inParams
 		}
 		else{
 			cerr << "Failed loading origin value: " << val << endl;
-			break;
+			system->m_Origin = Point3d(0,0,0);
 		}
 
 
