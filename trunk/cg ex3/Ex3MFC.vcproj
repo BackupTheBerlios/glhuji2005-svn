@@ -147,6 +147,9 @@
 				RelativePath=".\FireworksParticleSystem.cpp">
 			</File>
 			<File
+				RelativePath=".\FlockParticleSystem.cpp">
+			</File>
+			<File
 				RelativePath=".\NewtonianParticleSystem.cpp">
 			</File>
 			<File
@@ -195,6 +198,9 @@
 			</File>
 			<File
 				RelativePath=".\FireworksParticleSystem.h">
+			</File>
+			<File
+				RelativePath=".\FlockParticleSystem.h">
 			</File>
 			<File
 				RelativePath=".\MyTypes.h">

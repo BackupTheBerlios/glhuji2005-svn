@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include ".\FireworksParticleSystem.h"
+#include "FireworksParticleSystem.h"
 
 CFireworksParticleSystem::CFireworksParticleSystem(void) : 
 CNewtonianParticleSystem()

@@ -477,7 +477,7 @@ void COpenGLWin::Run(CString sFilename)
 			glutInit( &ac, &av );
 			glutInitDisplayMode( GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH );
 			glutInitWindowSize( WINSIZE, WINSIZE );
-			glutCreateWindow( "BVH Player" );
+			glutCreateWindow( "Particle System" );
 			glutDisplayFunc( ::DisplayCallback );
 			glutIdleFunc( ::idleFunc );
 			glutMouseFunc( ::mousePressedCallback );

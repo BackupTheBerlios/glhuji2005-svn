@@ -1,5 +1,5 @@
 #pragma once
-#include "newtonianparticlesystem.h"
+#include "NewtonianParticleSystem.h"
 
 class CFireworksParticleSystem :
 	public CNewtonianParticleSystem

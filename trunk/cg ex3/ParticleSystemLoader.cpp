@@ -3,6 +3,7 @@
 #include "ParticleSystem.h"
 #include "NewtonianParticleSystem.h"
 #include "FireworksParticleSystem.h"
+#include "FlockParticleSystem.h"
 #include "ParticleSystemLoader.h"
 #include "CLoadIni.h"
 #include "constants.h"
@@ -95,6 +96,11 @@ CParticleSystemLoader::createParticleSystem( CSimulationsParams &inParams, CLoad
         inParams.m_particleSystem = new CFireworksParticleSystem();
 		ret = readNewtonianParticleSystem( inParams, inLoader );
 		break;
+    case C_FLOCK_SYSTEM:
+        cout << "using flock (boids) system" << endl;
+        inParams.m_particleSystem = new CFlockParticleSystem();
+        ret = readNewtonianParticleSystem( inParams, inLoader );
+        break;
     default:
         cout << "ERROR: unknown system type: " << val.c_str() << " - using newtonian system" << endl;
         inParams.m_particleSystem = new CNewtonianParticleSystem();

@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include ".\particlesystem.h"
+#include "ParticleSystem.h"
 
 CParticleSystem::CParticleSystem(void):
 	m_pParticleSize(1,1,1),

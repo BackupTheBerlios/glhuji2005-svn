@@ -1,8 +1,8 @@
 #include "StdAfx.h"
-#include "NewtonianParticleSystem.h"
+#include "FlockParticleSystem.h"
 
 inline double frand();
-CNewtonianParticleSystem::CNewtonianParticleSystem(void) : 
+CFlockParticleSystem::CFlockParticleSystem(void) : 
 CParticleSystem(), 
 m_Origin(0.0, 5.0, 0.0),
 m_Gravity(0.0,-9.8,0.0),
@@ -12,10 +12,10 @@ m_dHeadingStep(0.03)
 	
 }
 
-CNewtonianParticleSystem::~CNewtonianParticleSystem(void)
+CFlockParticleSystem::~CFlockParticleSystem(void)
 {
 }
-bool CNewtonianParticleSystem::calcNextFrame()
+bool CFlockParticleSystem::calcNextFrame()
 {
 	bool rc = CParticleSystem::calcNextFrame();
 	if (!rc)
@@ -52,22 +52,22 @@ bool CNewtonianParticleSystem::calcNextFrame()
 	return true;
 }
 
-bool CNewtonianParticleSystem::prevFrame()
+bool CFlockParticleSystem::prevFrame()
 {
 	return false;
 }
 
-bool CNewtonianParticleSystem::display(int nFrameNum, int nShading)
+bool CFlockParticleSystem::display(int nFrameNum, int nShading)
 {
 	return CParticleSystem::display(nFrameNum, nShading);
 }
 
-bool CNewtonianParticleSystem::init()
+bool CFlockParticleSystem::init()
 {
 	return true;
 }
 
-bool CNewtonianParticleSystem::gotoFrame(int nFrame)
+bool CFlockParticleSystem::gotoFrame(int nFrame)
 {
 	if (nFrame == 0)
 	{
@@ -92,7 +92,7 @@ bool CNewtonianParticleSystem::gotoFrame(int nFrame)
 	return false;
 }
 
-bool CNewtonianParticleSystem::InitFrame()
+bool CFlockParticleSystem::InitFrame()
 {
 	CParticle p;
 	p.X = m_Origin;
@@ -115,30 +115,30 @@ bool CNewtonianParticleSystem::InitFrame()
 	return true;
 }
 
-bool CNewtonianParticleSystem::updateParticle(int nIdx)
+bool CFlockParticleSystem::updateParticle(int nIdx)
 {
 	return true;
 }
 
-bool CNewtonianParticleSystem::getForces(int nIdx)
+bool CFlockParticleSystem::getForces(int nIdx)
 {
 	return true;
 }
 
-bool CNewtonianParticleSystem::getAcceleration(int nIdx)
+bool CFlockParticleSystem::getAcceleration(int nIdx)
 {
 	if ((*m_pNewSystem)[nIdx].mass > 0)
 		(*m_pNewSystem)[nIdx].a += m_Gravity;
 	return true;
 }
 
-bool CNewtonianParticleSystem::calculateVelocity(int nIdx)
+bool CFlockParticleSystem::calculateVelocity(int nIdx)
 {
 	(*m_pNewSystem)[nIdx].V += ((*m_pNewSystem)[nIdx].a + (*m_pNewSystem)[nIdx].F*(*m_pNewSystem)[nIdx].mass)*m_dt;
 	return true;
 }
 
-bool CNewtonianParticleSystem::calculatePosition(int nIdx)
+bool CFlockParticleSystem::calculatePosition(int nIdx)
 {
 	(*m_pNewSystem)[nIdx].X += (*m_pNewSystem)[nIdx].V * m_dt;
 	return true;
