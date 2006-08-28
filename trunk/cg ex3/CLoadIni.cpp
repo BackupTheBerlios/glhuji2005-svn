@@ -253,7 +253,6 @@ void CLoadIni::GetIntArray (const std::string& str, int* &pArray, int* pX, int* 
 	pArray[y*nMaxY+x] = atoi(buff.c_str());
 }
 
-
 void CLoadIni::GetDblArray (const std::string& str, double* &pArray, int* pX, int* pY)
 {
 	std::string buff;

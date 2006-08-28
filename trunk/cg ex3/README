@@ -10,59 +10,11 @@ Description:
     We implemented the exercise in Visual Studio under Windows, using an
  MFC based GUI.
 
-	Our implementation allows for the display of BVH files using either
-a nice ellipsoid or line display.
-
-	We allow for arbitrary convolutions to be performed on the figure, and
-for saving of the resulting filtered file as a new BVH.
-
-	We allow editing of the convolution manually through the GUI and setting
-of convolutions for the rotation and offset individually.
-
-	Sharpening is achieved through the use of a "mask" parameter, when
-set to 0 a normal convolution is performed, however setting this to a non
-zero value performs the following operation:
-
-Anew = A+(A-B)*mask
-
-where A is the original motion (or rotation)vector, and B is the convoluted vector.
-
-	Thus convoluting with a gaussian kernel to get B, A-B gives us the high frequencies
-of the original motion and mask allows us to vary how much of this is added back.
-
-	When performing convolution on angles, we switch them to polar
-coordinates, convolute, and then convert back to angles.
-
-
-Files support:
-	We only support the BVH files we included.
-	
-	Our BVH reader is written from scratch and is very robust.  We where
-unable to find a file it didn't support. However problems do exist when
-trying to perform convolutions on the motion from certain files.
-
-	The most notable problem we encountered was with files that switch
-the method used for rotation:  There are several different ways in which
-an object can be rotated into the same position, some of the BVH files
-appear to switch the rotation method several times in the middle of the
-motion data - this causes the convolution to fail as when the rotation
-method is switched, averaging neighbouring angles causes the figure
-to "jump around".
-
 Implementation Notes:
    The OpenGLWin class is the main "controller" class called by the GUI,
  it holds a reference to an ArticulatedFigure class.
- 
- 	The ArticulatedFigure class holds a figure's motion tree, and knows
- how to draw it.
- 
- 	ArticulatedFigures are read and written by the BVHWriter & BVHReader
- classes.
- 	
- 	ConvMotionFilter is the class that performs convolutions on the 
- ArticulatedFigure object.
- 
+
  	We make use of OpenMesh solely for it's vector class.
-    
+
 Thank you,
-Itai, Dagan, & Jeremy
+Itai, Dagan & Jeremy

@@ -34,6 +34,7 @@ const char C_ENTER_KEY_CODE  = 13;
 #define C_PARTICLE_SIZE_TAG       ("ParticleSize")
 #define C_PARTICLE_COLOR_TAG       ("ParticleColor")
 #define C_PARTICLE_ALPHA_TAG       ("ParticleAlpha")
+#define C_PARTICLES_ORIGIN_TAG		("ParticlesOrigin")
 
 #define C_PARTICLES_PER_FRAME_TAG       ("ParticlesPerFrame")
 #define C_PARTICLE_SYSTEM_TYPE_TAG       ("ParticleSystemType")
@@ -48,6 +49,7 @@ const int C_NUM_FIELDS_IN_AUTOCREATE = 6;
 
 typedef enum {
     C_NEWTONIAN_SYSTEM    = 1,
+	C_FIREWORKS_SYSTEM    = 2,
 	C_SYSTEM_NUM	
 } ParticleSystemType;
 

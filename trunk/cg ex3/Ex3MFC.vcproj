@@ -144,6 +144,9 @@
 				RelativePath=".\Ex3MFCDlg.cpp">
 			</File>
 			<File
+				RelativePath=".\FireworksParticleSystem.cpp">
+			</File>
+			<File
 				RelativePath=".\NewtonianParticleSystem.cpp">
 			</File>
 			<File
@@ -189,6 +192,9 @@
 			</File>
 			<File
 				RelativePath=".\Ex3MFCDlg.h">
+			</File>
+			<File
+				RelativePath=".\FireworksParticleSystem.h">
 			</File>
 			<File
 				RelativePath=".\MyTypes.h">

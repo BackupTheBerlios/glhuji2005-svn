@@ -56,7 +56,7 @@ void idleFunc(void)
 
 int g_nFrameNum = 0;
 bool g_bLinesOnly = false;
-bool g_bLighting = true;
+bool g_bLighting = false;
 bool g_bPause = false;
 SYSTEMTIME gLastFrameTime;
 double g_fFrameTime = 0.03333;
@@ -85,10 +85,10 @@ bool gRBDown = false;
 int gLastX;
 int gLastY;
 GLfloat gOriginX = 0.0f;
-GLfloat gOriginY = 40.0f;
-GLfloat gOriginZ = -615.0f;
-GLfloat g_xRotated = 44.0f;	//15.0f;
-GLfloat g_yRotated = -12.0f;	//10.0f;
+GLfloat gOriginY = 0.0f;
+GLfloat gOriginZ = 0.0f;
+GLfloat g_xRotated = 0.0f;	//15.0f;
+GLfloat g_yRotated = 0.0f;	//10.0f;
 GLfloat g_zRotated = 0.0f;
 
 // Default values for material and light properties.
@@ -187,6 +187,12 @@ void COpenGLWin::Initialize()
 {
 	Point3d clearColor = g_simulationParams.m_clearColor;
 
+	g_xRotated = g_simulationParams.m_cameraDir[0];
+	g_yRotated = g_simulationParams.m_cameraDir[1];
+	g_zRotated = g_simulationParams.m_cameraDir[2];
+	gOriginX = g_simulationParams.m_cameraPos[0];
+	gOriginY = g_simulationParams.m_cameraPos[1];
+	gOriginZ = g_simulationParams.m_cameraPos[2];
     // initialize matrix stacks
     glMatrixMode( GL_PROJECTION );
     glLoadIdentity();									// Reset The Current Modelview Matrix
@@ -224,7 +230,7 @@ void COpenGLWin::Initialize()
 	glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.05);
 	glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.0);
 
-	glEnable(GL_LIGHTING);
+	glDisable(GL_LIGHTING);
    glEnable(GL_NORMALIZE);
 
    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);

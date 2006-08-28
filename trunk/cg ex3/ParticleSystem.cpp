@@ -40,16 +40,12 @@ bool CParticleSystem::calcNextFrame()
 	return true;
 }
 
-inline double frand()
-{
-	return ((double)rand())/((double)RAND_MAX);
-}
-
 bool CParticleSystem::isParticleDead (int i)
 {
 	//Check dying of old age
 	(*m_pNewSystem)[i].age += m_dt;
-	if ((*m_pNewSystem)[i].age > (*m_pNewSystem)[i].lifepan)
+	if ((*m_pNewSystem)[i].lifepan >= 0 && 
+		(*m_pNewSystem)[i].age > (*m_pNewSystem)[i].lifepan)
 		return true;
 
 	//Check dying by chance
@@ -84,7 +80,7 @@ bool CParticleSystem::display(int nFrameNum, int nShading)
 		float alpha = (float)particle.alpha;
 		
 		// draw
-		glColor3f(color[0], color[1], color[2]);
+		glColor4f(color[0], color[1], color[2], alpha);
 		GLfloat ambient[] = { color[0], color[1], color[2], alpha };
 		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);
 		switch (particle.shape){
