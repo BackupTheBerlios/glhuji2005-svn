@@ -42,7 +42,6 @@ const int C_NUM_FIELDS_IN_AUTOCREATE = 6;
 
 // newtonian PS stuff
 #define C_NEWTONIAN_PS_GRAVITY_TAG			    ("Gravity")
-#define C_NEWTONIAN_PS_ORIGIN_TAG			    ("Origin")
 #define C_NEWTONIAN_PS_HEADING_STEP_TAG			("HeadingStep")
 
 typedef enum {

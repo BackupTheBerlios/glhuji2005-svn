@@ -1,8 +1,8 @@
 # Particle system ini file
 # Camera details
-CameraPos	=	0,40,-615
-CameraDir	=	44,-12,0
-CameraUp	=	0,0,0
+CameraPos	=	30,30,30
+CameraDir	=	0,0,0
+CameraUp	=	0,1,0
 CameraFrust	=	0.0
 FovY		=	30
 Aspect		=	1
@@ -28,6 +28,6 @@ ParticleSystemType	=	1	# 1 - Mewtonian
 
 # specific ParticleSystem details:
 # note: this section might be different for each particle-system type
-Origin				=	-0.0,7.0,0.0
+ParticlesOrigin		=	0.0,7.0,0.0
 HeadingStep			=	0.3
 Gravity				=	0.8,-1.3,0.0

@@ -256,6 +256,12 @@ CParticleSystemLoader::readNewtonianParticleSystem( CSimulationsParams &inParams
 			cerr << "Failed loading gravity value: " << val << endl;
 			break;
 		}
+		// heading step
+		if (inLoader.GetField( C_NEWTONIAN_PS_HEADING_STEP_TAG, val ) == 0 ){
+			system->m_dHeadingStep = atof(val.c_str());
+		}		
+		/*
+		//DE
 		// load origin
 		if ((inLoader.GetField( C_NEWTONIAN_PS_ORIGIN_TAG, val ) == 0 ) &&
 			inLoader.GetPoint3d(val, origin) == 0){
@@ -264,7 +270,7 @@ CParticleSystemLoader::readNewtonianParticleSystem( CSimulationsParams &inParams
 		else{
 			cerr << "Failed loading origin value: " << val << endl;
 			system->m_Origin = Point3d(0,0,0);
-		}
+		}*/
 
 
         ret = true;

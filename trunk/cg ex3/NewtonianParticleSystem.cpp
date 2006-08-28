@@ -4,7 +4,6 @@
 inline double frand();
 CNewtonianParticleSystem::CNewtonianParticleSystem(void) : 
 CParticleSystem(), 
-m_Origin(0.0, 5.0, 0.0),
 m_Gravity(0.0,-9.8,0.0),
 m_dHeading(0.0),
 m_dHeadingStep(0.03)
@@ -95,7 +94,7 @@ bool CNewtonianParticleSystem::gotoFrame(int nFrame)
 bool CNewtonianParticleSystem::InitFrame()
 {
 	CParticle p;
-	p.X = m_Origin;
+	p.X = m_dDefaultOrigin;
 	p.span = m_dDefaultSpan;
 	p.lifepan = m_dDefaultLifespan;
 	p.mass = m_dDefaultMass;
