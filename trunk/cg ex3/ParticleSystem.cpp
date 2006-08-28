@@ -2,7 +2,8 @@
 #include "ParticleSystem.h"
 
 CParticleSystem::CParticleSystem(void):
-	m_pParticleSize(1,1,1),
+    m_nCurFrame(0),
+    m_pParticleSize(1,1,1),
 	m_pParticleColor(0,0,1)
 {
 	m_dt = 0.033;
@@ -67,7 +68,8 @@ bool CParticleSystem::prevFrame()
 bool CParticleSystem::display(int nFrameNum, int nShading)
 {	
 	Point3d a;
-	for (unsigned int i=0; i<m_pNewSystem->size(); i++)
+    int numParticles = m_pNewSystem->size();
+	for (unsigned int i=0; i<numParticles; i++)
 	{
 		glPushMatrix();
 		CParticle &particle = (*m_pNewSystem)[i];
@@ -92,15 +94,6 @@ bool CParticleSystem::display(int nFrameNum, int nShading)
 				break;
 
 			case C_PARTICLESHAPE_SPHERE:
-				/*GLdouble boneLength = sqrt(pow(pPosition[0],2) + pow(pPosition[1],2) + pow(pPosition[2],2));	
-				Vector3d v1(pPosition[0],pPosition[1],pPosition[2]);
-				Vector3d v2(0,0,1);
-				v1.normalize();
-				Vector3d norm = v1%v2;
-				double alfa1 = dot(v1,v2);
-				double alfa = acos(alfa1)*RAD2DEG;
-				glTranslated(pPosition[0]/2, pPosition[1]/2, pPosition[2]/2);
-				glRotated(-alfa, norm[0], norm[1] ,norm[2]);*/
 				glTranslatef(particle.X[0],particle.X[1],particle.X[2]);
 				glScaled(size[0], size[1], size[2]);
 				glutSolidSphere(1, 10, 10);
@@ -113,8 +106,6 @@ bool CParticleSystem::display(int nFrameNum, int nShading)
 				break;
 
 			case C_PARTICLESHAPE_CONE:
-				/*glRotated(-alfa, norm[0], norm[1] ,norm[2]);
-				GLdouble coneRadius = boneLength/5.0;*/
 				glTranslatef(particle.X[0],particle.X[1],particle.X[2]);
 				glScaled(size[0], size[1], size[2]);
 				glRotated(-90, 1,0,0);	// rotate the top towards Y axis

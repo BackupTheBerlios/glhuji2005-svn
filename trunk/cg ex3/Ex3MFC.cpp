@@ -21,8 +21,8 @@ END_MESSAGE_MAP()
 
 CEx3MFCApp::CEx3MFCApp()
 {
-	// TODO: add construction code here,
-	// Place all significant initialization in InitInstance
+    //init random # generator
+    srand( (unsigned)time( NULL ) );
 }
 
 

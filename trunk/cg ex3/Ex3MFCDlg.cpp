@@ -200,7 +200,7 @@ void CEx3MFCDlg::OnBnClickedClosefile()
 	g_OpenGLWin.Close();
 }
 
-void CEx3MFCDlg::updateFarme()
+void CEx3MFCDlg::updateFrame()
 {
 	int nFrames = g_OpenGLWin.getFrameCount();
 	int nFrame = g_OpenGLWin.getCurFrame();

@@ -99,7 +99,7 @@ CParticleSystemLoader::createParticleSystem( CSimulationsParams &inParams, CLoad
     case C_FLOCK_SYSTEM:
         cout << "using flock (boids) system" << endl;
         inParams.m_particleSystem = new CFlockParticleSystem();
-        ret = readNewtonianParticleSystem( inParams, inLoader );
+        ret = readFlockParticleSystem( inParams, inLoader );
         break;
     default:
         cout << "ERROR: unknown system type: " << val.c_str() << " - using newtonian system" << endl;
@@ -122,8 +122,12 @@ CParticleSystemLoader::readGlobalConstants( CSimulationsParams &inParams, CLoadI
     do {
 		LOAD_P3d( C_CAMERA_POS_TAG, "ERROR: CameraPos field is missing ", inParams.m_cameraPos );
 		LOAD_P3d( C_CAMERA_DIR_TAG, "ERROR: CameraDir field is missing ", inParams.m_cameraDir );
-        //TODO: read camera stuff
-		//TODO: read time-step
+        LOAD_P3d( C_CAMERA_UP_TAG,  "ERROR: CameraUp field is missing ", inParams.m_cameraUp );
+        LOAD_F( C_TIME_DELTA_TAG,   "ERROR: TimeDelta field is missing ", inParams.m_dT );
+
+        LOAD_F( C_FOVY_TAG,    "ERROR: FovY field is missing ", inParams.m_dFovY );
+        LOAD_F( C_ZNEAR_TAG,   "ERROR: zNear field is missing ", inParams.m_dZNear );
+        LOAD_F( C_ZFAR_TAG,    "ERROR: zFar field is missing ", inParams.m_dZFar );
 
 		// clear-color
 		if (inLoader.GetField( C_CLEAR_COLOR_TAG, val ) == 0 ){
@@ -166,7 +170,7 @@ CParticleSystemLoader::readParticleDefaults( CSimulationsParams &inParams, CLoad
 	// particle shape
 	if (inLoader.GetField(C_PARTICLE_SHAPE_TAG, val) == 0){
 		iVal = atoi(val.c_str());
-		if (iVal <= 0 || iVal >= C_PARTICLESHAPE_NUM){
+		if (iVal <= 0 || iVal >= C_NUM_PARTICLESHAPES){
 			cout << "Illegal ParticleShape value" << val << endl;
 			break;
 		}
@@ -200,6 +204,26 @@ CParticleSystemLoader::readParticleDefaults( CSimulationsParams &inParams, CLoad
 	ret = true;
 
 	}while(0);
+    return ret;
+}
+
+bool 
+CParticleSystemLoader::readFlockParticleSystem( CSimulationsParams &inParams, CLoadIni &inLoader )
+{
+    string val; //for LOAD_* macros
+    bool   ret = false;
+
+    do {
+        CFlockParticleSystem* system = (CFlockParticleSystem*) inParams.m_particleSystem;
+
+        int numParticlesPerFrame = 0;
+        
+        LOAD_I( C_PARTICLES_PER_FRAME_TAG, "ERROR: ParticlesPerFrame undefined", numParticlesPerFrame );
+        system->setNumParticles( numParticlesPerFrame );
+
+        ret = true;
+    } while(0);
+    
     return ret;
 }
 

@@ -5,9 +5,6 @@
 class CEx3MFCDlg;
 class COpenGLWin
 {
-	bool m_bLoaded;
-	bool m_bCreated;
-	CString m_sFilename;
 public:
 	CEx3MFCDlg* m_pParent;
 	CString getFileName(){return m_sFilename;}
@@ -31,6 +28,10 @@ public:
 	void Initialize();
 	int getFrameCount();
 	int getCurFrame();
-	void drawGround();
 	bool isPaused();
+
+protected:
+    bool m_bLoaded;
+    bool m_bCreated;
+    CString m_sFilename;
 };

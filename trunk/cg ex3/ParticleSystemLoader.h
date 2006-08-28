@@ -16,6 +16,7 @@ protected:
 	static bool readGlobalConstants( CSimulationsParams &inParams, CLoadIni &inLoader );
 	static bool readParticleDefaults( CSimulationsParams &inParams, CLoadIni &inLoader );
 	static bool readNewtonianParticleSystem( CSimulationsParams &inParams, CLoadIni &inLoader );
+    static bool readFlockParticleSystem( CSimulationsParams &inParams, CLoadIni &inLoader );
 };
 
 #endif  //__PARTICLESYSTEM_LOADER_H__

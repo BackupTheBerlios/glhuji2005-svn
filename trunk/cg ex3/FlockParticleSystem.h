@@ -1,20 +1,13 @@
 #pragma once
-#include "particlesystem.h"
+#include "ParticleSystem.h"
 
 class CFlockParticleSystem :
 	public CParticleSystem
 {
 public:
-	Point3d m_Gravity;
-	Point3d m_Origin;
-	double m_dHeading;
-	double m_dHeadingStep;
-
 	CFlockParticleSystem(void);
 	virtual ~CFlockParticleSystem(void);
 	virtual bool calcNextFrame();
-	virtual bool prevFrame();
-	virtual bool gotoFrame(int nFrame);
 	virtual bool init();
 	virtual bool InitFrame();
 	virtual bool display(int nFrameNum, int nShading);
@@ -23,4 +16,10 @@ public:
 	virtual bool getAcceleration(int nIdx);
 	virtual bool calculateVelocity(int nIdx);
 	virtual bool calculatePosition(int nIdx);
+
+    void setNumParticles(int inNumParticles) { mNumParticles = inNumParticles; }
+
+protected:
+    int     mNumParticles;
+
 };

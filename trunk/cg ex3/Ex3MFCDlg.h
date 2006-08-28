@@ -76,7 +76,7 @@ public:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV support
 	bool m_bCreated;
 public:
-	void updateFarme();
+	void updateFrame();
 
 // Implementation
 protected:

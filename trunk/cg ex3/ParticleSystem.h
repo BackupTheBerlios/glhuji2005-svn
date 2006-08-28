@@ -66,19 +66,19 @@ protected:
 
 	// particle defaults
 public: //TODO: fix this
-	int m_nParticlesPerFrame;
-	double m_dDefaultMass; //[Kg]
-	double m_dDefaultRadius; //[m]
-	double m_dDefaultSpan; //[m]
+	int               m_nParticlesPerFrame;
+	double            m_dDefaultMass; //[Kg]
+	double            m_dDefaultRadius; //[m]
+	double            m_dDefaultSpan; //[m]
 
-	double m_dDefaultLifespan; //[sec]
-	double m_dDefaultPersistance; //0.0-1.0 - the chance of dying (per frame)
+	double            m_dDefaultLifespan; //[sec]
+	double            m_dDefaultPersistance; //0.0-1.0 - the chance of dying (per frame)
 
-	Point3d m_dDefaultOrigin;
+	Point3d           m_dDefaultOrigin;
 	ParticleShapeType m_particleShape;
-	Point3d m_pParticleSize;	//X,Y,Z dimensions
-	Point3d m_pParticleColor;	//RGB value
-	double m_dParticleAlpha;	//transparency
+	Point3d           m_pParticleSize;	//X,Y,Z dimensions
+	Point3d           m_pParticleColor;	//RGB value
+	double            m_dParticleAlpha;	//transparency
 
 public:
 	void AddParticle(CParticle particle)
