@@ -1,7 +1,7 @@
 # Particle system ini file
 # Camera details
-CameraPos	=	0,0,0
-CameraDir	=	0,0,0
+CameraPos	=	0,40,-615
+CameraDir	=	44,-12,0
 CameraUp	=	0,0,0
 CameraFrust	=	0.0
 FovY		=	30
