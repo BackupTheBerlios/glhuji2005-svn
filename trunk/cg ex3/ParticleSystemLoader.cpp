@@ -196,6 +196,10 @@ CParticleSystemLoader::readParticleDefaults( CSimulationsParams &inParams, CLoad
 			break;
 		}
 	}
+	// color randomness
+	if (inLoader.GetField(C_PARTICLE_COLOR_RAND_TAG, val) == 0){
+		inParams.m_particleSystem->m_dColorRandomness = atof(val.c_str());
+	}
 	// alpha
 	if (inLoader.GetField(C_PARTICLE_ALPHA_TAG, val) == 0){
 		inParams.m_particleSystem->m_dParticleAlpha = atof(val.c_str());

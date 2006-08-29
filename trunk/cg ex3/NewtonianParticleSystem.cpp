@@ -100,7 +100,8 @@ bool CNewtonianParticleSystem::InitFrame()
 	p.mass = m_dDefaultMass;
 	p.persistance = m_dDefaultPersistance;
 	p.alpha = m_dParticleAlpha;
-	p.color = m_pParticleColor;
+	p.color = m_pParticleColor + 
+		Point3d(frand()-0.5, frand()-0.5, frand()-0.5) * m_dColorRandomness;
 	p.shape = m_particleShape;
 	p.size = m_pParticleSize;
 	static Point3d az(2.0,2.0,2.0);	

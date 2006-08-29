@@ -78,6 +78,7 @@ public: //TODO: fix this
 	ParticleShapeType m_particleShape;
 	Point3d           m_pParticleSize;	//X,Y,Z dimensions
 	Point3d           m_pParticleColor;	//RGB value
+	double			  m_dColorRandomness;
 	double            m_dParticleAlpha;	//transparency
 
 public:

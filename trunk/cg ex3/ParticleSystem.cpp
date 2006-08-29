@@ -1,6 +1,9 @@
 #include "StdAfx.h"
 #include "ParticleSystem.h"
 
+#define DEG2RAD 0.0174532925
+#define RAD2DEG 57.2957795
+
 CParticleSystem::CParticleSystem(void):
     m_nCurFrame(0),
     m_pParticleSize(1,1,1),
@@ -19,6 +22,7 @@ CParticleSystem::CParticleSystem(void):
 	m_dDefaultPersistance = 1;
 	ParticleShapeType m_particleShape = C_PARTICLESHAPE_DOT;	
 	m_dParticleAlpha = 1;
+	m_dColorRandomness = 0;
 }
 
 CParticleSystem::~CParticleSystem(void)
@@ -73,43 +77,48 @@ bool CParticleSystem::display(int nFrameNum, int nShading)
 	{
 		glPushMatrix();
 		CParticle &particle = (*m_pNewSystem)[i];
-//		glRotatef(particle.V[0],1.0f,0.0f,0.0f);					// Rotate The Quad On The X axis ( NEW )
-//		glRotatef(particle.V[1],0.0f,1.0f,0.0f);					// Rotate The Quad On The Y axis ( NEW )
-//		glRotatef(particle.V[2],0.0f,0.0f,1.0f);					// Rotate The Quad On The Z axis ( NEW )
 
-		Point3d color = particle.color;
+       	Point3d color = particle.color;
 		Point3d size = particle.size;
 		float alpha = (float)particle.alpha;
+
+		// calculate rotation angle
+		GLdouble lengthV = particle.V.norm();
+		Vector3d v1(particle.V);
+		Vector3d v2(0,0,1);
+		v1.normalize();
+		Vector3d norm = v1%v2;
+		double angle1 = dot(v1,v2);
+		double angle = acos(angle1)*RAD2DEG;
 		
 		// draw
 		glColor4f(color[0], color[1], color[2], alpha);
 		GLfloat ambient[] = { color[0], color[1], color[2], alpha };
+		GLfloat diffuse[] = { color[0], color[1], color[2], alpha };
 		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse);
+		glTranslatef(particle.X[0],particle.X[1],particle.X[2]);
+		glRotated(-angle, norm[0], norm[1] ,norm[2]);
+		glScaled(size[0], size[1], size[2]);
+		
 		switch (particle.shape){
 			case C_PARTICLESHAPE_DOT:
 				glPointSize(size[0]);		
 				glBegin(GL_POINTS);		
-				glVertex3f(particle.X[0],particle.X[1],particle.X[2]);
+				glVertex3f(0,0,0);
 				glEnd();
 				break;
 
 			case C_PARTICLESHAPE_SPHERE:
-				glTranslatef(particle.X[0],particle.X[1],particle.X[2]);
-				glScaled(size[0], size[1], size[2]);
 				glutSolidSphere(1, 10, 10);
 				break;
 
 			case C_PARTICLESHAPE_CUBE:
-				glTranslatef(particle.X[0],particle.X[1],particle.X[2]);
-				glScaled(size[0], size[1], size[2]);
 				glutSolidCube(1);
 				break;
 
 			case C_PARTICLESHAPE_CONE:
-				glTranslatef(particle.X[0],particle.X[1],particle.X[2]);
-				glScaled(size[0], size[1], size[2]);
-				glRotated(-90, 1,0,0);	// rotate the top towards Y axis
-				glutSolidCone(1, 0.5, 10, 10);
+				glutSolidCone(1, 1, 10, 10);
 				break;
 
 			default:
