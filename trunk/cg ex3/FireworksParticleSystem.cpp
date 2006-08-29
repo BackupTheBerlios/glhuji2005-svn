@@ -22,8 +22,9 @@ bool CFireworksParticleSystem::InitFrame()
 	p.mass = m_dDefaultMass;
 	p.persistance = m_dDefaultPersistance;
 	p.alpha = m_dParticleAlpha;
-	p.color = m_pParticleColor  + 
-		Point3d(frand()-0.5, frand()-0.5, frand()-0.5) * m_dColorRandomness;
+	Point3d colorRand = Point3d(frand()-0.5, frand()-0.5, frand()-0.5) * m_dColorRandomness;
+	p.color = m_pParticleColor + colorRand;
+	p.color2 = m_pParticleColor2 + colorRand;
 	p.shape = m_particleShape;
 	p.size = m_pParticleSize;
 	p.type = 1+round(frand()*2);
@@ -71,6 +72,7 @@ void CFireworksParticleSystem::killParticle(unsigned int nParticle)
 		p.persistance = 1;
 		p.type = 0;
 		p.color = Color3d(0.5+frand()*0.5,frand(),frand());
+		p.color2 = p.color;
 		p.shape = C_PARTICLESHAPE_DOT;
 		p.alpha = 1.0;
 		double headingy = 0;

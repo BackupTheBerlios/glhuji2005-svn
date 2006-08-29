@@ -1,6 +1,6 @@
 # Particle system ini file
 # Camera details
-CameraPos	=	30,30,30
+CameraPos	=	30,30,1
 CameraDir	=	0,0,0
 CameraUp	=	0,1,0
 CameraFrust	=	0.0
@@ -19,7 +19,7 @@ DefaultMass			=	0.1
 DefaultRadius		=	1
 DefaultPersistance	=	1.0;
 ParticleShape		=	2	# 1 - dot, 2 - sphere, 3 - cube, 4 - cone
-ParticleSize		=	0.05,0.05,0.05
+ParticleSize		=	0.1,0.1,0.1
 ParticleColor		=	0.9,0.9,1.0
 ParticleAlpha		=	1
 

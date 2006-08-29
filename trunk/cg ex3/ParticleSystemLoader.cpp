@@ -138,6 +138,10 @@ CParticleSystemLoader::readGlobalConstants( CSimulationsParams &inParams, CLoadI
 				cerr << "Failed loading clear-color value: " << val << endl;
 			}
 		}
+		// Linear Attenuation
+		if (inLoader.GetField( C_LINEAR_ATTENUATION_TAG, val ) == 0 ){
+			inParams.m_dLinearAttenuation = atof(val.c_str());
+		}
 
 		ret = true;
     } while( 0 );
@@ -195,6 +199,14 @@ CParticleSystemLoader::readParticleDefaults( CSimulationsParams &inParams, CLoad
 			cerr << "Failed loading color value: " << val << endl;
 			break;
 		}
+	}
+	// color2
+	if (inLoader.GetField( C_PARTICLE_COLOR2_TAG, val ) == 0 &&
+		(inLoader.GetPoint3d(val, color) == 0)){
+			inParams.m_particleSystem->m_pParticleColor2 = color;
+	}
+	else{
+		inParams.m_particleSystem->m_pParticleColor2 = inParams.m_particleSystem->m_pParticleColor;
 	}
 	// color randomness
 	if (inLoader.GetField(C_PARTICLE_COLOR_RAND_TAG, val) == 0){
@@ -280,18 +292,14 @@ CParticleSystemLoader::readNewtonianParticleSystem( CSimulationsParams &inParams
 
         LOAD_F( C_PARTICLE_MAX_VELOCITY, "ERROR: max particle velocity field is missing ", system->mMaxParticleVelocity );
 
-		/*
-		//DE
-		// load origin
-		if ((inLoader.GetField( C_NEWTONIAN_PS_ORIGIN_TAG, val ) == 0 ) &&
-			inLoader.GetPoint3d(val, origin) == 0){
-			system->m_Origin = origin;
+		// acceleration randomness
+		if (inLoader.GetField( C_NEWTONIAN_PS_ACC_RAND_TAG, val ) == 0 ){
+			system->m_dAccelerationRand = atof(val.c_str());
 		}
-		else{
-			cerr << "Failed loading origin value: " << val << endl;
-			system->m_Origin = Point3d(0,0,0);
-		}*/
-
+		// frames delay
+		if (inLoader.GetField( C_NEWTONIAN_PS_FRAMES_DELAY_TAG, val ) == 0 ){
+			system->m_nFramesDelay = atoi(val.c_str());
+		}
 
         ret = true;
     } while(0);

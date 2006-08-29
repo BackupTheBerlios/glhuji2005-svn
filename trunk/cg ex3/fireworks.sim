@@ -1,6 +1,6 @@
 # Particle system ini file
 # Camera details
-CameraPos	=	30,30,30
+CameraPos	=	1,1,1
 CameraDir	=	0,0,0
 CameraUp	=	0,1,0
 CameraFrust	=	0.0
@@ -8,6 +8,7 @@ FovY		=	30
 Aspect		=	1
 ZNear		=	1
 ZFar		=	20000
+LinearAttenuation = 0.01
 
 TimeDelta	=	0.033
 

@@ -92,7 +92,7 @@ GLfloat mat_shininess[] = { 80.0 };
 GLfloat light_ambient[] = { 1, 1, 1, 1.0 };
 GLfloat light_diffuse[] = { 1, 1, 1, 1.0 };
 GLfloat light_specular[] = { 10.0, 10.0, 10.0, 1.0 };
-GLfloat light_position1[]= { -14.0f, 50.0f, -4.0f, 1.0f };//DE
+GLfloat light_position1[]= { -14.0f, 50.0f, -4.0f, 1.0f };
 
 
 void
@@ -209,8 +209,8 @@ void COpenGLWin::Initialize()
    //glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
 	//attenuate
 	glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 0.01);
-	glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.01);
-	glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.001);
+	glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, g_simulationParams.m_dLinearAttenuation);
+	glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.0);
 
     if (g_bLighting)
         glDisable(GL_LIGHTING);

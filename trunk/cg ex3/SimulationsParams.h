@@ -15,7 +15,8 @@ public:
 		m_dZFar(20000),
 		m_particleSystem(NULL),
 		m_clearColor(1,1,1),
-        m_dT(0.1)
+        m_dT(0.1),
+		m_dLinearAttenuation(0.05)
 		{}
 
 	~CSimulationsParams(void);
@@ -30,6 +31,7 @@ public:
 	double   m_dZNear;
 	double   m_dZFar;
     double   m_dT;
+	double	 m_dLinearAttenuation;
 
 	CParticleSystem* m_particleSystem;
 };

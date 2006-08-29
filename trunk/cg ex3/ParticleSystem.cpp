@@ -6,7 +6,8 @@ CParticleSystem::CParticleSystem(void):
     m_nCurFrame(0),
     mMaxParticleVelocity(100),
     m_pParticleSize(1,1,1),
-	m_pParticleColor(0,0,1)
+	m_pParticleColor(0,0,1),
+	m_pParticleColor2(0,0,1)
 {
 	m_dt = 0.033;
 	m_bUsingA = true;
@@ -77,7 +78,7 @@ bool CParticleSystem::display(int nFrameNum, int nShading)
 		glPushMatrix();
 		CParticle &particle = (*m_pNewSystem)[i];
 
-       	Point3d color = particle.color;
+       	Point3d color = particle.getColor();
 		Point3d size = particle.size;
 		float alpha = (float)particle.alpha;
 
@@ -117,6 +118,14 @@ bool CParticleSystem::display(int nFrameNum, int nShading)
 
 			case C_PARTICLESHAPE_SPHERE:
 				glutSolidSphere(1, 10, 10);
+				break;
+
+			case C_PARTICLESHAPE_BALOON:
+				glutSolidSphere(1, 10, 10);
+				glBegin(GL_LINES);
+				glVertex3f(0,0,0);
+				glVertex3f(0,0,-5);
+				glEnd();
 				break;
 
 			case C_PARTICLESHAPE_CUBE:

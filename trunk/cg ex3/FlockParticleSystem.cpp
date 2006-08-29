@@ -168,8 +168,9 @@ bool CFlockParticleSystem::InitFrame()
 	    p.mass        = m_dDefaultMass;
 	    p.persistance = m_dDefaultPersistance;
 	    p.alpha       = m_dParticleAlpha;
-	    p.color       = m_pParticleColor + 
-			Point3d(frand()-0.5, frand()-0.5, frand()-0.5) * m_dColorRandomness;
+		Point3d colorRand = Point3d(frand()-0.5, frand()-0.5, frand()-0.5) * m_dColorRandomness;
+		p.color = m_pParticleColor + colorRand;
+		p.color2 = m_pParticleColor2 + colorRand;
 	    p.shape       = m_particleShape;
 	    p.size        = m_pParticleSize;
 

@@ -50,7 +50,17 @@ public:
 	ParticleShapeType shape;
 	Point3d size;	//X,Y,Z dimensions
 	Point3d color;	//RGB value
+	Point3d color2;	//RGB value
 	double alpha;	//transparency
+
+	Point3d getColor(){
+		if (color != color2)
+		{
+			double coef = age/lifepan;
+			return (color + (color2 - color) * coef);
+		}
+		return color;
+	}
 };
 
 class CParticleSystem
@@ -80,6 +90,7 @@ public: //TODO: fix this
 	ParticleShapeType m_particleShape;
 	Point3d           m_pParticleSize;	//X,Y,Z dimensions
 	Point3d           m_pParticleColor;	//RGB value
+	Point3d           m_pParticleColor2;//RGB value
 	double			  m_dColorRandomness;
 	double            m_dParticleAlpha;	//transparency
     double            mMaxParticleVelocity;

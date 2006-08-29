@@ -6,7 +6,8 @@ CNewtonianParticleSystem::CNewtonianParticleSystem(void) :
 CParticleSystem(), 
 m_Gravity(0.0,-9.8,0.0),
 m_dHeading(0.0),
-m_dHeadingStep(0.03)
+m_dHeadingStep(0.03),
+m_nFramesDelay(0)
 {
 	
 }
@@ -93,6 +94,11 @@ bool CNewtonianParticleSystem::gotoFrame(int nFrame)
 
 bool CNewtonianParticleSystem::InitFrame()
 {
+	static int delay = m_nFramesDelay;
+	delay++;
+	if (delay < m_nFramesDelay) return true;
+	delay=0;
+
 	CParticle p;
 	p.X = m_dDefaultOrigin;
 	p.span = m_dDefaultSpan;
@@ -100,8 +106,9 @@ bool CNewtonianParticleSystem::InitFrame()
 	p.mass = m_dDefaultMass;
 	p.persistance = m_dDefaultPersistance;
 	p.alpha = m_dParticleAlpha;
-	p.color = m_pParticleColor + 
-		Point3d(frand()-0.5, frand()-0.5, frand()-0.5) * m_dColorRandomness;
+	Point3d colorRand = Point3d(frand()-0.5, frand()-0.5, frand()-0.5) * m_dColorRandomness;
+	p.color = m_pParticleColor + colorRand;
+	p.color2 = m_pParticleColor2 + colorRand;
 	p.shape = m_particleShape;
 	p.size = m_pParticleSize;
 	static Point3d az(2.0,2.0,2.0);	
@@ -128,7 +135,13 @@ bool CNewtonianParticleSystem::getForces(int nIdx)
 bool CNewtonianParticleSystem::getAcceleration(int nIdx)
 {
 	if ((*m_pNewSystem)[nIdx].mass > 0)
+	{
 		(*m_pNewSystem)[nIdx].a += m_Gravity;
+		if (m_dAccelerationRand > 0)
+		{
+			(*m_pNewSystem)[nIdx].a += Point3d(frand()-0.5,frand()-0.5,frand()-0.5) * m_dAccelerationRand;
+		}
+	}
 	return true;
 }
 

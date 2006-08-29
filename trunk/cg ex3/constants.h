@@ -23,6 +23,7 @@ const char C_ENTER_KEY_CODE  = 13;
 #define C_ZFAR_TAG                ("ZFar")
 #define C_ASPECT_TAG			  ("Aspect")
 #define C_CLEAR_COLOR_TAG	      ("ClearColor")
+#define C_LINEAR_ATTENUATION_TAG  ("LinearAttenuation")
 
 #define C_TIME_DELTA_TAG          ("TimeDelta")
 
@@ -34,6 +35,7 @@ const char C_ENTER_KEY_CODE  = 13;
 #define C_PARTICLE_SHAPE_TAG       ("ParticleShape")
 #define C_PARTICLE_SIZE_TAG        ("ParticleSize")
 #define C_PARTICLE_COLOR_TAG       ("ParticleColor")
+#define C_PARTICLE_COLOR2_TAG      ("ParticleColor2")
 #define C_PARTICLE_COLOR_RAND_TAG  ("ParticleColorRand")
 #define C_PARTICLE_ALPHA_TAG       ("ParticleAlpha")
 #define C_PARTICLES_ORIGIN_TAG	   ("ParticlesOrigin")
@@ -50,6 +52,8 @@ const int C_NUM_FIELDS_IN_AUTOCREATE = 6;
 // newtonian PS stuff
 #define C_NEWTONIAN_PS_GRAVITY_TAG			    ("Gravity")
 #define C_NEWTONIAN_PS_HEADING_STEP_TAG			("HeadingStep")
+#define C_NEWTONIAN_PS_FRAMES_DELAY_TAG			("FramesDelay")
+#define C_NEWTONIAN_PS_ACC_RAND_TAG			    ("AccelerationRand")
 
 // flock PS stuff
 #define C_FLOCK_PARTICLE_SEPARATION             ("FlockCloseParticleDistance")
@@ -67,6 +71,7 @@ typedef enum {
 	C_PARTICLESHAPE_SPHERE,
 	C_PARTICLESHAPE_CUBE,
 	C_PARTICLESHAPE_CONE,
+	C_PARTICLESHAPE_BALOON,
 	C_NUM_PARTICLESHAPES
 } ParticleShapeType;
 
