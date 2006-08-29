@@ -18,8 +18,16 @@ public:
 	virtual bool calculatePosition(int nIdx);
 
     void setNumParticles(int inNumParticles) { mNumParticles = inNumParticles; }
+    void setParticleSystemRadius( double inRadius ) { mParticleSystemRadius = inRadius; }
+    void setParticleDistance( double inDist ) { mParticleDistance = inDist; }
+
+    //input in radians
+    void setParticleFOVAngle( double inAngle ) { mParticleFOVAngle = inAngle; }
 
 protected:
     int     mNumParticles;
+    double  mParticleSystemRadius;
+    double  mParticleDistance;
+    double  mParticleFOVAngle;
 
 };

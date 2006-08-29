@@ -3,7 +3,10 @@
 
 CFlockParticleSystem::CFlockParticleSystem(void) : 
 CParticleSystem(),
-mNumParticles(0)
+mNumParticles(0),
+mParticleSystemRadius(0),
+mParticleDistance(0),
+mParticleFOVAngle(0)
 {
 	
 }
@@ -15,33 +18,119 @@ CFlockParticleSystem::~CFlockParticleSystem(void)
 bool 
 CFlockParticleSystem::calcNextFrame()
 {
-	bool rc = CParticleSystem::calcNextFrame();
-	if (!rc)
-		return false;
-	rc = InitFrame();
-	if (!rc)
-		return false;
-	
-	m_pNewSystem->clear();
-	int nCurParticle = 0;
-	for (unsigned int i=0; i<m_pCurSystem->size(); i++)
-	{
-		m_pNewSystem->push_back((*m_pCurSystem)[i]);
-		/*nCurParticle = (int)m_pNewSystem->size()-1;
-		CParticle &particle = (*m_pNewSystem)[nCurParticle];
-		
-        updateParticle(nCurParticle);		//Allows a chance to change particle mass, radius etc.
+    bool rc = CParticleSystem::calcNextFrame();
+    if (!rc)
+	    return false;
+    rc = InitFrame();
+    if (!rc)
+	    return false;
 
-		particle.F = Point3d(0.0,0.0,0.0);
-		getForces(nCurParticle);			//Get forces currently operating on the object
+    m_pNewSystem->clear();
+    unsigned int numParticles = (int)m_pCurSystem->size();
 
-		particle.a = Point3d(0.0,0.0,0.0);
-		getAcceleration(nCurParticle);		//Get any acceleration not dependant on mass
+    //0. copy over all particles as is to new system.
+    for (unsigned int i=0; i<numParticles; i++)
+    {
+	    m_pNewSystem->push_back((*m_pCurSystem)[i]);
+        CParticle &aParticle = (*m_pCurSystem)[i];
+        CParticle &bParticle = (*m_pNewSystem)[i];
+        CParticle &theParticle1 = (*m_pNewSystem)[i];
+    }
 
-		calculateVelocity(nCurParticle);	//Calculate velocity (using acceleration and forces)
+    //--------- Move all particles ------
 
-		calculatePosition(nCurParticle);	//Use velocity to calculate position*/
-	}
+    
+    for (unsigned int i=0; i<numParticles; i++)
+    {
+        Point3d centerOfMass(0,0,0);
+        Point3d v2(0,0,0);
+        Point3d avgNeighbourVelocity(0,0,0);
+
+        CParticle &curParticle = (*m_pNewSystem)[i];
+
+        int numParticlesInFOV = 0;
+        for( unsigned int j = 0; j < numParticles; j++ )
+        {
+            CParticle &theParticle = (*m_pCurSystem)[j];
+            //only calculate using positions of other particles
+            if( j == i) continue;
+
+            //vector that points from the center of the current particle to the center
+            //of the particle we're examining
+            Vector3d tmp = theParticle.X - curParticle.X;
+
+            double distBetweenParticles = sqrt( tmp[0]*tmp[0]+tmp[1]*tmp[1]+tmp[2]*tmp[2] );
+
+            //relative angle between curParticle and this particle
+            double relativeAngle = acos( dot(curParticle.V, tmp ) );
+
+            //particles can only see other particles if both are close enough together and one
+            //particle is within the angel of another
+            if( !(distBetweenParticles < mParticleDistance && (abs(relativeAngle) <= mParticleFOVAngle)) )
+                continue;
+
+            //this particle is within our field of vision so count it
+            numParticlesInFOV++;
+
+            //rule 1 - calc center of mass.
+            //TODO: only do this for particles close to the current particle
+            centerOfMass += theParticle.X;
+
+            //rule 2 - try to avoid other boids
+            v2 -= tmp;
+
+            //rule 3 - calc average neighbour velocity
+            avgNeighbourVelocity += theParticle.V;
+        }
+
+        //1. Rule 1 - move particles towards center of mass of other particles
+        //calc center of mass of particle cloud
+        centerOfMass /= numParticlesInFOV;
+        Point3d v1 = (centerOfMass-curParticle.X)/100.0;
+
+        //Rule 3 - try to keep velocity similar to nearby neighbours
+        avgNeighbourVelocity /= numParticlesInFOV;
+        Point3d v3 = (avgNeighbourVelocity-curParticle.V)/8.0;
+
+        //Some rules to play around with
+
+        //all particles follow particle 0
+        Point3d v4(0,0,0);
+
+        /*if( i == 0 )
+        {
+            v4[0] = 20*frand();
+            v4[1] = 20*frand();
+            v4[2] = 20*frand();
+        }
+        else
+        {
+            v4 = ((*m_pCurSystem)[0].X-curParticle.X)/20.0;
+        }*/
+
+        //finaly calc this particles new velocity
+        curParticle.V += v1 + v2 + v3 + v4;
+
+        //limit particle velocity
+        double velocity = curParticle.V.norm();
+        if( velocity > mMaxParticleVelocity )
+            curParticle.V *= mMaxParticleVelocity / velocity;
+
+        //calculate new position
+        Point3d newPosition = curParticle.X + curParticle.V * m_dt;
+        //check if particle is outside allowable radius, if so - bring it back towards the origin
+        Point3d vecToOrigin = (m_dDefaultOrigin-newPosition);
+        double  distFromOrigin = vecToOrigin.norm();
+        if( distFromOrigin > mParticleSystemRadius )
+        {
+            //cancel velocity in "bad" direction
+            curParticle.V += vecToOrigin*dot( vecToOrigin, curParticle.V )*2;
+        }
+
+        //finally - move the particle to it's new position.
+        curParticle.X += curParticle.V * m_dt;
+
+    }
 
 	return true;
 }
@@ -70,7 +159,8 @@ bool CFlockParticleSystem::InitFrame()
         p.alpha       = m_dParticleAlpha;
         p.color       = Point3d(1,0,0);
         p.shape       = m_particleShape;
-        p.size        = Point3d(0.2,0.2, 0.2);
+        p.size        = Point3d(0.4,0.4, 0.4);
+        p.V           = Point3d(1,0,0);
         AddParticle(p);
 
 	    p.span        = m_dDefaultSpan;
@@ -91,10 +181,12 @@ bool CFlockParticleSystem::InitFrame()
             p.color[1] = frand();
             p.color[2] = frand();
 
+            p.V = Point3d(1,0,0);
+
             //distribute particles randomly
-            p.X[0] = m_dDefaultOrigin[0] + 10.0*(frand()-0.5);
-            p.X[1] = m_dDefaultOrigin[1] + 10.0*(frand()-0.5);
-            p.X[2] = m_dDefaultOrigin[2] + 10.0*(frand()-0.5);
+            p.X[0] = m_dDefaultOrigin[0] + 30.0*(frand()-0.5);
+            p.X[1] = m_dDefaultOrigin[1] + 30.0*(frand()-0.5);
+            p.X[2] = m_dDefaultOrigin[2] + 30.0*(frand()-0.5);
 
 		    AddParticle(p);
 	    }

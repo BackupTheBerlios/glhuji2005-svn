@@ -1,11 +1,10 @@
 #include "StdAfx.h"
 #include "ParticleSystem.h"
-
-#define DEG2RAD 0.0174532925
-#define RAD2DEG 57.2957795
+#include "constants.h"
 
 CParticleSystem::CParticleSystem(void):
     m_nCurFrame(0),
+    mMaxParticleVelocity(100),
     m_pParticleSize(1,1,1),
 	m_pParticleColor(0,0,1)
 {
@@ -72,7 +71,7 @@ bool CParticleSystem::prevFrame()
 bool CParticleSystem::display(int nFrameNum, int nShading)
 {	
 	Point3d a;
-    int numParticles = m_pNewSystem->size();
+    unsigned int numParticles = m_pNewSystem->size();
 	for (unsigned int i=0; i<numParticles; i++)
 	{
 		glPushMatrix();
@@ -86,7 +85,14 @@ bool CParticleSystem::display(int nFrameNum, int nShading)
 		GLdouble lengthV = particle.V.norm();
 		Vector3d v1(particle.V);
 		Vector3d v2(0,0,1);
-		v1.normalize();
+        
+        //special case for particles with zero velocity...
+        if (lengthV > 0){
+            v1.normalize();
+        }
+        else{
+            v1 = Point3d(0,1,0);
+        }
 		Vector3d norm = v1%v2;
 		double angle1 = dot(v1,v2);
 		double angle = acos(angle1)*RAD2DEG;

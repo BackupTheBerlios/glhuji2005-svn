@@ -225,6 +225,19 @@ CParticleSystemLoader::readFlockParticleSystem( CSimulationsParams &inParams, CL
         LOAD_I( C_PARTICLES_PER_FRAME_TAG, "ERROR: ParticlesPerFrame undefined", numParticlesPerFrame );
         system->setNumParticles( numParticlesPerFrame );
 
+        LOAD_F( C_PARTICLE_MAX_VELOCITY, "ERROR: max particle velocity field is missing ", system->mMaxParticleVelocity );
+
+        double tmp;
+        LOAD_F( C_PARTICLE_SYSTEM_RADIUS, "ERROR: particle system radius is missing ", tmp );
+        system->setParticleSystemRadius( tmp );
+
+        LOAD_F( C_FLOCK_PARTICLE_SEPARATION, "ERROR: particle system separation is missing ", tmp );
+        system->setParticleDistance( tmp );
+
+        LOAD_F( C_FLOCK_FOV_ANGLE, "ERROR: particle system conic angle is missing ", tmp );
+        system->setParticleFOVAngle( tmp*DEG2RAD );
+        
+
         ret = true;
     } while(0);
     
@@ -264,6 +277,9 @@ CParticleSystemLoader::readNewtonianParticleSystem( CSimulationsParams &inParams
 		if (inLoader.GetField( C_NEWTONIAN_PS_HEADING_STEP_TAG, val ) == 0 ){
 			system->m_dHeadingStep = atof(val.c_str());
 		}		
+
+        LOAD_F( C_PARTICLE_MAX_VELOCITY, "ERROR: max particle velocity field is missing ", system->mMaxParticleVelocity );
+
 		/*
 		//DE
 		// load origin

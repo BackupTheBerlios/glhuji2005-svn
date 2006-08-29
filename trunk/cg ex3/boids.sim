@@ -1,6 +1,6 @@
 # Particle system ini file
 # Camera details
-CameraPos	=	30,30,30 #position of Eye
+CameraPos	=	100,100,100 #position of Eye
 CameraDir	=	0,0,0    #Position of Reference point (where to look at)
 CameraUp	=	0,1,0    #Which direction is up
 FovY		=	30
@@ -17,15 +17,22 @@ DefaultMass			=	0.2
 DefaultRadius		=	0.4
 DefaultPersistance	=   1.0;
 ParticleShape		=	4	# 1 - dot, 2 - sphere, 3 - cube, 4 - cone
-ParticleSize		=	1,1,1
+ParticleSize		=	3,3,3
 ParticleColor		=	0.4,0.4,0.7
 ParticleAlpha		=	1
 
 ClearColor          =   1,1,1
-ParticlesPerFrame	=	10
+ParticlesPerFrame	=	15
 ParticleSystemType	=	3	#1 - Newtonian, 2 - Fireworks, 3 - boids
+ParticleMaxVelocity =   3
 
 # specific ParticleSystem details:
 # note: this section might be different for each particle-system type
 ParticlesOrigin		=	0.0,0.0,0.0
 Gravity				=	0.0,-9.8,0.0
+
+# for Flocks
+ParticleSystemRadius = 100 #don't allow particles to stray farther than this away from ParticlesOrigin
+
+FlockCloseParticleDistance 5  #particles separated by more than this distance ignore each other ignore each other.
+FlockFOVAngle             80 #particles outside this angle aren't visible to other particles (in degrees 0-360)

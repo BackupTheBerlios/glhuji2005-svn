@@ -56,13 +56,15 @@ public:
 class CParticleSystem
 {
 protected:
+    typedef vector<CParticle> ParticleList;
+protected:
 	int m_nCurFrame;
 	bool m_bUsingA;
 	double m_dt;
-	vector<CParticle> m_ParticlesA;
-	vector<CParticle> m_ParticlesB;
-	vector<CParticle>* m_pCurSystem;
-	vector<CParticle>* m_pNewSystem;
+	ParticleList  m_ParticlesA;
+	ParticleList  m_ParticlesB;
+	ParticleList* m_pCurSystem;
+	ParticleList* m_pNewSystem;
 
 	// particle defaults
 public: //TODO: fix this
@@ -80,6 +82,7 @@ public: //TODO: fix this
 	Point3d           m_pParticleColor;	//RGB value
 	double			  m_dColorRandomness;
 	double            m_dParticleAlpha;	//transparency
+    double            mMaxParticleVelocity;
 
 public:
 	void AddParticle(CParticle particle)

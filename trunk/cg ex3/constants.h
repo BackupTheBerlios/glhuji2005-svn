@@ -7,6 +7,9 @@ const int C_WINDOW_HEIGHT    = 400;
 //delay in milliseconds for calling timer function.
 const unsigned int C_TIMER_DELAY   = 15;
 
+#define DEG2RAD 0.0174532925
+#define RAD2DEG 57.2957795
+
 //code for keyboard keys
 const char C_ESCAPE_KEY_CODE = 27;
 const char C_ENTER_KEY_CODE  = 13;
@@ -38,12 +41,19 @@ const char C_ENTER_KEY_CODE  = 13;
 #define C_PARTICLES_PER_FRAME_TAG  ("ParticlesPerFrame")
 #define C_PARTICLE_SYSTEM_TYPE_TAG ("ParticleSystemType")
 
+#define C_PARTICLE_MAX_VELOCITY    ("ParticleMaxVelocity")
+#define C_PARTICLE_SYSTEM_RADIUS   ("ParticleSystemRadius")
+
 const int C_NUM_FIELDS_IN_PARTICLE   = 5;
 const int C_NUM_FIELDS_IN_AUTOCREATE = 6;
 
 // newtonian PS stuff
 #define C_NEWTONIAN_PS_GRAVITY_TAG			    ("Gravity")
 #define C_NEWTONIAN_PS_HEADING_STEP_TAG			("HeadingStep")
+
+// flock PS stuff
+#define C_FLOCK_PARTICLE_SEPARATION             ("FlockCloseParticleDistance")
+#define C_FLOCK_FOV_ANGLE                     ("FlockFOVAngle")
 
 typedef enum {
     C_NEWTONIAN_SYSTEM    = 1,
