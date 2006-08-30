@@ -62,7 +62,15 @@ CFlockParticleSystem::calcNextFrame()
             double distBetweenParticles = sqrt( tmp[0]*tmp[0]+tmp[1]*tmp[1]+tmp[2]*tmp[2] );
 
             //relative angle between curParticle and this particle
-            double relativeAngle = acos( dot(curParticle.V, tmp ) );
+            Point3d a(0,0,0), b(0,0,0);
+
+            if( curParticle.V.norm() > 0 )
+                a = curParticle.V/curParticle.V.norm();
+            
+            if( tmp.norm() > 0 )
+                b = tmp/tmp.norm();
+
+            double relativeAngle = acos( dot(a, b ) );
 
             //particles can only see other particles if both are close enough together and one
             //particle is within the angel of another
