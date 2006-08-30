@@ -43,7 +43,7 @@ CFlockParticleSystem::calcNextFrame()
     for (unsigned int i=0; i<numParticles; i++)
     {
         Point3d centerOfMass(0,0,0);
-        Point3d v2(0,0,0);
+        Point3d v1(0,0,0), v2(0,0,0), v3(0,0,0);
         Point3d avgNeighbourVelocity(0,0,0);
 
         CParticle &curParticle = (*m_pNewSystem)[i];
@@ -83,14 +83,19 @@ CFlockParticleSystem::calcNextFrame()
             avgNeighbourVelocity += theParticle.V;
         }
 
-        //1. Rule 1 - move particles towards center of mass of other particles
-        //calc center of mass of particle cloud
-        centerOfMass /= numParticlesInFOV;
-        Point3d v1 = (centerOfMass-curParticle.X)/100.0;
+        //if there are no other particles visible to this particle, then theres
+        //no point in doing these calculation.
+        if( numParticlesInFOV > 0 )
+        {
+            //1. Rule 1 - move particles towards center of mass of other particles
+            //calc center of mass of particle cloud
+            centerOfMass /= numParticlesInFOV;
+            v1 = (centerOfMass-curParticle.X)/100.0;
 
-        //Rule 3 - try to keep velocity similar to nearby neighbours
-        avgNeighbourVelocity /= numParticlesInFOV;
-        Point3d v3 = (avgNeighbourVelocity-curParticle.V)/8.0;
+            //Rule 3 - try to keep velocity similar to nearby neighbours
+            avgNeighbourVelocity /= numParticlesInFOV;
+            v3 = (avgNeighbourVelocity-curParticle.V)/8.0;
+        }
 
         //Some rules to play around with
 
