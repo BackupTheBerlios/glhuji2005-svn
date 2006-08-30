@@ -21,6 +21,7 @@ public:
     void setParticleSystemRadius( double inRadius ) { mParticleSystemRadius = inRadius; }
     void setParticleDistance( double inDist ) { mParticleDistance = inDist; }
     void setParticleMaxAcceleration( double inAccel ) { mParticleMaxAccelartion = inAccel; }
+    void setUniformAccel( Point3d &inAccel ) { mUniformAccelaration = inAccel; }
 
     //input in radians
     void setParticleFOVAngle( double inAngle ) { mParticleFOVAngle = inAngle; }
@@ -31,5 +32,6 @@ protected:
     double  mParticleSystemRadius;
     double  mParticleDistance;
     double  mParticleFOVAngle;
+    Point3d mUniformAccelaration;
 
 };

@@ -7,7 +7,8 @@ mNumParticles(0),
 mParticleSystemRadius(0),
 mParticleDistance(0),
 mParticleFOVAngle(0),
-mParticleMaxAccelartion(0)
+mParticleMaxAccelartion(0),
+mUniformAccelaration(0,0,0)
 {
 	
 }
@@ -30,14 +31,22 @@ CFlockParticleSystem::calcNextFrame()
     unsigned int numParticles = (int)m_pCurSystem->size();
 
     //0. copy over all particles as is to new system.
+    //calculate COI on the way...
+    Point3d coi(0,0,0);
     for (unsigned int i=0; i<numParticles; i++)
     {
-	    m_pNewSystem->push_back((*m_pCurSystem)[i]);
-        CParticle &aParticle = (*m_pCurSystem)[i];
-        CParticle &bParticle = (*m_pNewSystem)[i];
-        CParticle &theParticle1 = (*m_pNewSystem)[i];
+        CParticle &theParticle = (*m_pCurSystem)[i];
+	    m_pNewSystem->push_back(theParticle);
+        coi += theParticle.X;
     }
 
+    //--------- If particle COI is too close to flock radius, then reverse the direction of the uniform accelaration ------
+    coi /= numParticles;
+
+    Point3d v4 = mUniformAccelaration;
+    double distFromOrigin = (coi-m_dDefaultOrigin).norm();
+    if( distFromOrigin < 3 )
+        mUniformAccelaration = -mUniformAccelaration;
     //--------- Move all particles ------
 
     
@@ -102,7 +111,7 @@ CFlockParticleSystem::calcNextFrame()
             v3 = (avgNeighbourVelocity-curParticle.V)/8.0;
         }
 
-        Point3d incV = v1 + v2 + v3;
+        Point3d incV = v1 + v2 + v3+v4;
 
         calcAcceleration(i, incV);
         calculateVelocity(i);
@@ -188,18 +197,10 @@ bool CFlockParticleSystem::calcAcceleration(int nIdx, Point3d &inIncA)
 {
     CParticle &curParticle = (*m_pNewSystem)[nIdx];
 	
-    //----------- Don't change direction too quickly -----------
-    //separate added velocity into 2 components - and change direction
-    //slowly - to smooth jumpiness.
-    Point3d vDirection = curParticle.V/curParticle.V.norm();
-
-    Point3d incASameDir = vDirection*dot(inIncA,vDirection);
-    Point3d incAOtherDir = inIncA - incASameDir;
-
-    //----------- Calc new velocity -----------
-    //finaly calc this particles new velocity
+     //----------- Calc new accelaration -----------
     curParticle.a += inIncA;
 
+    //----------- limit accelaration -----------
     if( curParticle.a.norm() > mParticleMaxAccelartion )
         curParticle.a *= mParticleMaxAccelartion/curParticle.a.norm();
 

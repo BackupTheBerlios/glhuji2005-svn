@@ -43,10 +43,6 @@ const char C_ENTER_KEY_CODE  = 13;
 #define C_PARTICLES_PER_FRAME_TAG  ("ParticlesPerFrame")
 #define C_PARTICLE_SYSTEM_TYPE_TAG ("ParticleSystemType")
 
-#define C_PARTICLE_MAX_VELOCITY    ("FlockMaxVelocity")
-#define C_PARTICLE_SYSTEM_RADIUS   ("ParticleSystemRadius")
-#define C_PARTICLE_MAX_ACCELERATION ("FlockMaxAcceleration")
-
 const int C_NUM_FIELDS_IN_PARTICLE   = 5;
 const int C_NUM_FIELDS_IN_AUTOCREATE = 6;
 
@@ -57,8 +53,13 @@ const int C_NUM_FIELDS_IN_AUTOCREATE = 6;
 #define C_NEWTONIAN_PS_ACC_RAND_TAG			    ("AccelerationRand")
 
 // flock PS stuff
-#define C_FLOCK_PARTICLE_SEPARATION             ("FlockCloseParticleDistance")
-#define C_FLOCK_FOV_ANGLE                     ("FlockFOVAngle")
+#define C_FLOCK_PARTICLE_SEPARATION_TAG             ("FlockCloseParticleDistance")
+#define C_FLOCK_FOV_ANGLE_TAG                       ("FlockFOVAngle")
+#define C_PARTICLE_MAX_VELOCITY_TAG    ("FlockMaxVelocity")
+#define C_PARTICLE_SYSTEM_RADIUS_TAG   ("ParticleSystemRadius")
+#define C_PARTICLE_MAX_ACCELERATION_TAG ("FlockMaxAcceleration")
+#define C_FLOCK_UNIFORM_ACCEL_TAG       ("FlockUniformAcceleration")
+
 
 typedef enum {
     C_NEWTONIAN_SYSTEM    = 1,

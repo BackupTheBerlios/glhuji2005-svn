@@ -39,4 +39,4 @@ FlockFOVAngle              =  120 #particles outside this angle aren't visible t
 FlockMaxVelocity           =   10 #max velocity magnitude for an individual particle
 FlockMaxAcceleration       =   15 #max acceleration magnitude for an individual particle
 
-FlockUniformAcceleration   =  0.8, 0.8, 0.8 #uniform accelaration for entire flock
+FlockUniformAcceleration   =  0, 0, 0 #uniform accelaration for entire flock

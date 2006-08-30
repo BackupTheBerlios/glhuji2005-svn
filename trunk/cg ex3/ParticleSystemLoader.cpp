@@ -237,21 +237,24 @@ CParticleSystemLoader::readFlockParticleSystem( CSimulationsParams &inParams, CL
         LOAD_I( C_PARTICLES_PER_FRAME_TAG, "ERROR: ParticlesPerFrame undefined", numParticlesPerFrame );
         system->setNumParticles( numParticlesPerFrame );
 
-        LOAD_F( C_PARTICLE_MAX_VELOCITY, "ERROR: max particle velocity field is missing ", system->mMaxParticleVelocity );
+        LOAD_F( C_PARTICLE_MAX_VELOCITY_TAG, "ERROR: max particle velocity field is missing ", system->mMaxParticleVelocity );
 
         double tmp;
-        LOAD_F( C_PARTICLE_SYSTEM_RADIUS, "ERROR: particle system radius is missing ", tmp );
+        LOAD_F( C_PARTICLE_SYSTEM_RADIUS_TAG, "ERROR: particle system radius is missing ", tmp );
         system->setParticleSystemRadius( tmp );
 
-        LOAD_F( C_FLOCK_PARTICLE_SEPARATION, "ERROR: particle system separation is missing ", tmp );
+        LOAD_F( C_FLOCK_PARTICLE_SEPARATION_TAG, "ERROR: particle system separation is missing ", tmp );
         system->setParticleDistance( tmp );
 
-        LOAD_F( C_PARTICLE_MAX_ACCELERATION, "ERROR: particle system separation is missing ", tmp );
+        LOAD_F( C_PARTICLE_MAX_ACCELERATION_TAG, "ERROR: particle system separation is missing ", tmp );
         system->setParticleMaxAcceleration( tmp );
 
-        LOAD_F( C_FLOCK_FOV_ANGLE, "ERROR: particle system conic angle is missing ", tmp );
+        LOAD_F( C_FLOCK_FOV_ANGLE_TAG, "ERROR: particle system conic angle is missing ", tmp );
         system->setParticleFOVAngle( tmp*DEG2RAD );
         
+        Point3d tmpP;
+        LOAD_P3d( C_FLOCK_UNIFORM_ACCEL_TAG, "ERROR: uniform acceleration field is missing ", tmpP );
+        system->setUniformAccel( tmpP );
 
         ret = true;
     } while(0);
@@ -293,7 +296,7 @@ CParticleSystemLoader::readNewtonianParticleSystem( CSimulationsParams &inParams
 			system->m_dHeadingStep = atof(val.c_str());
 		}		
 
-        LOAD_F( C_PARTICLE_MAX_VELOCITY, "ERROR: max particle velocity field is missing ", system->mMaxParticleVelocity );
+        LOAD_F( C_PARTICLE_MAX_VELOCITY_TAG, "ERROR: max particle velocity field is missing ", system->mMaxParticleVelocity );
 
 		// acceleration randomness
 		if (inLoader.GetField( C_NEWTONIAN_PS_ACC_RAND_TAG, val ) == 0 ){
