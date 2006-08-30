@@ -55,6 +55,7 @@ CFlockParticleSystem::calcNextFrame()
             //only calculate using positions of other particles
             if( j == i) continue;
 
+            //-------------- Check if this particle is within the current particles field of vision ----------
             //vector that points from the center of the current particle to the center
             //of the particle we're examining
             Vector3d tmp = theParticle.X - curParticle.X;
@@ -77,20 +78,15 @@ CFlockParticleSystem::calcNextFrame()
             if( !(distBetweenParticles < mParticleDistance && (abs(relativeAngle) <= mParticleFOVAngle)) )
                 continue;
 
-            //this particle is within our field of vision so count it
+            //---------- This particle is within our field of view ---------- 
             numParticlesInFOV++;
-
-            //rule 1 - calc center of mass.
-            //TODO: only do this for particles close to the current particle
-            centerOfMass += theParticle.X;
-
-            //rule 2 - try to avoid other boids
-            v2 -= tmp;
-
-            //rule 3 - calc average neighbour velocity
-            avgNeighbourVelocity += theParticle.V;
+            centerOfMass         += theParticle.X;   //rule 1 - try to fly towards center of mass
+            v2                   -= tmp;             //rule 2 - try to avoid other boids
+            avgNeighbourVelocity += theParticle.V;   //rule 3 - calc average neighbour velocity
         }
 
+        
+        //---------- Calculate New Velocity ---------- 
         //if there are no other particles visible to this particle, then theres
         //no point in doing these calculation.
         if( numParticlesInFOV > 0 )
@@ -98,7 +94,7 @@ CFlockParticleSystem::calcNextFrame()
             //1. Rule 1 - move particles towards center of mass of other particles
             //calc center of mass of particle cloud
             centerOfMass /= numParticlesInFOV;
-            v1 = (centerOfMass-curParticle.X)/100.0;
+            v1 = (centerOfMass-curParticle.X)/20.0;
 
             //Rule 3 - try to keep velocity similar to nearby neighbours
             avgNeighbourVelocity /= numParticlesInFOV;
@@ -108,9 +104,9 @@ CFlockParticleSystem::calcNextFrame()
         //Some rules to play around with
 
         //all particles follow particle 0
-        Point3d v4(0,0,0);
+        /*Point3d v4(0,0,0);
 
-        /*if( i == 0 )
+        if( i == 0 )
         {
             v4[0] = 20*frand();
             v4[1] = 20*frand();
@@ -122,12 +118,7 @@ CFlockParticleSystem::calcNextFrame()
         }*/
 
         //finaly calc this particles new velocity
-        curParticle.V += v1 + v2 + v3 + v4;
-
-        //limit particle velocity
-        double velocity = curParticle.V.norm();
-        if( velocity > mMaxParticleVelocity )
-            curParticle.V *= mMaxParticleVelocity / velocity;
+        curParticle.V += v1 + v2 + v3;
 
         //calculate new position
         Point3d newPosition = curParticle.X + curParticle.V * m_dt;
@@ -137,8 +128,13 @@ CFlockParticleSystem::calcNextFrame()
         if( distFromOrigin > mParticleSystemRadius )
         {
             //cancel velocity in "bad" direction
-            curParticle.V += vecToOrigin*dot( vecToOrigin, curParticle.V )*2;
+            curParticle.V -= vecToOrigin*dot( vecToOrigin, curParticle.V );
         }
+
+        //limit particle velocity
+        double velocity = curParticle.V.norm();
+        if( velocity > mMaxParticleVelocity )
+            curParticle.V *= mMaxParticleVelocity / velocity;
 
         //finally - move the particle to it's new position.
         curParticle.X += curParticle.V * m_dt;
@@ -170,9 +166,9 @@ bool CFlockParticleSystem::InitFrame()
         p.mass        = m_dDefaultMass;
         p.persistance = m_dDefaultPersistance;
         p.alpha       = m_dParticleAlpha;
-        p.color       = Point3d(1,0,0);
+        p.color       = Point3d(0,1,0);
         p.shape       = m_particleShape;
-        p.size        = Point3d(0.4,0.4, 0.4);
+        p.size        = m_pParticleSize;
         p.V           = Point3d(1,0,0);
         AddParticle(p);
 
