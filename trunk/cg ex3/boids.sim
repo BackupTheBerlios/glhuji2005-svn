@@ -24,7 +24,6 @@ ParticleAlpha		=	1
 ClearColor          =   1,1,1
 ParticlesPerFrame	=	15
 ParticleSystemType	=	3	#1 - Newtonian, 2 - Fireworks, 3 - boids
-ParticleMaxVelocity =   10
 
 # specific ParticleSystem details:
 # note: this section might be different for each particle-system type
@@ -36,3 +35,6 @@ ParticleSystemRadius       = 40 #don't allow particles to stray farther than thi
 
 FlockCloseParticleDistance = 12  #particles separated by more than this distance ignore each other ignore each other.
 FlockFOVAngle              =  120 #particles outside this angle aren't visible to other particles (in degrees 0-360)
+
+FlockMaxVelocity           =   10 #max velocity magnitude for an individual particle
+FlockMaxAcceleration       =   15 #max acceleration magnitude for an individual particle

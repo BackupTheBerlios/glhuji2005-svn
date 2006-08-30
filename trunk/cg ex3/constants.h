@@ -43,8 +43,9 @@ const char C_ENTER_KEY_CODE  = 13;
 #define C_PARTICLES_PER_FRAME_TAG  ("ParticlesPerFrame")
 #define C_PARTICLE_SYSTEM_TYPE_TAG ("ParticleSystemType")
 
-#define C_PARTICLE_MAX_VELOCITY    ("ParticleMaxVelocity")
+#define C_PARTICLE_MAX_VELOCITY    ("FlockMaxVelocity")
 #define C_PARTICLE_SYSTEM_RADIUS   ("ParticleSystemRadius")
+#define C_PARTICLE_MAX_ACCELERATION ("FlockMaxAcceleration")
 
 const int C_NUM_FIELDS_IN_PARTICLE   = 5;
 const int C_NUM_FIELDS_IN_AUTOCREATE = 6;

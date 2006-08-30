@@ -6,7 +6,8 @@ CParticleSystem(),
 mNumParticles(0),
 mParticleSystemRadius(0),
 mParticleDistance(0),
-mParticleFOVAngle(0)
+mParticleFOVAngle(0),
+mParticleMaxAccelartion(0)
 {
 	
 }
@@ -81,7 +82,7 @@ CFlockParticleSystem::calcNextFrame()
             //---------- This particle is within our field of view ---------- 
             numParticlesInFOV++;
             centerOfMass         += theParticle.X;   //rule 1 - try to fly towards center of mass
-            v2                   -= tmp;             //rule 2 - try to avoid other boids
+            v2                   -= tmp/3;             //rule 2 - try to avoid other boids
             avgNeighbourVelocity += theParticle.V;   //rule 3 - calc average neighbour velocity
         }
 
@@ -103,7 +104,8 @@ CFlockParticleSystem::calcNextFrame()
 
         Point3d incV = v1 + v2 + v3;
 
-        calculateVelocity(i, incV);
+        calcAcceleration(i, incV);
+        calculateVelocity(i);
         calculatePosition(i);
 
     }
@@ -182,25 +184,33 @@ bool CFlockParticleSystem::getForces(int nIdx)
 	return true;
 }
 
-bool CFlockParticleSystem::getAcceleration(int nIdx)
+bool CFlockParticleSystem::calcAcceleration(int nIdx, Point3d &inIncA)
 {
-	//if ((*m_pNewSystem)[nIdx].mass > 0)
-	//	(*m_pNewSystem)[nIdx].a += m_Gravity;
+    CParticle &curParticle = (*m_pNewSystem)[nIdx];
+	
+    //----------- Don't change direction too quickly -----------
+    //separate added velocity into 2 components - and change direction
+    //slowly - to smooth jumpiness.
+    Point3d vDirection = curParticle.V/curParticle.V.norm();
+
+    Point3d incASameDir = vDirection*dot(inIncA,vDirection);
+    Point3d incAOtherDir = inIncA - incASameDir;
+
+    //----------- Calc new velocity -----------
+    //finaly calc this particles new velocity
+    curParticle.a += inIncA;
+
+    if( curParticle.a.norm() > mParticleMaxAccelartion )
+        curParticle.a *= mParticleMaxAccelartion/curParticle.a.norm();
+
 	return true;
 }
 
-bool CFlockParticleSystem::calculateVelocity(int nIdx, Point3d &inIncV)
+bool CFlockParticleSystem::calculateVelocity(int nIdx)
 {
     CParticle &curParticle = (*m_pNewSystem)[nIdx];
 
-    //separate added velocity into 2 components
-    Point3d vDirection = curParticle.V/curParticle.V.norm();
-
-    Point3d incVSameDir = vDirection*dot(inIncV,vDirection);
-    Point3d incVOtherDir = inIncV - incVSameDir;
-
-    //finaly calc this particles new velocity
-    curParticle.V += incVSameDir + incVOtherDir*0.5;
+    curParticle.V += curParticle.a * m_dt;
 
     //calculate new position
     Point3d newPosition = curParticle.X + curParticle.V * m_dt;
@@ -209,8 +219,9 @@ bool CFlockParticleSystem::calculateVelocity(int nIdx, Point3d &inIncV)
     double  distFromOrigin = vecToOrigin.norm();
     if( distFromOrigin > mParticleSystemRadius )
     {
-        //cancel velocity in "bad" direction
+        //cancel velocity and acceleration in "bad" direction
         curParticle.V -= vecToOrigin*dot( vecToOrigin, curParticle.V );
+        curParticle.a -= vecToOrigin*dot( vecToOrigin, curParticle.a );
     }
 
     //limit particle velocity

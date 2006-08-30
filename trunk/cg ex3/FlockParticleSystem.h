@@ -13,19 +13,21 @@ public:
 	virtual bool display(int nFrameNum, int nShading);
 	virtual bool updateParticle(int nIdx);
 	virtual bool getForces(int nIdx);
-	virtual bool getAcceleration(int nIdx);
-	virtual bool calculateVelocity(int nIdx, Point3d &inIncV);
+	bool calcAcceleration(int nIdx, Point3d &inIncA);
+	virtual bool calculateVelocity(int nIdx);
 	virtual bool calculatePosition(int nIdx);
 
     void setNumParticles(int inNumParticles) { mNumParticles = inNumParticles; }
     void setParticleSystemRadius( double inRadius ) { mParticleSystemRadius = inRadius; }
     void setParticleDistance( double inDist ) { mParticleDistance = inDist; }
+    void setParticleMaxAcceleration( double inAccel ) { mParticleMaxAccelartion = inAccel; }
 
     //input in radians
     void setParticleFOVAngle( double inAngle ) { mParticleFOVAngle = inAngle; }
 
 protected:
     int     mNumParticles;
+    double  mParticleMaxAccelartion;
     double  mParticleSystemRadius;
     double  mParticleDistance;
     double  mParticleFOVAngle;

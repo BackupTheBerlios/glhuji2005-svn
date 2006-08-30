@@ -246,6 +246,9 @@ CParticleSystemLoader::readFlockParticleSystem( CSimulationsParams &inParams, CL
         LOAD_F( C_FLOCK_PARTICLE_SEPARATION, "ERROR: particle system separation is missing ", tmp );
         system->setParticleDistance( tmp );
 
+        LOAD_F( C_PARTICLE_MAX_ACCELERATION, "ERROR: particle system separation is missing ", tmp );
+        system->setParticleMaxAcceleration( tmp );
+
         LOAD_F( C_FLOCK_FOV_ANGLE, "ERROR: particle system conic angle is missing ", tmp );
         system->setParticleFOVAngle( tmp*DEG2RAD );
         
