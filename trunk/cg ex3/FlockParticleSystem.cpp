@@ -32,28 +32,20 @@ CFlockParticleSystem::calcNextFrame()
 
     //0. copy over all particles as is to new system.
     //calculate COI on the way...
-    Point3d coi(0,0,0);
+    Point3d particleSystemCenterOfMass(0,0,0);
     for (unsigned int i=0; i<numParticles; i++)
     {
         CParticle &theParticle = (*m_pCurSystem)[i];
 	    m_pNewSystem->push_back(theParticle);
-        coi += theParticle.X;
+        particleSystemCenterOfMass += theParticle.X;
     }
 
-    //--------- If particle COI is too close to flock radius, then reverse the direction of the uniform accelaration ------
-    coi /= numParticles;
-
-    Point3d v4 = mUniformAccelaration;
-    double distFromOrigin = (coi-m_dDefaultOrigin).norm();
-    if( distFromOrigin < 3 )
-        mUniformAccelaration = -mUniformAccelaration;
-    //--------- Move all particles ------
-
+    particleSystemCenterOfMass /= numParticles;
     
     for (unsigned int i=0; i<numParticles; i++)
     {
         Point3d centerOfMass(0,0,0);
-        Point3d v1(0,0,0), v2(0,0,0), v3(0,0,0);
+        Point3d a1(0,0,0), a2(0,0,0), a3(0,0,0);
         Point3d avgNeighbourVelocity(0,0,0);
 
         CParticle &curParticle = (*m_pNewSystem)[i];
@@ -64,6 +56,8 @@ CFlockParticleSystem::calcNextFrame()
             CParticle &theParticle = (*m_pCurSystem)[j];
             //only calculate using positions of other particles
             if( j == i) continue;
+
+            centerOfMass         += theParticle.X;   //rule 1 - try to fly towards center of mass
 
             //-------------- Check if this particle is within the current particles field of vision ----------
             //vector that points from the center of the current particle to the center
@@ -90,30 +84,30 @@ CFlockParticleSystem::calcNextFrame()
 
             //---------- This particle is within our field of view ---------- 
             numParticlesInFOV++;
-            centerOfMass         += theParticle.X;   //rule 1 - try to fly towards center of mass
-            v2                   -= tmp/3;             //rule 2 - try to avoid other boids
+            a2                   -= tmp/3;             //rule 2 - try to avoid other boids
             avgNeighbourVelocity += theParticle.V;   //rule 3 - calc average neighbour velocity
         }
 
         
         //---------- Calculate New Velocity ---------- 
+
+        //1. Rule 1 - move particles towards center of mass of other particles
+        //calc center of mass of particle cloud
+        centerOfMass /= numParticles;
+        a1 = (centerOfMass-curParticle.X)/100.0;
+
         //if there are no other particles visible to this particle, then theres
         //no point in doing these calculation.
         if( numParticlesInFOV > 0 )
         {
-            //1. Rule 1 - move particles towards center of mass of other particles
-            //calc center of mass of particle cloud
-            centerOfMass /= numParticlesInFOV;
-            v1 = (centerOfMass-curParticle.X)/100.0;
-
             //Rule 3 - try to keep velocity similar to nearby neighbours
             avgNeighbourVelocity /= numParticlesInFOV;
-            v3 = (avgNeighbourVelocity-curParticle.V)/8.0;
+            a3 = (avgNeighbourVelocity-curParticle.V)/8.0;
         }
 
-        Point3d incV = v1 + v2 + v3+v4;
+        Point3d incA = a1 + a2 + a3+mUniformAccelaration;
 
-        calcAcceleration(i, incV);
+        calcAcceleration(i, incA);
         calculateVelocity(i);
         calculatePosition(i);
 
@@ -213,19 +207,23 @@ bool CFlockParticleSystem::calculateVelocity(int nIdx)
 
     curParticle.V += curParticle.a * m_dt;
 
-    //calculate new position
-    Point3d newPosition = curParticle.X + curParticle.V * m_dt;
-    //check if particle is outside allowable radius, if so - bring it back towards the origin
-    Point3d vecToOrigin = (m_dDefaultOrigin-newPosition);
-    double  distFromOrigin = vecToOrigin.norm();
-    if( distFromOrigin > mParticleSystemRadius )
+    //---------------- Make sure particles don't stray outside the particle system's radius -----------
+    if( mParticleSystemRadius != 0 )
     {
-        //cancel velocity and acceleration in "bad" direction
-        curParticle.V -= vecToOrigin*dot( vecToOrigin, curParticle.V );
-        curParticle.a -= vecToOrigin*dot( vecToOrigin, curParticle.a );
+        //calculate position at t+1
+        Point3d newPosition = curParticle.X + curParticle.V * m_dt;
+        //check if particle is outside allowable radius, if so - bring it back towards the origin
+        Point3d vecToOrigin = (m_dDefaultOrigin-newPosition);
+        double  distFromOrigin = vecToOrigin.norm();
+        if( distFromOrigin > mParticleSystemRadius )
+        {
+            //cancel velocity and acceleration in "bad" direction
+            curParticle.V -= vecToOrigin*dot( vecToOrigin, curParticle.V );
+            curParticle.a -= vecToOrigin*dot( vecToOrigin, curParticle.a );
+        }
     }
 
-    //limit particle velocity
+    //------------ limit particle velocity -------------
     double velocity = curParticle.V.norm();
     if( velocity > mMaxParticleVelocity )
         curParticle.V *= mMaxParticleVelocity / velocity;
