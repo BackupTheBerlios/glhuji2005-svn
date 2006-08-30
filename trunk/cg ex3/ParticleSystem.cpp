@@ -147,6 +147,7 @@ bool CParticleSystem::display(int nFrameNum, int nShading)
                     glNewList(teapotDisplayList,GL_COMPILE);
 
                     //scale teapot to be about same size as other particle types
+                    glRotated(-90,0,1,0);
                     glutSolidTeapot( size[0]*0.3 );
 
                     glEndList();

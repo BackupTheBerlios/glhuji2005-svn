@@ -14,7 +14,7 @@ public:
 	virtual bool updateParticle(int nIdx);
 	virtual bool getForces(int nIdx);
 	virtual bool getAcceleration(int nIdx);
-	virtual bool calculateVelocity(int nIdx);
+	virtual bool calculateVelocity(int nIdx, Point3d &inIncV);
 	virtual bool calculatePosition(int nIdx);
 
     void setNumParticles(int inNumParticles) { mNumParticles = inNumParticles; }

@@ -101,27 +101,10 @@ CFlockParticleSystem::calcNextFrame()
             v3 = (avgNeighbourVelocity-curParticle.V)/8.0;
         }
 
-        //finaly calc this particles new velocity
-        curParticle.V += v1 + v2 + v3;
+        Point3d incV = v1 + v2 + v3;
 
-        //calculate new position
-        Point3d newPosition = curParticle.X + curParticle.V * m_dt;
-        //check if particle is outside allowable radius, if so - bring it back towards the origin
-        Point3d vecToOrigin = (m_dDefaultOrigin-newPosition);
-        double  distFromOrigin = vecToOrigin.norm();
-        if( distFromOrigin > mParticleSystemRadius )
-        {
-            //cancel velocity in "bad" direction
-            curParticle.V -= vecToOrigin*dot( vecToOrigin, curParticle.V );
-        }
-
-        //limit particle velocity
-        double velocity = curParticle.V.norm();
-        if( velocity > mMaxParticleVelocity )
-            curParticle.V *= mMaxParticleVelocity / velocity;
-
-        //finally - move the particle to it's new position.
-        curParticle.X += curParticle.V * m_dt;
+        calculateVelocity(i, incV);
+        calculatePosition(i);
 
     }
 
@@ -206,15 +189,43 @@ bool CFlockParticleSystem::getAcceleration(int nIdx)
 	return true;
 }
 
-bool CFlockParticleSystem::calculateVelocity(int nIdx)
+bool CFlockParticleSystem::calculateVelocity(int nIdx, Point3d &inIncV)
 {
-	(*m_pNewSystem)[nIdx].V += ((*m_pNewSystem)[nIdx].a + (*m_pNewSystem)[nIdx].F*(*m_pNewSystem)[nIdx].mass)*m_dt;
+    CParticle &curParticle = (*m_pNewSystem)[nIdx];
+
+    //separate added velocity into 2 components
+    Point3d vDirection = curParticle.V/curParticle.V.norm();
+
+    Point3d incVSameDir = vDirection*dot(inIncV,vDirection);
+    Point3d incVOtherDir = inIncV - incVSameDir;
+
+    //finaly calc this particles new velocity
+    curParticle.V += incVSameDir + incVOtherDir*0.5;
+
+    //calculate new position
+    Point3d newPosition = curParticle.X + curParticle.V * m_dt;
+    //check if particle is outside allowable radius, if so - bring it back towards the origin
+    Point3d vecToOrigin = (m_dDefaultOrigin-newPosition);
+    double  distFromOrigin = vecToOrigin.norm();
+    if( distFromOrigin > mParticleSystemRadius )
+    {
+        //cancel velocity in "bad" direction
+        curParticle.V -= vecToOrigin*dot( vecToOrigin, curParticle.V );
+    }
+
+    //limit particle velocity
+    double velocity = curParticle.V.norm();
+    if( velocity > mMaxParticleVelocity )
+        curParticle.V *= mMaxParticleVelocity / velocity;
+
 	return true;
 }
 
 bool CFlockParticleSystem::calculatePosition(int nIdx)
 {
-	(*m_pNewSystem)[nIdx].X += (*m_pNewSystem)[nIdx].V * m_dt;
+    CParticle &curParticle = (*m_pNewSystem)[nIdx];
+
+	curParticle.X += curParticle.V * m_dt;
 	return true;
 }
 
