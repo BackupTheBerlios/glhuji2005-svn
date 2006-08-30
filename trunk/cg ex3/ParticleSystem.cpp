@@ -72,7 +72,12 @@ bool CParticleSystem::prevFrame()
 bool CParticleSystem::display(int nFrameNum, int nShading)
 {	
 	Point3d a;
-    unsigned int numParticles = m_pNewSystem->size();
+    unsigned int numParticles = (unsigned int)m_pNewSystem->size();
+
+    //for faster drawing of teapot
+    static GLuint teapotDisplayList;
+    static bool   teapotCreated = false;
+
 	for (unsigned int i=0; i<numParticles; i++)
 	{
 		glPushMatrix();
@@ -132,8 +137,23 @@ bool CParticleSystem::display(int nFrameNum, int nShading)
 				glutSolidCube(1);
 				break;
 
-			case C_PARTICLESHAPE_CONE:
-				glutSolidCone(1, 1, 10, 10);
+			case C_PARTICLESHAPE_TEAPOT:
+
+                //Create Display list on first time through, then just render display list...
+                if( !teapotCreated )
+                {
+                    teapotCreated = true;
+                    teapotDisplayList = glGenLists(1);
+                    glNewList(teapotDisplayList,GL_COMPILE);
+
+                    //scale teapot to be about same size as other particle types
+                    glutSolidTeapot( size[0]*0.3 );
+
+                    glEndList();
+                }
+
+                glCallList(teapotDisplayList);
+                
 				break;
 
 			default:

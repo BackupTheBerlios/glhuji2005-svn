@@ -16,15 +16,15 @@ DefaultLifeSpan		=	2
 DefaultMass			=	0.2
 DefaultRadius		=	0.4
 DefaultPersistance	=   1.0;
-ParticleShape		=	2	# 1 - dot, 2 - sphere, 3 - cube, 4 - cone
+ParticleShape		=	6	# 1 - dot, 2 - sphere, 3 - cube, 4 - cone, 5 - , 6 - teapot.
 ParticleSize		=	3,3,3
 ParticleColor		=	0.4,0.4,0.7
 ParticleAlpha		=	1
 
 ClearColor          =   1,1,1
-ParticlesPerFrame	=	25
+ParticlesPerFrame	=	15
 ParticleSystemType	=	3	#1 - Newtonian, 2 - Fireworks, 3 - boids
-ParticleMaxVelocity =   3
+ParticleMaxVelocity =   10
 
 # specific ParticleSystem details:
 # note: this section might be different for each particle-system type
@@ -32,7 +32,7 @@ ParticlesOrigin		=	0.0,0.0,0.0
 Gravity				=	0.0,-9.8,0.0
 
 # for Flocks
-ParticleSystemRadius       = 30 #don't allow particles to stray farther than this away from ParticlesOrigin
+ParticleSystemRadius       = 80 #don't allow particles to stray farther than this away from ParticlesOrigin
 
 FlockCloseParticleDistance = 12  #particles separated by more than this distance ignore each other ignore each other.
 FlockFOVAngle              =  120 #particles outside this angle aren't visible to other particles (in degrees 0-360)
