@@ -9,6 +9,7 @@ Aspect		=	1
 ZNear		=	1
 ZFar		=	20000
 ClearColor	=	0.6,0.6,1.0
+LinearAttenuation = 0.05
 
 TimeDelta	=	0.033
 

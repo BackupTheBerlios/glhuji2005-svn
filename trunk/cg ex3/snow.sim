@@ -9,12 +9,13 @@ Aspect		=	1
 ZNear		=	1
 ZFar		=	20000
 ClearColor	=	0,0,0
+LinearAttenuation = 0.05
 
 TimeDelta	=	0.033
 
 # Single particle's details
-DefaultSpan			=	20
-DefaultLifeSpan		=	12
+DefaultSpan			=	26
+DefaultLifeSpan		=	20
 DefaultMass			=	0.1
 DefaultRadius		=	1
 DefaultPersistance	=	1.0;
@@ -28,6 +29,7 @@ ParticleSystemType	=	1	# 1 - Mewtonian
 
 # specific ParticleSystem details:
 # note: this section might be different for each particle-system type
-ParticlesOrigin		=	0.0,7.0,0.0
+ParticlesOrigin		=	0.0,6.5,0.0
 HeadingStep			=	0.3
-Gravity				=	0.8,-1.3,0.0
+Gravity				=	0.8,-0.8,0.0
+AccelerationRand	=	15

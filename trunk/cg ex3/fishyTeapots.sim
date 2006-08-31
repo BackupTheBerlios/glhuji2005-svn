@@ -7,6 +7,7 @@ FovY		=	30
 Aspect		=	1
 ZNear		=	1
 ZFar		=	20000
+LinearAttenuation = 0.05
 
 TimeDelta	=	0.033
 
@@ -19,6 +20,7 @@ DefaultPersistance	=   1.0;
 ParticleShape		=	6	# 1 - dot, 2 - sphere, 3 - cube, 4 - cone, 5 - , 6 - teapot.
 ParticleSize		=	3,3,3
 ParticleColor		=	0.4,0.4,0.7
+ParticleColorRand	=	1
 ParticleAlpha		=	1
 
 ClearColor          =   1,1,1
@@ -36,7 +38,7 @@ ParticleSystemRadius       = 80 #don't allow particles to stray farther than thi
 FlockCloseParticleDistance = 12  #particles separated by more than this distance ignore each other ignore each other.
 FlockFOVAngle              =  120 #particles outside this angle aren't visible to other particles (in degrees 0-360)
 
-FlockMaxVelocity           =   10 #max velocity magnitude for an individual particle
+FlockMaxVelocity           =   20 #max velocity magnitude for an individual particle
 FlockMaxAcceleration       =   15 #max acceleration magnitude for an individual particle
 
 FlockUniformAcceleration   =  0, 0, 0 #uniform accelaration for entire flock

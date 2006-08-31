@@ -57,6 +57,7 @@ int g_nFrameNum = 0;
 bool g_bLinesOnly = false;
 bool g_bLighting = false;
 bool g_bPause = false;
+bool g_bLookAtCenterOfSystem = false;
 SYSTEMTIME gLastFrameTime;
 double g_fFrameTime = 0.03333;
 
@@ -230,11 +231,29 @@ void COpenGLWin::Initialize()
 /////////////////////////////////////////////////////
 void COpenGLWin::DisplayCallback()
 {
+	Point3d lookat = g_bLookAtCenterOfSystem? 
+		g_simulationParams.m_particleSystem->getLookAtPoint() :
+		g_simulationParams.m_cameraDir;
 	Point3d clearColor = g_simulationParams.m_clearColor;
     glClearColor(clearColor[0],clearColor[1],clearColor[2],0);
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
     glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	// Set the viewing position and orientation
+
+    gluLookAt(g_simulationParams.m_cameraPos[0], //Eye Position
+        g_simulationParams.m_cameraPos[1],
+        g_simulationParams.m_cameraPos[2],
+
+        lookat[0], //Center
+        lookat[1],
+        lookat[2],
+
+        g_simulationParams.m_cameraUp[0],  //Up Vector
+        g_simulationParams.m_cameraUp[1],
+        g_simulationParams.m_cameraUp[2]);
+
 	glPushMatrix();
     
     //translate view to where the user moved the camera.
@@ -353,6 +372,9 @@ void COpenGLWin::keypress(unsigned char key, int x, int y)
 		return;
 	case '0':
 		gotoZero();
+		break;
+	case 'c':
+		g_bLookAtCenterOfSystem = !g_bLookAtCenterOfSystem;
 		break;
 	case 'l':
 		g_bLinesOnly = !g_bLinesOnly;

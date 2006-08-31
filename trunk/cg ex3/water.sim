@@ -9,6 +9,7 @@ Aspect		=	1
 ZNear		=	1
 ZFar		=	20000
 ClearColor	=	1.0,1.0,1.0
+LinearAttenuation = 0.05
 
 TimeDelta	=	0.033
 
@@ -19,15 +20,16 @@ DefaultMass			=	1
 DefaultRadius		=	1
 DefaultPersistance	=	1.0;
 ParticleShape		=	4	# 1 - dot, 2 - sphere, 3 - cube, 4 - cone
-ParticleSize		=	0.04,0.4,0.04
+ParticleSize		=	0.1,0.5,0.1
 ParticleColor		=	0.8,0.8,1.0
-ParticleAlpha		=	0.4
+ParticleColorRand	=	0.1
+ParticleAlpha		=	0.3
 
 ParticlesPerFrame	=	20
 ParticleSystemType	=	1	# 1 - Mewtonian
 
 # specific ParticleSystem details:
 # note: this section might be different for each particle-system type
-ParticlesOrigin		=	0.0,5.0,0.0
+ParticlesOrigin		=	0.0,0.0,0.0
 HeadingStep			=	0.02
-Gravity				=	0.0,-15.8,0.0
+Gravity				=	0.0,-9.8,0.0

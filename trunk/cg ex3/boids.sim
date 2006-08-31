@@ -1,12 +1,13 @@
 # Particle system ini file
 # Camera details
-CameraPos	=	0,0,0 #position of Eye
-CameraDir	=	1,1,0    #Position of Reference point (where to look at)
+CameraPos	=	10,10,10 #position of Eye
+CameraDir	=	0,0,0    #Position of Reference point (where to look at)
 CameraUp	=	0,1,0    #Which direction is up
-FovY		=	30
+FovY		=	45
 Aspect		=	1
 ZNear		=	1
 ZFar		=	20000
+LinearAttenuation = 0.05
 
 TimeDelta	=	0.033
 
@@ -16,10 +17,11 @@ DefaultLifeSpan		=	2
 DefaultMass			=	0.2
 DefaultRadius		=	0.4
 DefaultPersistance	=   1.0;
-ParticleShape		=	2	# 1 - dot, 2 - sphere, 3 - cube, 4 - cone, 5 - , 6 - teapot.
-ParticleSize		=	2,2,2
+ParticleShape		=	4	# 1 - dot, 2 - sphere, 3 - cube, 4 - cone, 5 - , 6 - teapot.
+ParticleSize		=	1,1,2
 ParticleColor		=	0.4,0.4,0.7
 ParticleAlpha		=	1
+ParticleColorRand	=	1
 
 ClearColor          =   1,1,1
 ParticlesPerFrame	=	25

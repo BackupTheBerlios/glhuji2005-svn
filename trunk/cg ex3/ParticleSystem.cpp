@@ -1,6 +1,8 @@
 #include "StdAfx.h"
 #include "ParticleSystem.h"
 #include "constants.h"
+#include "SimulationsParams.h"
+extern CSimulationsParams  g_simulationParams;
 
 CParticleSystem::CParticleSystem(void):
     m_nCurFrame(0),
@@ -76,8 +78,13 @@ bool CParticleSystem::display(int nFrameNum, int nShading)
 
     //for faster drawing of teapot
     static GLuint teapotDisplayList;
-    static bool   teapotCreated = false;
-
+    static bool teapotCreated = false;
+	static bool drawnLines = false;
+	bool drawLines = (nShading%2==1);
+	if (drawLines != drawnLines){
+		teapotCreated = false;
+		drawnLines = drawLines;
+	}
 	for (unsigned int i=0; i<numParticles; i++)
 	{
 		glPushMatrix();
@@ -122,19 +129,35 @@ bool CParticleSystem::display(int nFrameNum, int nShading)
 				break;
 
 			case C_PARTICLESHAPE_SPHERE:
-				glutSolidSphere(1, 10, 10);
+				if (drawLines)
+					glutWireSphere(1, 10, 10);
+				else
+					glutSolidSphere(1, 10, 10);
 				break;
 
 			case C_PARTICLESHAPE_BALOON:
-				glutSolidSphere(1, 10, 10);
+				if (drawLines)
+					glutWireSphere(1,10,10);
+				else
+					glutSolidSphere(1, 10, 10);
 				glBegin(GL_LINES);
 				glVertex3f(0,0,0);
 				glVertex3f(0,0,-5);
 				glEnd();
 				break;
 
+			case C_PARTICLESHAPE_CONE:
+				if (drawLines)
+					glutWireCone(1,1,10,10);
+				else
+					glutSolidCone(1,1,10,10);
+				break;
+
 			case C_PARTICLESHAPE_CUBE:
-				glutSolidCube(1);
+				if (drawLines)
+					glutWireCube(1);
+				else
+					glutSolidCube(1);
 				break;
 
 			case C_PARTICLESHAPE_TEAPOT:
@@ -147,8 +170,12 @@ bool CParticleSystem::display(int nFrameNum, int nShading)
                     glNewList(teapotDisplayList,GL_COMPILE);
 
                     //scale teapot to be about same size as other particle types
-                    glRotated(-90,0,1,0);
-                    glutSolidTeapot( size[0]*0.3 );
+					glRotated(-90,0,1,0);
+
+					if (drawLines)
+						glutWireTeapot( size[0]*0.3 );
+					else
+						glutSolidTeapot( size[0]*0.3 );
 
                     glEndList();
                 }
@@ -194,3 +221,7 @@ bool CParticleSystem::gotoFrame(int nFrame)
 	return false;
 }
 
+Point3d CParticleSystem::getLookAtPoint()
+{
+	return g_simulationParams.m_cameraDir;
+}

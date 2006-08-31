@@ -129,20 +129,23 @@ bool CFlockParticleSystem::init()
 bool CFlockParticleSystem::InitFrame()
 {
     //only create particles on first frame...
+	int neededParticles = 0;
+	Point3d velocity = Point3d(1,0,0);
+
     if( m_nCurFrame == 1 )
     {
+		velocity = Point3d(7,7,0);
+		neededParticles = 1;
+	}
+	else if ( m_nCurFrame%10==0 && m_nCurFrame < 10*mNumParticles )
+    {
+		velocity = Point3d(1,0,0);
+		neededParticles = 1;
+	}
+
+	if (neededParticles > 0)
+	{
         CParticle p;
-        p.X           = Point3d(0,0,0);
-        p.span        = m_dDefaultSpan;
-        p.lifepan     = m_dDefaultLifespan;
-        p.mass        = m_dDefaultMass;
-        p.persistance = m_dDefaultPersistance;
-        p.alpha       = m_dParticleAlpha;
-        p.color       = Point3d(0,1,0);
-        p.shape       = m_particleShape;
-        p.size        = m_pParticleSize;
-        p.V           = Point3d(1,0,0);
-        AddParticle(p);
 
 	    p.span        = m_dDefaultSpan;
 	    p.lifepan     = m_dDefaultLifespan;
@@ -155,15 +158,15 @@ bool CFlockParticleSystem::InitFrame()
 	    p.shape       = m_particleShape;
 	    p.size        = m_pParticleSize;
 
-	    for (int i=0; i<mNumParticles; i++)
+	    for (int i=0; i<neededParticles; i++)
 	    {
             //todo: read distribution from ini file
 
-            p.color[0] = frand();
-            p.color[1] = frand();
-            p.color[2] = frand();
+			Point3d colorRand = Point3d(frand()-0.5, frand()-0.5, frand()-0.5) * m_dColorRandomness;
+			p.color = m_pParticleColor + colorRand;
+			p.color2 = p.color;
 
-            p.V = Point3d(1,0,0);
+			p.V = velocity;
 
             //distribute particles randomly
             p.X[0] = m_dDefaultOrigin[0] + 30.0*(frand()-0.5);
@@ -188,15 +191,33 @@ bool CFlockParticleSystem::getForces(int nIdx)
 }
 
 bool CFlockParticleSystem::calcAcceleration(int nIdx, Point3d &inIncA)
-{
-    CParticle &curParticle = (*m_pNewSystem)[nIdx];
-	
-     //----------- Calc new accelaration -----------
-    curParticle.a += inIncA;
+{     
+	CParticle &curParticle = (*m_pNewSystem)[nIdx];
+	if (nIdx == 0){
+		if (frand() > 0.5){
+			// once in a while add random acceleration
+			curParticle.a += Point3d(frand()-0.5,frand()-0.5,frand()-0.5);
+			// but make sure we don't run too far from the origin
+			Point3d dist = m_dDefaultOrigin - curParticle.X;
+			curParticle.a += dist*frand()*0.05;
+		}
+		else{
+			// otherwise just decrease acceleration
+			curParticle.a *= 0.6;
+		}
+	}
+	else{
+		//----------- Calc new accelaration -----------
+		curParticle.a += inIncA;
 
-    //----------- limit accelaration -----------
-    if( curParticle.a.norm() > mParticleMaxAccelartion )
-        curParticle.a *= mParticleMaxAccelartion/curParticle.a.norm();
+		//----------- go towards the leader -----------
+		Point3d dist = (*m_pNewSystem)[0].X - curParticle.X;
+			curParticle.a += dist*frand()*0.1;
+
+		//----------- limit accelaration -----------
+		if( curParticle.a.norm() > mParticleMaxAccelartion )
+			curParticle.a *= mParticleMaxAccelartion/curParticle.a.norm();
+	}
 
 	return true;
 }
@@ -204,11 +225,15 @@ bool CFlockParticleSystem::calcAcceleration(int nIdx, Point3d &inIncA)
 bool CFlockParticleSystem::calculateVelocity(int nIdx)
 {
     CParticle &curParticle = (*m_pNewSystem)[nIdx];
+	double maxVelocity = mMaxParticleVelocity;
 
     curParticle.V += curParticle.a * m_dt;
 
     //---------------- Make sure particles don't stray outside the particle system's radius -----------
-    if( mParticleSystemRadius != 0 )
+	if ( nIdx == 0 ){
+		maxVelocity += 10;
+	}
+	else if ( mParticleSystemRadius != 0 )
     {
         //calculate position at t+1
         Point3d newPosition = curParticle.X + curParticle.V * m_dt;
@@ -239,3 +264,14 @@ bool CFlockParticleSystem::calculatePosition(int nIdx)
 	return true;
 }
 
+Point3d CFlockParticleSystem::getLookAtPoint()
+{
+	unsigned int numParticles = (int)m_pCurSystem->size();
+	Point3d centerOfMass(0,0,0);
+    for( unsigned int j = 0; j < numParticles; j++ )
+    {
+        centerOfMass += (*m_pCurSystem)[j].X;
+    }
+    centerOfMass /= numParticles;
+	return centerOfMass;
+}

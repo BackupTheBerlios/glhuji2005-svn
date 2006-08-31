@@ -105,6 +105,7 @@ public:
 	}
 	CParticleSystem(void);
 	virtual ~CParticleSystem(void);
+	virtual Point3d getLookAtPoint();
 	virtual bool calcNextFrame();
 	virtual bool prevFrame();
 	virtual bool gotoFrame(int nFrame);

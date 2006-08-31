@@ -16,6 +16,7 @@ public:
 	bool calcAcceleration(int nIdx, Point3d &inIncA);
 	virtual bool calculateVelocity(int nIdx);
 	virtual bool calculatePosition(int nIdx);
+	virtual Point3d getLookAtPoint();
 
     void setNumParticles(int inNumParticles) { mNumParticles = inNumParticles; }
     void setParticleSystemRadius( double inRadius ) { mParticleSystemRadius = inRadius; }

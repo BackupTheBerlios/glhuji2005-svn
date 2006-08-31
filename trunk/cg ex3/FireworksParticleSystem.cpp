@@ -23,8 +23,8 @@ bool CFireworksParticleSystem::InitFrame()
 	p.persistance = m_dDefaultPersistance;
 	p.alpha = m_dParticleAlpha;
 	Point3d colorRand = Point3d(frand()-0.5, frand()-0.5, frand()-0.5) * m_dColorRandomness;
-	p.color = m_pParticleColor + colorRand;
-	p.color2 = m_pParticleColor2 + colorRand;
+	p.color = m_pParticleColor;// + colorRand;
+	p.color2 = m_pParticleColor2;// + colorRand;
 	p.shape = m_particleShape;
 	p.size = m_pParticleSize;
 	p.type = 1+round(frand()*2);
@@ -67,19 +67,28 @@ void CFireworksParticleSystem::killParticle(unsigned int nParticle)
 		p.X = oldp.X;
 		p.V = oldp.V;
 		p.lifepan = m_dDefaultLifespan/3;
-		p.span = 0.0;
+		p.span = 5.0;
 		p.energy = 1.0;
 		p.persistance = 1;
 		p.type = 0;
+		Point3d colorRand = Point3d(frand()-0.5, frand()-0.5, frand()-0.5) * m_dColorRandomness;
 		p.color = Color3d(0.5+frand()*0.5,frand(),frand());
-		p.color2 = p.color;
+		p.color2 = p.color + colorRand;
 		p.shape = C_PARTICLESHAPE_DOT;
 		p.alpha = 1.0;
 		double headingy = 0;
 		double headingz = 0;
 		double expforce = 8.0 + frand()*8.0;
 		if (oldp.type == 1)
-			expforce *= 2;
+			expforce *= 0.2;
+			//expforce *= 2;
+
+		if (frand()<0.04) {
+			nChildren = MIN_CHILDREN/2;
+			p.type = 1;
+			p.lifepan = 1;
+		}
+
 		for (int zr=0; zr<nChildren; zr++)
 		{
 			for (int yr=0; yr<nChildren; yr++)
@@ -97,7 +106,7 @@ void CFireworksParticleSystem::killParticle(unsigned int nParticle)
 			p.type = oldp.type-1;
 			p.span = 0.0;
 			p.lifepan = 0.15*(frand()*10+1);
-			p.mass = 0.0;
+			p.mass = 0;
 			p.shape = C_PARTICLESHAPE_DOT;
 			p.persistance = 1.0;
 			p.color = Color3d(0.0,0.0,0.0);
