@@ -8,7 +8,8 @@ mParticleSystemRadius(0),
 mParticleDistance(0),
 mParticleFOVAngle(0),
 mParticleMaxAccelartion(0),
-mUniformAccelaration(0,0,0)
+mUniformAccelaration(0,0,0),
+mLockY(0)
 {
 	
 }
@@ -87,8 +88,7 @@ CFlockParticleSystem::calcNextFrame()
             a2                   -= tmp/3;             //rule 2 - try to avoid other boids
             avgNeighbourVelocity += theParticle.V;   //rule 3 - calc average neighbour velocity
         }
-
-        
+      
         //---------- Calculate New Velocity ---------- 
 
         //1. Rule 1 - move particles towards center of mass of other particles
@@ -109,8 +109,7 @@ CFlockParticleSystem::calcNextFrame()
 
         calcAcceleration(i, incA);
         calculateVelocity(i);
-        calculatePosition(i);
-
+		calculatePosition(i);
     }
 
 	return true;
@@ -170,7 +169,7 @@ bool CFlockParticleSystem::InitFrame()
 
             //distribute particles randomly
             p.X[0] = m_dDefaultOrigin[0] + 30.0*(frand()-0.5);
-            p.X[1] = m_dDefaultOrigin[1] + 30.0*(frand()-0.5);
+			p.X[1] = (mLockY == 0)? 0 : m_dDefaultOrigin[1] + 30.0*(frand()-0.5);
             p.X[2] = m_dDefaultOrigin[2] + 30.0*(frand()-0.5);
 
 		    AddParticle(p);
@@ -212,7 +211,7 @@ bool CFlockParticleSystem::calcAcceleration(int nIdx, Point3d &inIncA)
 
 		//----------- go towards the leader -----------
 		Point3d dist = (*m_pNewSystem)[0].X - curParticle.X;
-			curParticle.a += dist*frand()*0.1;
+			curParticle.a += dist*frand()*0.05;
 
 		//----------- limit accelaration -----------
 		if( curParticle.a.norm() > mParticleMaxAccelartion )
@@ -231,7 +230,7 @@ bool CFlockParticleSystem::calculateVelocity(int nIdx)
 
     //---------------- Make sure particles don't stray outside the particle system's radius -----------
 	if ( nIdx == 0 ){
-		maxVelocity += 10;
+		maxVelocity += 3;
 	}
 	else if ( mParticleSystemRadius != 0 )
     {
@@ -253,6 +252,8 @@ bool CFlockParticleSystem::calculateVelocity(int nIdx)
     if( velocity > mMaxParticleVelocity )
         curParticle.V *= mMaxParticleVelocity / velocity;
 
+	if (mLockY != 0)
+		curParticle.V[1] = 0;
 	return true;
 }
 

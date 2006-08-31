@@ -161,7 +161,6 @@ bool CParticleSystem::display(int nFrameNum, int nShading)
 				break;
 
 			case C_PARTICLESHAPE_TEAPOT:
-
                 //Create Display list on first time through, then just render display list...
                 if( !teapotCreated )
                 {
@@ -171,8 +170,7 @@ bool CParticleSystem::display(int nFrameNum, int nShading)
 
                     //scale teapot to be about same size as other particle types
 					glRotated(-90,0,1,0);
-
-					if (drawLines)
+                    if (drawLines)
 						glutWireTeapot( size[0]*0.3 );
 					else
 						glutSolidTeapot( size[0]*0.3 );
@@ -182,6 +180,10 @@ bool CParticleSystem::display(int nFrameNum, int nShading)
 
                 glCallList(teapotDisplayList);
                 
+				break;
+
+			case C_PARTICLESHAPE_ANT:
+				drawAnt();
 				break;
 
 			default:
@@ -224,4 +226,50 @@ bool CParticleSystem::gotoFrame(int nFrame)
 Point3d CParticleSystem::getLookAtPoint()
 {
 	return g_simulationParams.m_cameraDir;
+}
+
+#define RAND_POINT Point3d(frand()-0.5, frand()-0.5, frand()-0.5)*0.2
+void CParticleSystem::drawAnt()
+{
+	Point3d p;
+
+	glScaled(1,1,1.2);
+	glutSolidSphere(0.5, 10, 10);
+	glTranslated(0,0,0.65);
+	glutSolidSphere(0.2, 10, 10);
+	glBegin(GL_LINES);
+	glVertex3f(0,0,0);
+	p = Point3d(0.5,-0.5,0.5);
+	p += RAND_POINT;
+	glVertex3f(p[0],p[1],p[2]);
+	glVertex3f(0,0,0);
+	p = Point3d(0.5,-0.5,0);
+	p += RAND_POINT;
+	glVertex3f(p[0],p[1],p[2]);
+	glVertex3f(0,0,0);
+	p = Point3d(0.5,-0.5,-0.5);
+	p += RAND_POINT;
+	glVertex3f(p[0],p[1],p[2]);
+
+	glVertex3f(0,0,0);
+	p = Point3d(-0.5,-0.5,0.5);
+	p += RAND_POINT;
+	glVertex3f(p[0],p[1],p[2]);
+	glVertex3f(0,0,0);
+	p = Point3d(-0.5,-0.5,0);
+	p += RAND_POINT;
+	glVertex3f(p[0],p[1],p[2]);
+	glVertex3f(0,0,0);
+	p = Point3d(-0.5,-0.5,-0.5);
+	p += RAND_POINT;
+	glVertex3f(p[0],p[1],p[2]);
+	glEnd();
+	glTranslated(0,0,0.4);
+	glutSolidSphere(0.3, 10, 10);
+	glBegin(GL_LINES);
+	glVertex3f(0,0,0);
+	glVertex3f(0.2,0.6,0.3);
+	glVertex3f(0,0,0);
+	glVertex3f(-0.2,0.6,0.3);
+	glEnd();
 }

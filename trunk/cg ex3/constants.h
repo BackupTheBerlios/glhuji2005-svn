@@ -53,12 +53,13 @@ const int C_NUM_FIELDS_IN_AUTOCREATE = 6;
 #define C_NEWTONIAN_PS_ACC_RAND_TAG			    ("AccelerationRand")
 
 // flock PS stuff
-#define C_FLOCK_PARTICLE_SEPARATION_TAG             ("FlockCloseParticleDistance")
-#define C_FLOCK_FOV_ANGLE_TAG                       ("FlockFOVAngle")
-#define C_PARTICLE_MAX_VELOCITY_TAG    ("FlockMaxVelocity")
-#define C_PARTICLE_SYSTEM_RADIUS_TAG   ("ParticleSystemRadius")
+#define C_FLOCK_PARTICLE_SEPARATION_TAG ("FlockCloseParticleDistance")
+#define C_FLOCK_FOV_ANGLE_TAG           ("FlockFOVAngle")
+#define C_PARTICLE_MAX_VELOCITY_TAG		("FlockMaxVelocity")
+#define C_PARTICLE_SYSTEM_RADIUS_TAG	("ParticleSystemRadius")
 #define C_PARTICLE_MAX_ACCELERATION_TAG ("FlockMaxAcceleration")
 #define C_FLOCK_UNIFORM_ACCEL_TAG       ("FlockUniformAcceleration")
+#define C_FLOCK_LOCK_Y_TAG				("FlockLockY")
 
 
 typedef enum {
@@ -75,6 +76,7 @@ typedef enum {
 	C_PARTICLESHAPE_CONE,
 	C_PARTICLESHAPE_BALOON,
     C_PARTICLESHAPE_TEAPOT,
+	C_PARTICLESHAPE_ANT,
 	C_NUM_PARTICLESHAPES
 } ParticleShapeType;
 

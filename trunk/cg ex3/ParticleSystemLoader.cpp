@@ -256,6 +256,10 @@ CParticleSystemLoader::readFlockParticleSystem( CSimulationsParams &inParams, CL
         LOAD_P3d( C_FLOCK_UNIFORM_ACCEL_TAG, "ERROR: uniform acceleration field is missing ", tmpP );
         system->setUniformAccel( tmpP );
 
+		if (inLoader.GetField(C_FLOCK_LOCK_Y_TAG, val) == 0){
+			 system->setLockY( atoi(val.c_str()) );
+		}
+
         ret = true;
     } while(0);
     

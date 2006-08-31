@@ -116,4 +116,6 @@ public:
 	{
 		m_pNewSystem->erase(m_pNewSystem->begin()+nParticle);
 	}
+
+	void drawAnt();
 };

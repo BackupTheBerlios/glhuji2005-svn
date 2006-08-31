@@ -23,6 +23,7 @@ public:
     void setParticleDistance( double inDist ) { mParticleDistance = inDist; }
     void setParticleMaxAcceleration( double inAccel ) { mParticleMaxAccelartion = inAccel; }
     void setUniformAccel( Point3d &inAccel ) { mUniformAccelaration = inAccel; }
+	void setLockY( int inLockY ) { mLockY = inLockY; }
 
     //input in radians
     void setParticleFOVAngle( double inAngle ) { mParticleFOVAngle = inAngle; }
@@ -34,5 +35,6 @@ protected:
     double  mParticleDistance;
     double  mParticleFOVAngle;
     Point3d mUniformAccelaration;
+	int		mLockY;
 
 };
