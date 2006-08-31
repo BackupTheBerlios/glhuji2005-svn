@@ -38,7 +38,7 @@ ParticleSystemRadius       = 80 #don't allow particles to stray farther than thi
 FlockCloseParticleDistance = 12  #particles separated by more than this distance ignore each other ignore each other.
 FlockFOVAngle              =  120 #particles outside this angle aren't visible to other particles (in degrees 0-360)
 
-FlockMaxVelocity           =   20 #max velocity magnitude for an individual particle
+FlockMaxVelocity           =   30 #max velocity magnitude for an individual particle
 FlockMaxAcceleration       =   15 #max acceleration magnitude for an individual particle
 
 FlockUniformAcceleration   =  0, 0, 0 #uniform accelaration for entire flock
