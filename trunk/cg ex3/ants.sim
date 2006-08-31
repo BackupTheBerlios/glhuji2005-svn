@@ -23,7 +23,7 @@ ParticleColor		=	0.0,0.0,0.0
 ParticleColorRand	=	0.01
 ParticleAlpha		=	1
 
-ClearColor          =   1,1,1
+ClearColor          =   0.7,0.7,0.5
 ParticlesPerFrame	=	10
 ParticleSystemType	=	3	#1 - Newtonian, 2 - Fireworks, 3 - boids
 
