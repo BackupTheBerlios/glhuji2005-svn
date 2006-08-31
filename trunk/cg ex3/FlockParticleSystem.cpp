@@ -169,7 +169,7 @@ bool CFlockParticleSystem::InitFrame()
 
             //distribute particles randomly
             p.X[0] = m_dDefaultOrigin[0] + 30.0*(frand()-0.5);
-			p.X[1] = (mLockY == 0)? 0 : m_dDefaultOrigin[1] + 30.0*(frand()-0.5);
+			p.X[1] = (mLockY != 0)? 0 : m_dDefaultOrigin[1] + 30.0*(frand()-0.5);
             p.X[2] = m_dDefaultOrigin[2] + 30.0*(frand()-0.5);
 
 		    AddParticle(p);
