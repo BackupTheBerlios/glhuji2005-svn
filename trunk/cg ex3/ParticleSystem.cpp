@@ -165,12 +165,14 @@ bool CParticleSystem::display(int nFrameNum, int nShading)
 					glutWireSphere(0.6,10,10);
 				}
 				else
+				{
 					glTranslated(-0.5,0,0);
 					glutSolidSphere(0.6,10,10);
 					glTranslated(0,0,0.5);
 					glutSolidCube(1);
 					glTranslated(0.5,0,0);
 					glutSolidSphere(0.6,10,10);
+				}
 				break;
 
 			case C_PARTICLESHAPE_TEAPOT:
