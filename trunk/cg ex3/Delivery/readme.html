@@ -1,0 +1,115 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title>Advanced Graphics Ex3</title>
+</head>
+<body>
+
+<center><h2>Exercise 3 - A generic particle system platform</h2></center>
+
+<b>By:</b> Itai Basel <span style="font-size: 60%; ">T.Z. 035781848</span><br> 
+Jeremy Moskovich    <span style="font-size: 60%; ">T.Z. 036382489</span>, <br>
+Dagan Eshar              <span style="font-size: 60%; ">T.Z. 038381620</span>
+
+<p><p>
+<h3>Overview:</h3>
+	We implemented a generic environment for particle simulation, including support for simple, newtonic, and boids style particles.<p>
+	
+	Our system allows for the easy creation of a large variety of particle simulations, we have included several examples which we hope exhibit the flexibility of the system.<p>
+	
+	Given more time, there are many things we would have implented differently or improved in the program.  However we think that we got some nice results even with the limited time we had available.<p>
+	
+<h3>Details:</h3>
+	Our implementation runs under win32 using MFC, we use GLUT for display so porting to other platforms should be trivial.<p>
+	
+	At the basis of our particle system is the "ParticleSystem" class which provides implements a basic extendable particle system - two arrays of particles are held (one for the previous frame, and one for the previous frame), ability to set a lifetime for particles, and basic drawing routines for each particle.<p>
+	
+	The NewtonianParticleSystem class extends this by adding very basic newtonian physics to the simulation, we further extend this with a class that simulates fireworks.<p>
+	
+	The FlockparticleSystem class extends ParticleSystem and implements a basic version of the Boids code.  Its quite surprising what nice behavior we got with such a basic implementation.  The only addition we made to the basic boids code was the ability to set a global driving force to the entire flock to get the entire flock to fly in a set direction. <p>
+
+<h3>Configuration files:</h3>
+
+	The simulation parameters are specified in (.sim) configuration files, the format is <i>Name = Value</i> with comments delimited by the # sign.
+	
+	By specifying different parameters in the configuration files, a wide variety of simulations can be produced.
+	
+	The available parameters are documented in the enclosed simulation files.
+	
+<h3>Simulations:</h3>
+
+<table>
+<tr>
+<td>
+    ants.sim  - a nice boids simulation, where the particles are limited to motion in the XY plane.
+</td>
+<td>
+    <img src="img/ants.jpg" width="520" height="537" border="0">
+</td>
+</tr>
+
+<tr>
+<td>
+    fishyTeapots.sim - flying teapots, with no global driving force, a tribute to afterdark (http://en.wikipedia.org/wiki/After_Dark).<br>
+</td>
+<td>
+    <img src="img/teapots.jpg" width="520" height="537" border="0">
+</td>
+</tr>
+
+<tr>
+<td>
+    boids.sim - no frills boids simulation with a global driving force.<br>
+</td>
+<td>
+    <img src="img/boids.jpg" width="520" height="537" border="0">
+</td>
+</tr>
+
+<tr>
+<td>
+    Snow.sim - a simple simulation of snow, please be patient - it takes a little while for the snow to start falling...<br>
+</td>
+<td>
+    <img src="img/snow.jpg" width="520" height="537" border="0">
+</td>
+<tr>
+    
+<tr>
+<td>
+    Water.sim - a sprinkler.
+</td>
+<td>
+<img src="img/water.jpg" width="520" height="537" border="0">
+</td>
+</tr>
+
+<tr>
+<td>
+bubbles.sim - some bubbles.<br>
+</td>
+<td>
+    <img src="img/bubbles.jpg" width="520" height="537" border="0">
+</td>
+</tr>
+
+<tr>
+<td>
+    fireworks.sim - newtonian fireworks.<br>
+</td>
+<td>
+    <img src="img/fireworks.jpg" width="520" height="537" border="0">
+</td>
+</tr>
+<tr>
+<td>
+    balloons.sim  - Some balloons.<br>
+</td>
+<td>
+    <img src="img/balloons.jpg" width="520" height="537" border="0">
+</td>
+</tr>
+</table>
+</body>
+</html>
