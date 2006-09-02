@@ -25,6 +25,7 @@ CParticleSystem::CParticleSystem(void):
 	ParticleShapeType m_particleShape = C_PARTICLESHAPE_DOT;	
 	m_dParticleAlpha = 1;
 	m_dColorRandomness = 0;
+	m_dParticleSizeRand = 0;
 }
 
 CParticleSystem::~CParticleSystem(void)

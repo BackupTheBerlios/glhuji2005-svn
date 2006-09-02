@@ -155,7 +155,7 @@ bool CFlockParticleSystem::InitFrame()
 		p.color = m_pParticleColor + colorRand;
 		p.color2 = m_pParticleColor2 + colorRand;
 	    p.shape       = m_particleShape;
-	    p.size        = m_pParticleSize;
+	    p.size        = m_pParticleSize + Point3d(frand()-0.5, frand()-0.5, frand()-0.5) * m_dParticleSizeRand;
 
 	    for (int i=0; i<neededParticles; i++)
 	    {

@@ -34,6 +34,7 @@ const char C_ENTER_KEY_CODE  = 13;
 #define C_DEFAULT_PERSISTANCE_TAG  ("DefaultPersistance")
 #define C_PARTICLE_SHAPE_TAG       ("ParticleShape")
 #define C_PARTICLE_SIZE_TAG        ("ParticleSize")
+#define C_PARTICLE_SIZE_RAND_TAG   ("ParticleSizeRand")
 #define C_PARTICLE_COLOR_TAG       ("ParticleColor")
 #define C_PARTICLE_COLOR2_TAG      ("ParticleColor2")
 #define C_PARTICLE_COLOR_RAND_TAG  ("ParticleColorRand")

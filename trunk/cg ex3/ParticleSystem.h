@@ -89,6 +89,7 @@ public: //TODO: fix this
 	Point3d           m_dDefaultOrigin;
 	ParticleShapeType m_particleShape;
 	Point3d           m_pParticleSize;	//X,Y,Z dimensions
+	double			  m_dParticleSizeRand;
 	Point3d           m_pParticleColor;	//RGB value
 	Point3d           m_pParticleColor2;//RGB value
 	double			  m_dColorRandomness;

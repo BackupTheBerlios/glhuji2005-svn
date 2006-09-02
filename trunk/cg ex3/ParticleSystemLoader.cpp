@@ -190,6 +190,11 @@ CParticleSystemLoader::readParticleDefaults( CSimulationsParams &inParams, CLoad
 			break;
 		}
 	}
+	// size randomness
+	if (inLoader.GetField(C_PARTICLE_SIZE_RAND_TAG, val) == 0){
+		inParams.m_particleSystem->m_dParticleSizeRand = atof(val.c_str());
+	}
+
 	// particle color
 	if (inLoader.GetField( C_PARTICLE_COLOR_TAG, val ) == 0 ){
 		if (inLoader.GetPoint3d(val, color) == 0){
