@@ -1,0 +1,38 @@
+# Particle system ini file
+# Camera details
+CameraPos	=	30,30,30
+CameraDir	=	0,0,0
+CameraUp	=	0,1,0
+CameraFrust	=	0.0
+FovY		=	30
+Aspect		=	1
+ZNear		=	1
+ZFar		=	20000
+ClearColor	=	0.6,0.6,1.0
+LinearAttenuation = 0.05
+
+TimeDelta	=	0.033
+
+# Single particle's details
+DefaultSpan			=	25
+DefaultLifeSpan		=   15
+DefaultMass			=	1
+DefaultRadius		=	1
+DefaultPersistance	=	1.0;
+ParticleShape		=	5	# 1 - dot, 2 - sphere, 3 - cube, 4 - cone, 5 - baloons, 6 - teapot, 7 - ants
+ParticleSize		=	1,1,1
+ParticleColor		=	0.5,0.5,0.5
+ParticleColor2		=	1.0,1.0,1.0
+ParticleAlpha		=	0.7
+ParticleColorRand	=	1	# between 0 and 1 (0 - no random, 1 - very randomal)
+
+ParticlesPerFrame	=	1
+ParticleSystemType	=	1	#1 - Newtonian, 2 - Fireworks, 3 - boids
+
+# specific ParticleSystem details:
+# note: this section might be different for each particle-system type
+ParticlesOrigin		=	-4.0,-7.0,0.0
+HeadingStep			=	0.05
+Gravity				=	1.0,1.0,-1.0
+AccelerationRand	=	25
+FramesDelay			=	30
