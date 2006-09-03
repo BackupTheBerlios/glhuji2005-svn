@@ -24,12 +24,14 @@ public:
     void setParticleMaxAcceleration( double inAccel ) { mParticleMaxAccelartion = inAccel; }
     void setUniformAccel( Point3d &inAccel ) { mUniformAccelaration = inAccel; }
 	void setLockY( int inLockY ) { mLockY = inLockY; }
+    void setInitialNumParticles( int initialNum ){ mInitialNumParticles = initialNum; }
 
     //input in radians
     void setParticleFOVAngle( double inAngle ) { mParticleFOVAngle = inAngle; }
 
 protected:
     int     mNumParticles;
+    int     mInitialNumParticles;
     double  mParticleMaxAccelartion;
     double  mParticleSystemRadius;
     double  mParticleDistance;

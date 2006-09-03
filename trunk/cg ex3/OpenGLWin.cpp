@@ -22,14 +22,13 @@ void usage()
 	char buff [1500];
 	strcpy(buff, "\n");
 	strcat(buff, " h --> help\n");
-	strcat(buff, " backspace --> previous frame\n");
 	strcat(buff, " + --> increase speed\n");
-	strcat(buff, " - --> decreanse speed\n");
+	strcat(buff, " - --> decrease speed\n");
 	strcat(buff, " * --> default speed\n");
 	strcat(buff, " 0 --> goto first frame\n");
 	strcat(buff, " c --> toggle get look at position from system (normally is the center of system)\n");
 	strcat(buff, " p --> toggle pause/play\n");
-	strcat(buff, " l --> toggle line-figure/spacefill-figure\n");
+	strcat(buff, " l --> toggle wire-frame/solid display\n");
 	strcat(buff, " s --> toggle shading\n");
 	strcat(buff, " q -- quit\n");
 	strcat(buff, "\n");

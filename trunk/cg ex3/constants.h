@@ -61,6 +61,7 @@ const int C_NUM_FIELDS_IN_AUTOCREATE = 6;
 #define C_PARTICLE_MAX_ACCELERATION_TAG ("FlockMaxAcceleration")
 #define C_FLOCK_UNIFORM_ACCEL_TAG       ("FlockUniformAcceleration")
 #define C_FLOCK_LOCK_Y_TAG				("FlockLockY")
+#define C_FLOCK_INITIAL_NUM_PARTICLES   ("FlockInitialParticles")
 
 
 typedef enum {

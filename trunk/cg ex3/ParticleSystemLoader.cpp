@@ -256,6 +256,11 @@ CParticleSystemLoader::readFlockParticleSystem( CSimulationsParams &inParams, CL
 
         LOAD_F( C_FLOCK_FOV_ANGLE_TAG, "ERROR: particle system conic angle is missing ", tmp );
         system->setParticleFOVAngle( tmp*DEG2RAD );
+
+
+        int initNumParticles;
+        LOAD_I( C_FLOCK_INITIAL_NUM_PARTICLES, "ERROR: initial num of particles in flock is missing ", initNumParticles );
+        system->setInitialNumParticles( initNumParticles );
         
         Point3d tmpP;
         LOAD_P3d( C_FLOCK_UNIFORM_ACCEL_TAG, "ERROR: uniform acceleration field is missing ", tmpP );

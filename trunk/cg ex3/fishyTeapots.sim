@@ -24,7 +24,7 @@ ParticleColorRand	=	1
 ParticleAlpha		=	1
 
 ClearColor          =   1,1,1
-ParticlesPerFrame	=	15
+ParticlesPerFrame	=	0
 ParticleSystemType	=	3	#1 - Newtonian, 2 - Fireworks, 3 - boids
 
 # specific ParticleSystem details:
@@ -33,12 +33,13 @@ ParticlesOrigin		=	0.0,0.0,0.0
 Gravity				=	0.0,-9.8,0.0
 
 # for Flocks
-ParticleSystemRadius       = 80 #don't allow particles to stray farther than this away from ParticlesOrigin, 0 means no spatial limit on particle position
+ParticleSystemRadius       = 50 #don't allow particles to stray farther than this away from ParticlesOrigin, 0 means no spatial limit on particle position
 
-FlockCloseParticleDistance = 12  #particles separated by more than this distance ignore each other ignore each other.
+FlockCloseParticleDistance =  12  #particles separated by more than this distance ignore each other ignore each other.
 FlockFOVAngle              =  120 #particles outside this angle aren't visible to other particles (in degrees 0-360)
 
-FlockMaxVelocity           =   30 #max velocity magnitude for an individual particle
+FlockMaxVelocity           =   20 #max velocity magnitude for an individual particle
 FlockMaxAcceleration       =   15 #max acceleration magnitude for an individual particle
 
 FlockUniformAcceleration   =  0, 0, 0 #uniform accelaration for entire flock
+FlockInitialParticles      = 15

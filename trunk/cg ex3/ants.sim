@@ -25,7 +25,7 @@ ParticleColorRand	=	0.01
 ParticleAlpha		=	1
 
 ClearColor          =   0.7,0.7,0.5
-ParticlesPerFrame	=	40
+ParticlesPerFrame	=	1
 ParticleSystemType	=	3	#1 - Newtonian, 2 - Fireworks, 3 - boids
 
 # specific ParticleSystem details:
@@ -44,3 +44,4 @@ FlockMaxAcceleration       = 15 #max acceleration magnitude for an individual pa
 
 FlockUniformAcceleration   = 0, 0, 0 #uniform accelaration for entire flock
 FlockLockY				   = 1
+FlockInitialParticles      = 3

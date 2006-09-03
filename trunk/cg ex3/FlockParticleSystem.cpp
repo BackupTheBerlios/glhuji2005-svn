@@ -9,7 +9,8 @@ mParticleDistance(0),
 mParticleFOVAngle(0),
 mParticleMaxAccelartion(0),
 mUniformAccelaration(0,0,0),
-mLockY(0)
+mLockY(0),
+mInitialNumParticles(0)
 {
 	
 }
@@ -55,7 +56,8 @@ CFlockParticleSystem::calcNextFrame()
         for( unsigned int j = 0; j < numParticles; j++ )
         {
             CParticle &theParticle = (*m_pCurSystem)[j];
-            //only calculate using positions of other particles
+
+            //don't calculate interaction of particle with itself.
             if( j == i) continue;
 
             centerOfMass         += theParticle.X;   //rule 1 - try to fly towards center of mass
@@ -128,49 +130,54 @@ bool CFlockParticleSystem::init()
 bool CFlockParticleSystem::InitFrame()
 {
     //only create particles on first frame...
-	int neededParticles = 0;
+	int numParticlesToCreateThisFrame = mNumParticles;
 	Point3d velocity = Point3d(1,0,0);
 
     if( m_nCurFrame == 1 )
-    {
-		velocity = Point3d(7,7,0);
-		neededParticles = 1;
-	}
-	else if ( m_nCurFrame%10==0 && m_nCurFrame < 10*mNumParticles )
-    {
-		velocity = Point3d(1,0,0);
-		neededParticles = 1;
-	}
-
-	if (neededParticles > 0)
+        numParticlesToCreateThisFrame = mInitialNumParticles;
+    
+    if (numParticlesToCreateThisFrame > 0 && ((m_nCurFrame % 20 == 0) || m_nCurFrame == 1) )
 	{
         CParticle p;
 
-	    p.span        = m_dDefaultSpan;
-	    p.lifepan     = m_dDefaultLifespan;
-	    p.mass        = m_dDefaultMass;
-	    p.persistance = m_dDefaultPersistance;
-	    p.alpha       = m_dParticleAlpha;
+	    p.span            = m_dDefaultSpan;
+	    p.lifepan         = m_dDefaultLifespan;
+	    p.mass            = m_dDefaultMass;
+	    p.persistance     = m_dDefaultPersistance;
+	    p.alpha           = m_dParticleAlpha;
 		Point3d colorRand = Point3d(frand()-0.5, frand()-0.5, frand()-0.5) * m_dColorRandomness;
-		p.color = m_pParticleColor + colorRand;
-		p.color2 = m_pParticleColor2 + colorRand;
-	    p.shape       = m_particleShape;
-	    p.size        = m_pParticleSize + Point3d(frand()-0.5, frand()-0.5, frand()-0.5) * m_dParticleSizeRand;
+		p.color           = m_pParticleColor + colorRand;
+		p.color2          = m_pParticleColor2 + colorRand;
+	    p.shape           = m_particleShape;
+	    p.size            = m_pParticleSize + Point3d(frand()-0.5, frand()-0.5, frand()-0.5) * m_dParticleSizeRand;
 
-	    for (int i=0; i<neededParticles; i++)
+	    for (int i=0; i<numParticlesToCreateThisFrame; i++)
 	    {
-            //todo: read distribution from ini file
-
 			Point3d colorRand = Point3d(frand()-0.5, frand()-0.5, frand()-0.5) * m_dColorRandomness;
 			p.color = m_pParticleColor + colorRand;
 			p.color2 = p.color;
 
-			p.V = velocity;
+			//p.V = velocity;
+            const double maxInitVelocity = 12;
+            p.V[0] = maxInitVelocity*frand() - maxInitVelocity/2.0;
+            p.V[1] = maxInitVelocity*frand() - maxInitVelocity/2.0;
+            p.V[2] = maxInitVelocity*frand() - maxInitVelocity/2.0;
+
+            //limit maximum particle velocity
+            if( p.V.norm() > mMaxParticleVelocity )
+                p.V *= mMaxParticleVelocity / p.V.norm();
 
             //distribute particles randomly
             p.X[0] = m_dDefaultOrigin[0] + 30.0*(frand()-0.5);
-			p.X[1] = (mLockY != 0)? 0 : m_dDefaultOrigin[1] + 30.0*(frand()-0.5);
+			p.X[1] = m_dDefaultOrigin[1] + 30.0*(frand()-0.5);
             p.X[2] = m_dDefaultOrigin[2] + 30.0*(frand()-0.5);
+
+            if( mLockY )
+            {
+                p.V[1] = 0;
+                p.X[1] = 0;
+            }
+
 
 		    AddParticle(p);
 	    }
@@ -192,32 +199,13 @@ bool CFlockParticleSystem::getForces(int nIdx)
 bool CFlockParticleSystem::calcAcceleration(int nIdx, Point3d &inIncA)
 {     
 	CParticle &curParticle = (*m_pNewSystem)[nIdx];
-	/*if (nIdx == 0){
-		if (frand() > 0.5){
-			// once in a while add random acceleration
-			curParticle.a += Point3d(frand()-0.5,frand()-0.5,frand()-0.5);
-			// but make sure we don't run too far from the origin
-			Point3d dist = m_dDefaultOrigin - curParticle.X;
-			curParticle.a += dist*frand()*0.05;
-		}
-		else{
-			// otherwise just decrease acceleration
-			curParticle.a *= 0.6;
-		}
-	}
-	else*/{
-		//----------- Calc new accelaration -----------
-		curParticle.a += inIncA;
 
-        /*
-		//----------- go towards the leader -----------
-		Point3d dist = (*m_pNewSystem)[0].X - curParticle.X;
-			curParticle.a += dist*frand()*0.05; */
+	//----------- Calc new acceleration -----------
+	curParticle.a += inIncA;
 
-		//----------- limit accelaration -----------
-		if( curParticle.a.norm() > mParticleMaxAccelartion )
-			curParticle.a *= mParticleMaxAccelartion/curParticle.a.norm();
-	}
+	//----------- limit acceleration -----------
+	if( curParticle.a.norm() > mParticleMaxAccelartion )
+		curParticle.a *= mParticleMaxAccelartion/curParticle.a.norm();
 
 	return true;
 }
@@ -230,10 +218,7 @@ bool CFlockParticleSystem::calculateVelocity(int nIdx)
     curParticle.V += curParticle.a * m_dt;
 
     //---------------- Make sure particles don't stray outside the particle system's radius -----------
-	/*if ( nIdx == 0 ){
-		maxVelocity += 3;
-	}
-	else */
+	
     if ( mParticleSystemRadius != 0 )
     {
         //calculate position at t+1
@@ -243,9 +228,12 @@ bool CFlockParticleSystem::calculateVelocity(int nIdx)
         double  distFromOrigin = vecToOrigin.norm();
         if( distFromOrigin > mParticleSystemRadius )
         {
+            Point3d a = vecToOrigin/vecToOrigin.norm();
+            Point3d b = curParticle.V/curParticle.V.norm();
+            Point3d c = curParticle.a/curParticle.a.norm();
             //cancel velocity and acceleration in "bad" direction
-            curParticle.V -= vecToOrigin*dot( vecToOrigin, curParticle.V );
-            curParticle.a -= vecToOrigin*dot( vecToOrigin, curParticle.a );
+            curParticle.V -= vecToOrigin*dot( a, b );
+            curParticle.a -= vecToOrigin*dot( a, c );
         }
     }
 
@@ -256,6 +244,7 @@ bool CFlockParticleSystem::calculateVelocity(int nIdx)
 
 	if (mLockY != 0)
 		curParticle.V[1] = 0;
+
 	return true;
 }
 
