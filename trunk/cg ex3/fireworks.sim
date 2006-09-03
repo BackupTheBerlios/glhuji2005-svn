@@ -1,7 +1,7 @@
 # Particle system ini file
 # Camera details
-CameraPos	=	0.8,1,1
-CameraDir	=	0.4,0.2,0
+CameraPos	=	-1.9,21.8,29.5
+CameraDir	=	7.8,-7.2,0
 CameraUp	=	0,1,0
 CameraFrust	=	0.0
 FovY		=	28
@@ -18,7 +18,7 @@ DefaultLifeSpan		=	55	#2
 DefaultMass			=	0.2
 DefaultRadius		=	1
 DefaultPersistance	= 1.0;
-ParticleShape		=	2	# 1 - dot, 2 - sphere, 3 - cube, 4 - cone
+ParticleShape		=	2	# 1 - dot, 2 - sphere, 3 - cube, 4 - cone, 5 - baloons, 6 - teapot, 7 - ants
 ParticleSize		=	0.2,0.2,0.2
 ParticleColor		=	0.2,0.2,0.4
 ParticleColor2		=	0.4,0.4,0.7
@@ -27,9 +27,9 @@ ParticleAlpha		=	1
 
 ClearColor = 0.2,0.2,0.5
 ParticlesPerFrame	=	10
-ParticleSystemType	=	2	#1 - Newtonian, 2 - Fireworks
+ParticleSystemType	=	2	#1 - Newtonian, 2 - Fireworks, 3 - boids
 
 # specific ParticleSystem details:
 # note: this section might be different for each particle-system type
-ParticlesOrigin		=	-20.0,-20.0,-20.0
+ParticlesOrigin		=	20.0,-20.0,0.0
 Gravity				=	0.0,-9.8,0.0

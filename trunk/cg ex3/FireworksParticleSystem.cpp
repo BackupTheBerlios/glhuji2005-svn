@@ -100,10 +100,11 @@ void CFireworksParticleSystem::killParticle(unsigned int nParticle)
 			}
 			headingz = frand()*M_PI/10+(2.0*M_PI*(double)zr)/(double)nChildren;
 		}
-		if (oldp.type > 1)
+		p = oldp;
+		CParticleSystem::killParticle(nParticle);
+		if (p.type > 1)
 		{
-			CParticle p = oldp;
-			p.type = oldp.type-1;
+			p.type--;
 			p.span = 0.0;
 			p.lifepan = 0.15*(frand()*10+1);
 			p.mass = 0;
@@ -115,5 +116,6 @@ void CFireworksParticleSystem::killParticle(unsigned int nParticle)
 			AddParticle(p);
 		}
 	}
-	CParticleSystem::killParticle(nParticle);
+	else
+		CParticleSystem::killParticle(nParticle);
 }

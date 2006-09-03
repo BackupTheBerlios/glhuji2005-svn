@@ -18,7 +18,7 @@ DefaultLifeSpan		=	4
 DefaultMass			=	1
 DefaultRadius		=	1
 DefaultPersistance	=	1.0;
-ParticleShape		=	2	# 1 - dot, 2 - sphere, 3 - cube, 4 - cone, 5 - baloon
+ParticleShape		=	2	# 1 - dot, 2 - sphere, 3 - cube, 4 - cone, 5 - baloons, 6 - teapot, 7 - ants
 ParticleSize		=	1,1,1
 ParticleColor		=	0.6,0.6,1.0
 ParticleColor2		=	1.0,1.0,1.0
@@ -26,7 +26,7 @@ ParticleAlpha		=	0.2
 ParticleColorRand	=	0.01	# between 0 and 1 (0 - no random, 1 - very randomal)
 
 ParticlesPerFrame	=	6
-ParticleSystemType	=	1	# 1 - Mewtonian
+ParticleSystemType	=	1	#1 - Newtonian, 2 - Fireworks, 3 - boids
 
 # specific ParticleSystem details:
 # note: this section might be different for each particle-system type

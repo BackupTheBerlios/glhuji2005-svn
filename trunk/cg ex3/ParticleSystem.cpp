@@ -241,7 +241,15 @@ bool CParticleSystem::gotoFrame(int nFrame)
 
 Point3d CParticleSystem::getLookAtPoint()
 {
-	return g_simulationParams.m_cameraDir;
+	unsigned int numParticles = (int)m_pCurSystem->size();
+	Point3d centerOfMass(0,0,0);
+    for( unsigned int j = 0; j < numParticles; j++ )
+    {
+        centerOfMass += (*m_pCurSystem)[j].X;
+    }
+    centerOfMass /= numParticles;
+	return centerOfMass;
+//	return g_simulationParams.m_cameraDir;
 }
 
 #define RAND_POINT Point3d(frand()-0.5, frand()-0.5, frand()-0.5)*0.2

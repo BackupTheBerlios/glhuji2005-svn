@@ -1,6 +1,6 @@
 # Particle system ini file
 # Camera details
-CameraPos	=	10,10,10 #position of Eye
+CameraPos	=	60,60,60 #position of Eye
 CameraDir	=	0,0,0    #Position of Reference point (where to look at)
 CameraUp	=	0,1,0    #Which direction is up
 FovY		=	45

@@ -27,6 +27,7 @@ void usage()
 	strcat(buff, " - --> decreanse speed\n");
 	strcat(buff, " * --> default speed\n");
 	strcat(buff, " 0 --> goto first frame\n");
+	strcat(buff, " c --> toggle get look at position from system (normally is the center of system)\n");
 	strcat(buff, " p --> toggle pause/play\n");
 	strcat(buff, " l --> toggle line-figure/spacefill-figure\n");
 	strcat(buff, " s --> toggle shading\n");
@@ -71,19 +72,15 @@ int getms(const SYSTEMTIME& st)
 }
 
 
-#define MOVEMENT_STEP 0.009
-#define ROTATION_STEP 0.3
+#define MOVEMENT_STEP 0.1
+#define ROTATION_STEP 0.01
 #define ZOOM_STEP 1
 bool gLBDown = false;
 bool gRBDown = false;
 int gLastX;
 int gLastY;
-GLfloat gOriginX = 0.0f;
-GLfloat gOriginY = 0.0f;
-GLfloat gOriginZ = 0.0f;
-GLfloat g_xRotated = 0.0f;	//15.0f;
-GLfloat g_yRotated = 0.0f;	//10.0f;
-GLfloat g_zRotated = 0.0f;
+Point3d gDragStartCameraPos;
+Point3d gDragStartCameraDir;
 
 // Default values for material and light properties.
 GLfloat mat_ambient[] = { 0.3f, 0.3f, 0.3f, 1.0 };
@@ -105,12 +102,18 @@ COpenGLWin::mousePressedCallback( int inButton, int inState, int inX, int inY )
 	gLastX = inX;
 	gLastY = inY;
 	if (inState == GLUT_DOWN && inButton == GLUT_LEFT_BUTTON) {
+		gDragStartCameraPos = g_simulationParams.m_cameraPos;
+		if (!gRBDown)
+			gDragStartCameraDir = g_simulationParams.m_cameraDir;
 		gLBDown = true;
 	}
 	else if (inState == GLUT_UP && inButton == GLUT_LEFT_BUTTON) {
 		gLBDown = false;
 	}
 	if (inState == GLUT_DOWN && inButton == GLUT_RIGHT_BUTTON) {
+		gDragStartCameraDir = g_simulationParams.m_cameraDir;
+		if (!gRBDown)
+			gDragStartCameraPos = g_simulationParams.m_cameraPos;
 		gRBDown = true;
 	}
 	else if (inState == GLUT_UP && inButton == GLUT_RIGHT_BUTTON) {
@@ -125,19 +128,17 @@ COpenGLWin::mouseMovedCallback( int inX, int inY )
 	int dy = (inY-gLastY);
 	if (gLBDown && gRBDown)
 	{
-		gOriginZ -= ((float)dy)*ZOOM_STEP;
+		Point3d v = gDragStartCameraDir - gDragStartCameraPos;
+		g_simulationParams.m_cameraPos -= (v/v.length())*ZOOM_STEP*dy;
 	}
 	else if (gLBDown)
 	{
-		int dx = (inX-gLastX);
-		int dy = (inY-gLastY);
-		g_xRotated += ((float)dy)*ROTATION_STEP;
-		g_yRotated += ((float)dx)*ROTATION_STEP;
+		RotateYZ (-ROTATION_STEP*dx, -ROTATION_STEP*dy, g_simulationParams.m_cameraPos);
 	}
 	else if (gRBDown)
 	{
-		gOriginX -= ((float)dx)*MOVEMENT_STEP*(gOriginZ/(ZOOM_STEP*3));
-		gOriginY += ((float)dy)*MOVEMENT_STEP*(gOriginZ/(ZOOM_STEP*3));
+		g_simulationParams.m_cameraDir[0] -= ((float)dx)*MOVEMENT_STEP;
+		g_simulationParams.m_cameraDir[1] += ((float)dy)*MOVEMENT_STEP;
 	}
 	gLastX = inX;
 	gLastY = inY;
@@ -153,12 +154,6 @@ void COpenGLWin::Initialize()
 {
 	Point3d clearColor = g_simulationParams.m_clearColor;
 
-	g_xRotated = g_simulationParams.m_cameraDir[0];
-	g_yRotated = g_simulationParams.m_cameraDir[1];
-	g_zRotated = g_simulationParams.m_cameraDir[2];
-	gOriginX   = g_simulationParams.m_particleSystem->m_dDefaultOrigin[0];
-	gOriginY   = g_simulationParams.m_particleSystem->m_dDefaultOrigin[1];
-	gOriginZ   = g_simulationParams.m_particleSystem->m_dDefaultOrigin[2];
     // initialize matrix stacks
     glMatrixMode( GL_PROJECTION );
     glLoadIdentity();
@@ -257,10 +252,6 @@ void COpenGLWin::DisplayCallback()
 	glPushMatrix();
     
     //translate view to where the user moved the camera.
-    glTranslatef(gOriginX,gOriginY,gOriginZ);
-	glRotatef(g_xRotated,1.0f,0.0f,0.0f);
-	glRotatef(g_yRotated,0.0f,1.0f,0.0f);
-	glRotatef(g_zRotated,0.0f,0.0f,1.0f);
 
     //setup shading mode
     int nShading = 0;
