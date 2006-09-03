@@ -192,7 +192,7 @@ bool CFlockParticleSystem::getForces(int nIdx)
 bool CFlockParticleSystem::calcAcceleration(int nIdx, Point3d &inIncA)
 {     
 	CParticle &curParticle = (*m_pNewSystem)[nIdx];
-	if (nIdx == 0){
+	/*if (nIdx == 0){
 		if (frand() > 0.5){
 			// once in a while add random acceleration
 			curParticle.a += Point3d(frand()-0.5,frand()-0.5,frand()-0.5);
@@ -205,13 +205,14 @@ bool CFlockParticleSystem::calcAcceleration(int nIdx, Point3d &inIncA)
 			curParticle.a *= 0.6;
 		}
 	}
-	else{
+	else*/{
 		//----------- Calc new accelaration -----------
 		curParticle.a += inIncA;
 
+        /*
 		//----------- go towards the leader -----------
 		Point3d dist = (*m_pNewSystem)[0].X - curParticle.X;
-			curParticle.a += dist*frand()*0.05;
+			curParticle.a += dist*frand()*0.05; */
 
 		//----------- limit accelaration -----------
 		if( curParticle.a.norm() > mParticleMaxAccelartion )
@@ -229,10 +230,11 @@ bool CFlockParticleSystem::calculateVelocity(int nIdx)
     curParticle.V += curParticle.a * m_dt;
 
     //---------------- Make sure particles don't stray outside the particle system's radius -----------
-	if ( nIdx == 0 ){
+	/*if ( nIdx == 0 ){
 		maxVelocity += 3;
 	}
-	else if ( mParticleSystemRadius != 0 )
+	else */
+    if ( mParticleSystemRadius != 0 )
     {
         //calculate position at t+1
         Point3d newPosition = curParticle.X + curParticle.V * m_dt;
@@ -273,6 +275,9 @@ Point3d CFlockParticleSystem::getLookAtPoint()
     {
         centerOfMass += (*m_pCurSystem)[j].X;
     }
-    centerOfMass /= numParticles;
+
+    if( numParticles > 0 )
+        centerOfMass /= numParticles;
+
 	return centerOfMass;
 }
