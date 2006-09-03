@@ -1,272 +1,136 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
         "http://www.w3.org/TR/html4/loose.dtd">
-<html xmlns:v="urn:schemas-microsoft-com:vml"
-xmlns:o="urn:schemas-microsoft-com:office:office"
-xmlns:w="urn:schemas-microsoft-com:office:word"
-xmlns="http://www.w3.org/TR/REC-html40">
-
+<html>
 <head>
-<meta http-equiv=Content-Type content="text/html; charset=us-ascii">
-<meta name=ProgId content=Word.Document>
-<meta name=Generator content="Microsoft Word 10">
-<meta name=Originator content="Microsoft Word 10">
-<link rel=File-List href="readme.files/filelist.xml">
-<link rel=Edit-Time-Data href="readme.files/editdata.mso">
-<!--[if !mso]>
-<style>
-v\:* {behavior:url(#default#VML);}
-o\:* {behavior:url(#default#VML);}
-w\:* {behavior:url(#default#VML);}
-.shape {behavior:url(#default#VML);}
-</style>
-<![endif]-->
-<title>Advanced Graphics Ex3</title>
-<!--[if gte mso 9]><xml>
- <o:DocumentProperties>
-  <o:Author> </o:Author>
-  <o:LastAuthor> </o:LastAuthor>
-  <o:Revision>4</o:Revision>
-  <o:TotalTime>4</o:TotalTime>
-  <o:Created>2006-09-02T19:48:00Z</o:Created>
-  <o:LastSaved>2006-09-02T19:52:00Z</o:LastSaved>
-  <o:Pages>1</o:Pages>
-  <o:Words>686</o:Words>
-  <o:Characters>3433</o:Characters>
-  <o:Company> </o:Company>
-  <o:Lines>28</o:Lines>
-  <o:Paragraphs>8</o:Paragraphs>
-  <o:CharactersWithSpaces>4111</o:CharactersWithSpaces>
-  <o:Version>10.6714</o:Version>
- </o:DocumentProperties>
-</xml><![endif]--><!--[if gte mso 9]><xml>
- <w:WordDocument>
-  <w:SpellingState>Clean</w:SpellingState>
-  <w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel>
- </w:WordDocument>
-</xml><![endif]-->
-<style>
-<!--
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{mso-style-parent:"";
-	margin:0cm;
-	margin-bottom:.0001pt;
-	mso-pagination:widow-orphan;
-	font-size:12.0pt;
-	font-family:"Times New Roman";
-	mso-fareast-font-family:"Times New Roman";}
-a:link, span.MsoHyperlink
-	{color:blue;
-	text-decoration:underline;
-	text-underline:single;}
-a:visited, span.MsoHyperlinkFollowed
-	{color:purple;
-	text-decoration:underline;
-	text-underline:single;}
-p
-	{font-size:12.0pt;
-	font-family:"Times New Roman";
-	mso-fareast-font-family:"Times New Roman";}
-span.SpellE
-	{mso-style-name:"";
-	mso-spl-e:yes;}
-@page Section1
-	{size:595.3pt 841.9pt;
-	margin:72.0pt 90.0pt 72.0pt 90.0pt;
-	mso-header-margin:35.4pt;
-	mso-footer-margin:35.4pt;
-	mso-paper-source:0;}
-div.Section1
-	{page:Section1;}
--->
-</style>
-<!--[if gte mso 10]>
-<style>
- /* Style Definitions */
- table.MsoNormalTable
-	{mso-style-name:"\05D8\05D1\05DC\05D4 \05E8\05D2\05D9\05DC\05D4";
-	mso-tstyle-rowband-size:0;
-	mso-tstyle-colband-size:0;
-	mso-style-noshow:yes;
-	mso-style-parent:"";
-	mso-padding-alt:0cm 5.4pt 0cm 5.4pt;
-	mso-para-margin:0cm;
-	mso-para-margin-bottom:.0001pt;
-	mso-pagination:widow-orphan;
-	font-size:10.0pt;
-	font-family:"Times New Roman";}
-</style>
-<![endif]-->
+	<title>Advanced Graphics Ex3</title>
 </head>
+<body>
 
-<body lang=EN-US link=blue vlink=purple style='tab-interval:36.0pt'>
+<center><h2>Exercise 3 - A generic particle system platform</h2></center>
 
-<div class=Section1>
+<b>By:</b> Itai Basel <span style="font-size: 60%; ">T.Z. 035781848</span><br> 
+Jeremy Moskovich    <span style="font-size: 60%; ">T.Z. 036382489</span>, <br>
+Dagan Eshar              <span style="font-size: 60%; ">T.Z. 038381620</span>
 
-<h2 align=center style='text-align:center'>Exercise 3 - A generic particle
-system platform</h2>
-
-<p class=MsoNormal><b>By:</b> <span class=SpellE>Itai</span> Basel <span
-style='font-size:7.0pt'>T.Z. 035781848</span><br>
-Jeremy <span class=SpellE>Moskovich</span> <span style='font-size:7.0pt'>T.Z.
-036382489</span>, <br>
-Dagan <span class=SpellE>Eshar</span> <span style='font-size:7.0pt'>T.Z.
-038381620</span> </p>
-
+<p><p>
 <h3>Overview:</h3>
-
-<p class=MsoNormal>We implemented a generic environment for particle
-simulation, including support for simple, <span class=SpellE>newtonic</span>,
-and <span class=SpellE>boids</span> style particles.</p>
-
-<p>Our system allows for the easy creation of a large variety of particle
-simulations, we have included several examples which we hope exhibit the
-flexibility of the system.</p>
-
-<p>Given more time, there are many things we would have <span class=SpellE>implented</span>
-differently or improved in the program. However we think that we got some nice
-results even with the limited time we had available.</p>
-
+	We implemented a generic environment for particle simulation, including support for simple, newtonic, and boids style particles.<p>
+	
+	Our system allows for the easy creation of a large variety of particle simulations, we have included several examples which we hope exhibit the flexibility of the system.<p>
+	
+	Given more time, there are many things we would have implented differently or improved in the program.  However we think that we got some nice results even with the limited time we had available.<p>
+	
 <h3>Details:</h3>
+	Our implementation runs under win32 using MFC, we use GLUT for display so porting to other platforms should be trivial.<p>
+	
+	At the basis of our particle system is the "ParticleSystem" class which provides implements a basic extendable particle system - two arrays of particles are held (one for the previous frame, and one for the previous frame), ability to set a lifetime for particles, and basic drawing routines for each particle.<p>
+	
+	The NewtonianParticleSystem class extends this by adding very basic newtonian physics to the simulation, we further extend this with a class that simulates fireworks.<p>
+	
+	The FlockparticleSystem class extends ParticleSystem and implements a basic version of the Boids code.  Its quite surprising what nice behavior we got with such a basic implementation.  The only addition we made to the basic boids code was the ability to set a global driving force to the entire flock to get the entire flock to fly in a set direction. <p>
 
-<p class=MsoNormal>Our implementation runs under win32 using MFC, we use GLUT
-for display so porting to other platforms should be trivial.</p>
+<h3>Controls:</h3>
 
-<p>At the basis of our particle system is the &quot;<span class=SpellE>ParticleSystem</span>&quot;
-class which provides implements a basic extendable particle system - two arrays
-of particles are held (one for the previous frame, and one for the previous
-frame), ability to set a lifetime for particles, and basic drawing routines for
-each particle.</p>
-
-<p>The <span class=SpellE>NewtonianParticleSystem</span> class extends this by
-adding very basic <span class=SpellE>newtonian</span> physics to the
-simulation, we further extend this with a class that simulates fireworks.</p>
-
-<p>The <span class=SpellE>FlockparticleSystem</span> class extends <span
-class=SpellE>ParticleSystem</span> and implements a basic version of the <span
-class=SpellE>Boids</span> code. Its quite surprising what nice behavior we got
-with such a basic implementation. The only addition we made to the basic <span
-class=SpellE>boids</span> code was the ability to set a global driving force to
-the entire flock to get the entire flock to fly in a set direction. </p>
+    The view can be manipulated with the mouse: Dragging with the left button pressed rotates the display, with the right button translates the display,
+    while dragging with both the left & right mouse buttons pressed zooms in and out.<p>
+        
+    Additional controls can be accessed from the keyboard when the openGL view is in focus, for a complete list, press the 'h' key.  Most notably '+' and '-'
+    speed up and slow down the animation speed, and the 'c' key sets the display such that the camera follows the center of the particle system.
 
 <h3>Configuration files:</h3>
 
-<p class=MsoNormal>The simulation parameters are specified in (.<span
-class=SpellE>sim</span>) configuration files, the format is <i>Name = Value</i>
-with comments delimited by the # sign. By specifying different parameters in
-the configuration files, a wide variety of simulations can be produced. The
-available parameters are documented in the enclosed simulation files. </p>
-
+	The simulation parameters are specified in (.sim) configuration files, the format is <i>Name = Value</i> with comments delimited by the # sign.
+	
+	By specifying different parameters in the configuration files, a wide variety of simulations can be produced.
+	
+	The available parameters are documented in the enclosed simulation files.
+	
 <h3>Simulations:</h3>
 
-<table class=MsoNormalTable border=0 cellpadding=0 style='mso-cellspacing:1.5pt'>
- <tr style='mso-yfti-irow:0'>
-  <td style='padding:.75pt .75pt .75pt .75pt'>
-  <p class=MsoNormal><span class=SpellE>ants.sim</span> - a nice <span
-  class=SpellE>boids</span> simulation, where the particles are limited to
+<table>
+<tr>
+<td>
+    ants.sim  - a nice boids simulation, where the particles are limited to
   motion in the XZ plane. The ants are wandering about, trying not to collide
-  with each other, and never stay to far from a leader.</p>
-  </td>
-  <td style='padding:.75pt .75pt .75pt .75pt'>
-  <p class=MsoNormal><img width=520 height=537 id="_x0000_i1025"
-  src="img/ants.jpg" border=0></p>
-  </td>
- </tr>
- <tr style='mso-yfti-irow:1'>
-  <td style='padding:.75pt .75pt .75pt .75pt'>
-  <p class=MsoNormal><span class=SpellE>fishyTeapots.sim</span> - flying
-  teapots, with no global driving force, a tribute to <span class=SpellE>afterdark</span>
-  (<a href="http://en.wikipedia.org/wiki/After_Dark">http://en.wikipedia.org/wiki/After_Dark</a>).</p>
-  <p class=MsoNormal>A leader teapot can be identified if you watch carefully
-  (or if you increase the allowed velocity in the simulation file)</p>
-  <p class=MsoNormal><o:p>&nbsp;</o:p></p>
-  </td>
-  <td style='padding:.75pt .75pt .75pt .75pt'>
-  <p class=MsoNormal><img border=0 width=520 height=537 id="_x0000_i1026"
-  src="img/teapots.jpg"></p>
-  </td>
- </tr>
- <tr style='mso-yfti-irow:2'>
-  <td style='padding:.75pt .75pt .75pt .75pt'>
-  <p class=MsoNormal><span class=SpellE>boids.sim</span> - no frills <span
-  class=SpellE>boids</span> simulation with a global driving force.</p>
-  </td>
-  <td style='padding:.75pt .75pt .75pt .75pt'>
-  <p class=MsoNormal><img border=0 width=520 height=537 id="_x0000_i1027"
-  src="img/boids.jpg"></p>
-  </td>
- </tr>
- <tr style='mso-yfti-irow:3'>
-  <td style='padding:.75pt .75pt .75pt .75pt'>
-  <p class=MsoNormal><span class=SpellE>Snow.sim</span> - a simple simulation
-  of snow, please be patient - it takes a little while for the snow to start
-  falling...</p>
-  </td>
-  <td style='padding:.75pt .75pt .75pt .75pt'>
-  <p class=MsoNormal><img border=0 width=520 height=537 id="_x0000_i1028"
-  src="img/snow.jpg"></p>
-  </td>
- </tr>
- <tr style='mso-yfti-irow:4'>
-  <td style='padding:.75pt .75pt .75pt .75pt'>
-  <p class=MsoNormal><o:p>&nbsp;</o:p></p>
-  </td>
-  <td style='padding:.75pt .75pt .75pt .75pt'>
-  <p class=MsoNormal><span style='font-size:10.0pt'><o:p>&nbsp;</o:p></span></p>
-  </td>
- </tr>
- <tr style='mso-yfti-irow:5'>
-  <td style='padding:.75pt .75pt .75pt .75pt'>
-  <p class=MsoNormal><span class=SpellE>Water.sim</span> - a sprinkler. </p>
-  </td>
-  <td style='padding:.75pt .75pt .75pt .75pt'>
-  <p class=MsoNormal><img border=0 width=520 height=537 id="_x0000_i1029"
-  src="img/water.jpg"></p>
-  </td>
- </tr>
- <tr style='mso-yfti-irow:6'>
-  <td style='padding:.75pt .75pt .75pt .75pt'>
-  <p class=MsoNormal><span class=SpellE>bubbles.sim</span> - some bubbles.</p>
-  </td>
-  <td style='padding:.75pt .75pt .75pt .75pt'>
-  <p class=MsoNormal><img border=0 width=520 height=537 id="_x0000_i1030"
-  src="img/bubbles.jpg"></p>
-  </td>
- </tr>
- <tr style='mso-yfti-irow:7'>
-  <td style='padding:.75pt .75pt .75pt .75pt'>
-  <p class=MsoNormal><span class=SpellE>fireworks.sim</span> - <span
-  class=SpellE>newtonian</span> fireworks.</p>
-  </td>
-  <td style='padding:.75pt .75pt .75pt .75pt'>
-  <p class=MsoNormal><img border=0 width=520 height=537 id="_x0000_i1031"
-  src="img/fireworks.jpg"></p>
-  </td>
- </tr>
- <tr style='mso-yfti-irow:8;mso-yfti-lastrow:yes'>
-  <td style='padding:.75pt .75pt .75pt .75pt'>
-  <p class=MsoNormal><span class=SpellE>balloons.sim</span> - Some balloons.</p>
-  </td>
-  <td style='padding:.75pt .75pt .75pt .75pt'>
-  <p class=MsoNormal><img border=0 width=520 height=537 id="_x0000_i1032"
-  src="img/balloons.jpg"></p>
-  </td>
- </tr>
-	<tr style='mso-yfti-irow:8;mso-yfti-lastrow:yes'>
-	  <td style='padding:.75pt .75pt .75pt .75pt'>
-	  <p class=MsoNormal><span class=SpellE>autumn.sim</span> - Falling leafs.</p>
+  with each other, and never stay to far from a leader.
+</td>
+<td>
+    <img src="img/ants.jpg" width="520" height="537" border="0">
+</td>
+</tr>
+
+<tr>
+<td>
+    fishyTeapots.sim - flying teapots, with no global driving force, a tribute to afterdark (http://en.wikipedia.org/wiki/After_Dark).<br>
+</td>
+<td>
+    <img src="img/teapots.jpg" width="520" height="537" border="0">
+</td>
+</tr>
+
+<tr>
+<td>
+    boids.sim - no frills boids simulation with a global driving force, using the "camera follows particles" option (press the 'c' key
+    with the openGL window in focus) can be helpful, as the particles can fly out of view pretty quickly.
+</td>
+<td>
+    <img src="img/boids.jpg" width="520" height="537" border="0">
+</td>
+</tr>
+
+<tr>
+<td>
+    Snow.sim - a simple simulation of snow, please be patient - it takes a little while for the snow to start falling...<br>
+</td>
+<td>
+    <img src="img/snow.jpg" width="520" height="537" border="0">
+</td>
+<tr>
+    
+<tr>
+<td>
+    Water.sim - a sprinkler.
+</td>
+<td>
+<img src="img/water.jpg" width="520" height="537" border="0">
+</td>
+</tr>
+
+<tr>
+<td>
+bubbles.sim - some bubbles.<br>
+</td>
+<td>
+    <img src="img/bubbles.jpg" width="520" height="537" border="0">
+</td>
+</tr>
+
+<tr>
+<td>
+    fireworks.sim - newtonian fireworks.<br>
+</td>
+<td>
+    <img src="img/fireworks.jpg" width="520" height="537" border="0">
+</td>
+</tr>
+<tr>
+<td>
+    balloons.sim  - Some balloons.<br>
+</td>
+<td>
+    <img src="img/balloons.jpg" width="520" height="537" border="0">
+</td>
+</tr>
+<tr >
+	  <td>
+	  autumn.sim - Falling leaves.
 	  </td>
-	  <td style='padding:.75pt .75pt .75pt .75pt'>
-	  <p class=MsoNormal><img border=0 width=520 height=537 id="_x0000_i1032"
-	  src="img/autumn.jpg"></p>
+	  <td>
+	  <img border=0 width=520 height=537 src="img/autumn.jpg"></p>
 	  </td>
 	 </tr>
 </table>
 
-<p class=MsoNormal><o:p>&nbsp;</o:p></p>
-
-</div>
-
+Thank you, Dagan, Jeremy & Itai.
 </body>
-
 </html>
